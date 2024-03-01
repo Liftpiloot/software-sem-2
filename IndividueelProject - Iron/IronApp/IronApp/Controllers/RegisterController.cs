@@ -7,7 +7,7 @@ namespace IronApp.Controllers;
 
 public class RegisterController : Controller
 {
-    private string db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
+    private string _db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
     
     // GET
     public IActionResult Index()
@@ -29,7 +29,7 @@ public class RegisterController : Controller
             }
             password = builder.ToString();
         }
-        SqlConnection conn = new SqlConnection(db);
+        SqlConnection conn = new SqlConnection(_db);
         conn.Open();
         SqlCommand cmd = new SqlCommand("INSERT INTO users (username, password, email, age, weight) VALUES (@username, @password, @email, @age, @weight)", conn);
         cmd.Parameters.AddWithValue("@username", username);

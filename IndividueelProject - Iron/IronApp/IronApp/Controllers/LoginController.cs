@@ -7,7 +7,7 @@ namespace IronApp.Controllers;
 
 public class LoginController : Controller
 {
-    private string db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
+    private string _db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
     // GET
     public IActionResult Index()
     {
@@ -30,9 +30,9 @@ public class LoginController : Controller
         }
         
         // Retrieve user from db
-        SqlConnection conn = new SqlConnection(db);
+        SqlConnection conn = new SqlConnection(_db);
         conn.Open();
-        SqlCommand cmd = new SqlCommand("SELECT * FROM users WHERE (username = @name OR email = @name) AND password = @password", conn);
+        SqlCommand cmd = new SqlCommand("SELECT * FROM users WHERE (username = @name OR LOWER(email) = LOWER(@name)) AND password = @password", conn);
         cmd.Parameters.AddWithValue("@name", name);
         cmd.Parameters.AddWithValue("@password", password);
         SqlDataReader reader = cmd.ExecuteReader();
@@ -44,7 +44,7 @@ public class LoginController : Controller
                 Expires = DateTime.Now.AddDays(365), // Cookie expires after a year
                 IsEssential = true
             };
-            Response.Cookies.Append("UserId", reader["id"].ToString(), cookieOptions);
+            Response.Cookies.Append("UserId", reader["id"].ToString() ?? throw new InvalidOperationException(), cookieOptions);
             TempData["Id"] = reader["id"];
             TempData["Username"] = reader["username"].ToString();
             return RedirectToAction("Index", "Home");
