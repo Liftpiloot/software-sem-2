@@ -3,12 +3,14 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using IronApp.Models;
 using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace IronApp.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private string db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
 
     public HomeController(ILogger<HomeController> logger)
     {
@@ -17,9 +19,17 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        if (TempData["Username"] != null)
+        if (Request.Cookies["UserId"] != null)
         {
-            ViewBag.Username = TempData["Username"].ToString();
+            SqlConnection conn = new SqlConnection(db);
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("SELECT * FROM users WHERE id = @id", conn);
+            cmd.Parameters.AddWithValue("@id", Request.Cookies["UserId"]);
+            SqlDataReader reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                ViewBag.Username = reader["username"].ToString();
+            }
         }
         return View();
     }

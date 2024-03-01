@@ -38,6 +38,13 @@ public class LoginController : Controller
         SqlDataReader reader = cmd.ExecuteReader();
         if (reader.Read())
         {
+            // Create cookie with user id
+            var cookieOptions = new CookieOptions
+            {
+                Expires = DateTime.Now.AddDays(365), // Cookie expires after a year
+                IsEssential = true
+            };
+            Response.Cookies.Append("UserId", reader["id"].ToString(), cookieOptions);
             TempData["Id"] = reader["id"];
             TempData["Username"] = reader["username"].ToString();
             return RedirectToAction("Index", "Home");
