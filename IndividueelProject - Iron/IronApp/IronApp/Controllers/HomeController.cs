@@ -28,7 +28,7 @@ public class HomeController : Controller
             SqlDataReader reader = cmd.ExecuteReader();
             if (reader.Read())
             {
-                ViewBag.Username = reader["username"].ToString();
+                ViewBag.Username = reader["username"].ToString() ?? "No username";
             }
         }
         return View();
