@@ -51,7 +51,7 @@ public class LoginController : Controller
         }
         else
         {
-            return View();
+            return RedirectToAction("Index", "Login");
         }
     }
 }

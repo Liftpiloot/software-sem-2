@@ -1,21 +1,20 @@
-﻿@model dynamic
-
-@{
-    ViewBag.Title = "title";
-    Layout = "_Layout";
+﻿@{
+    Layout = null;
 }
+<Link rel="stylesheet" href="~/css/loginRegister.css" />
+<body class="body_custom">
+    <img src="images/IronTrack_bg_rem.png" alt="logo" class="logo" />
 
-<h2>Login</h2>
-<form method="post" action="Login/Index" >
-    <div>
-        <label for="name">Email/Username:</label>
-        <input type="text" id="name" name="name" />
-    </div>
-    <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" />
-    </div>
-    <div>
-        <input type="submit" value="Login" />
-    </div>
-</form>
+    <form method="post" action="Login/Index" >
+        <div>
+            <input class="login_register_input" type="text" id="name" name="name" placeholder="Email/Username" required/>
+        </div>
+        <div>
+            <input class="login_register_input" type="password" id="password" name="password" placeholder="Password" required/>
+        </div>
+        <div class="login_register_buttons">
+            <button type="button" class="login_button">Register</button>
+            <input class="login_button" type="submit" value="Login"/>
+        </div>
+    </form>
+</body>
