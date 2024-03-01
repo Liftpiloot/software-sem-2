@@ -5,9 +5,10 @@ using Microsoft.Data.SqlClient;
 
 namespace IronApp.Controllers;
 
-public class LoginController : Controller
+public class RegisterController : Controller
 {
     private string db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
+    
     // GET
     public IActionResult Index()
     {
@@ -15,9 +16,9 @@ public class LoginController : Controller
     }
     // POST
     [HttpPost]
-    public IActionResult Index(string name, string password)
+    public IActionResult Index(string username, string password, string email, int age, decimal weight)
     {
-        // Hash password
+        // Create sha256 hash
         using (SHA256 sha256Hash = SHA256.Create())
         {
             Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
@@ -28,23 +29,16 @@ public class LoginController : Controller
             }
             password = builder.ToString();
         }
-        
-        // Retrieve user from db
         SqlConnection conn = new SqlConnection(db);
         conn.Open();
-        SqlCommand cmd = new SqlCommand("SELECT * FROM users WHERE (username = @name OR email = @name) AND password = @password", conn);
-        cmd.Parameters.AddWithValue("@name", name);
+        SqlCommand cmd = new SqlCommand("INSERT INTO users (username, password, email, age, weight) VALUES (@username, @password, @email, @age, @weight)", conn);
+        cmd.Parameters.AddWithValue("@username", username);
         cmd.Parameters.AddWithValue("@password", password);
-        SqlDataReader reader = cmd.ExecuteReader();
-        if (reader.Read())
-        {
-            TempData["Id"] = reader["id"];
-            TempData["Username"] = reader["username"].ToString();
-            return RedirectToAction("Index", "Home");
-        }
-        else
-        {
-            return View();
-        }
+        cmd.Parameters.AddWithValue("@email", email);
+        cmd.Parameters.AddWithValue("@age", age);
+        cmd.Parameters.AddWithValue("@weight", weight);
+        cmd.ExecuteNonQuery();
+        return RedirectToAction("Index", "Home");
     }
+
 }

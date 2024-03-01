@@ -1,0 +1,33 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>Register account</h2>
+<form method="post" action="/Register/Index">
+    <div>
+        <Label for="username">Username:</Label>
+        <input type="text" id="username" name="username" required/>
+    </div>
+    <div>
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" required/>
+    </div>
+    <div>
+        <label for="password">Password:</label>
+        <input type="text" id="password" name="password" required/>
+    </div>
+    <div>
+        <label for="password">Age:</label>
+        <input type="number" id="age" name="age" required/>
+    </div>
+    <div>
+        <label for="weight">Weight:</label>
+        <input type="number" id="weight" name="weight" required/>
+    </div>
+    <div>
+        <input type="submit" value="Register"/>
+    </div>
+</form>
