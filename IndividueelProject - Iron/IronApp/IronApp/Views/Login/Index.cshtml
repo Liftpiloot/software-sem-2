@@ -1,20 +1,34 @@
-﻿@{
-    Layout = null;
-}
-<Link rel="stylesheet" href="~/css/loginRegister.css" />
-<body class="body_custom">
-    <img src="images/IronTrack_bg_rem.png" alt="logo" class="logo" />
+﻿<!DOCTYPE html>
+<head>
+    <title>Login</title>
+    <Link rel="stylesheet" href="~/css/site.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0"/>
+</head>
 
-    <form method="post" action="Login/Index" >
-        <div>
-            <input class="login_register_input" type="text" id="name" name="name" placeholder="Email/Username" required/>
+<body>
+<div class="wrapper">
+    <form method="post" action="Login/Index">
+        <div class="iron-logo">
+            <img src="images/Logo_png.png" alt="logo" width="100%"/>
         </div>
-        <div>
-            <input class="login_register_input" type="password" id="password" name="password" placeholder="Password" required/>
+        <div class="input-box">
+            <input type="text" id="name" name="name" placeholder="Email/Username" required/>
         </div>
-        <div class="login_register_buttons">
-            <button type="button" class="login_button">Register</button>
-            <input class="login_button" type="submit" value="Login"/>
+        <div class="input-box">
+            <input type="password" id="password" name="password" placeholder="Password" required/>
         </div>
+
+        <div class="login-register">
+            <input class="login-button" type="submit" value="Login"/>
+            <div class="register">
+                <a asp-controller="Register" asp-action="Index">Register</a>
+            </div>
+        </div>
+
+
     </form>
+</div>
 </body>

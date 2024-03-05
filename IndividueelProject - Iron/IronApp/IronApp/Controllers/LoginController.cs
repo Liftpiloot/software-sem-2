@@ -11,7 +11,7 @@ public class LoginController : Controller
     // GET
     public IActionResult Index()
     {
-        return View();
+        return PartialView();
     }
     // POST
     [HttpPost]
