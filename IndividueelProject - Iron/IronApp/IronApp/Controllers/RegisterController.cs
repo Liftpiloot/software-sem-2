@@ -16,8 +16,12 @@ public class RegisterController : Controller
     }
     // POST
     [HttpPost]
-    public IActionResult Index(string username, string password, string email, int dateOfBirth, decimal weight)
+    public IActionResult Index(string username, string password, string confirmPassword, string email, int dateOfBirth, decimal weight)
     {
+        if (password != confirmPassword)
+        {
+            return RedirectToAction("Index", "Register");
+        }
         // Create sha256 hash
         using (SHA256 sha256Hash = SHA256.Create())
         {
