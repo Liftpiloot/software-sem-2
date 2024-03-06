@@ -16,7 +16,7 @@ public class RegisterController : Controller
     }
     // POST
     [HttpPost]
-    public IActionResult Index(string username, string password, string email, int age, decimal weight)
+    public IActionResult Index(string username, string password, string email, int dateOfBirth, decimal weight)
     {
         // Create sha256 hash
         using (SHA256 sha256Hash = SHA256.Create())
@@ -31,11 +31,11 @@ public class RegisterController : Controller
         }
         SqlConnection conn = new SqlConnection(_db);
         conn.Open();
-        SqlCommand cmd = new SqlCommand("INSERT INTO users (username, password, email, age, weight) VALUES (@username, @password, @email, @age, @weight)", conn);
+        SqlCommand cmd = new SqlCommand("INSERT INTO users (username, password, email, age, weight) VALUES (@username, @password, @email, @dateOfBirth, @weight)", conn);
         cmd.Parameters.AddWithValue("@username", username);
         cmd.Parameters.AddWithValue("@password", password);
         cmd.Parameters.AddWithValue("@email", email);
-        cmd.Parameters.AddWithValue("@age", age);
+        cmd.Parameters.AddWithValue("@dateOfBirth", dateOfBirth);
         cmd.Parameters.AddWithValue("@weight", weight);
         cmd.ExecuteNonQuery();
         return RedirectToAction("Index", "Home");

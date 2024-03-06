@@ -12,11 +12,14 @@
 </head>
 
 <body>
+
+<div class="iron-logo">
+    <img src="images/iron_logo_new.png" alt="logo" width="100%"/>
+</div>
+
 <div class="wrapper">
-    <form method="post" action="/Register/Index">
-        <div class="iron-logo">
-            <img src="images/Logo_png.png" alt="logo" width="100%"/>
-        </div>
+    <form method="post" action="/Register/Index" class="login-form">
+
         <div class="input-box">
             <input type="text" id="username" name="username" placeholder="Username" required/>
         </div>
@@ -27,16 +30,17 @@
             <input type="password" id="password" name="password" placeholder="password" required/>
         </div>
         <div class="input-box">
-            <input type="date" id="date-of-birth" name="date-of-birth" placeholder="Date of birth" required/>
+            <input type="date" id="dateOfBirth" name="dateOfBirth" placeholder="Date of birth"  required/>
         </div>
         <div class="input-box">
-            <input type="number" id="weight" name="weight" placeholder="Weight" required/>
+            <input type="number" id="weight" name="weight" placeholder="Weight (kg)" min="1" steps=".01" required/>
         </div>
         <div class="login-register">
-        <input class="login-button" type="submit" value="Register"/>
-            <div class="register">
-                <a asp-controller="Login" asp-action="Index">Login</a>
+            <div class="arrow-back">
+                <a asp-controller="Login" asp-action="Index">←</a>
             </div>
+            <input class="login-button" type="submit" value="Register"/>
+
         </div>
 
     </form>
