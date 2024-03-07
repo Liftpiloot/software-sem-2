@@ -32,7 +32,7 @@ public class LoginController : Controller
         // Retrieve user from db
         SqlConnection conn = new SqlConnection(_db);
         conn.Open();
-        SqlCommand cmd = new SqlCommand("SELECT * FROM users WHERE (username = @name OR LOWER(email) = LOWER(@name)) AND password = @password", conn);
+        SqlCommand cmd = new SqlCommand("SELECT * FROM users WHERE (username = @name OR LOWER(email) = LOWER(@name)) AND passwordhash = @password", conn);
         cmd.Parameters.AddWithValue("@name", name);
         cmd.Parameters.AddWithValue("@password", password);
         SqlDataReader reader = cmd.ExecuteReader();

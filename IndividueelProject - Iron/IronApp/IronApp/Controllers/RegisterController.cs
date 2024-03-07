@@ -19,6 +19,7 @@ public class RegisterController : Controller
     [HttpPost]
     public IActionResult Index(RegisterModel model)
     {
+        Console.WriteLine(model.DateOfBirth);
         if (ModelState.IsValid)
         {
             // Create sha256 hash
@@ -45,6 +46,34 @@ public class RegisterController : Controller
         }
         else
         {
+            if (string.IsNullOrEmpty(model.Password))
+            {
+                ModelState.AddModelError("Password", "Password is required.");
+            }
+            if (model.Password != model.ConfirmPassword)
+            {
+                ModelState.AddModelError("ConfirmPassword", "Password and confirmation password do not match.");
+            }
+            if (model.Password.Length < 10)
+            {
+                ModelState.AddModelError("Password", "The password must be at least 10 characters long.");
+            }
+            if (model.DateOfBirth == null)
+            {
+                ModelState.AddModelError("DateOfBirth", "Date of birth is not required.");
+            }
+            else
+            {
+                DateTime dob;
+                if (!DateTime.TryParse(model.DateOfBirth.ToString(), out dob))
+                {
+                    ModelState.AddModelError("DateOfBirth", "Invalid date format.");
+                }
+            }
+            if (model.Weight <= 0)
+            {
+                ModelState.AddModelError("Weight", "Weight is required.");
+            }
             return View(model);
         }
         
