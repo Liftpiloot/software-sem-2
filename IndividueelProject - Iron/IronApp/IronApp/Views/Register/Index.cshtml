@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IronApp.Models.RegisterModel
+@{
     Layout = null;
 }
 <!DOCTYPE html>
@@ -21,29 +22,28 @@
     <form method="post" action="/Register/Index" class="login-form">
 
         <div class="input-box">
-            <input type="text" id="username" name="username" placeholder="Username" required/>
+            <input asp-for="Username" type="text" id="username" name="username" placeholder="Username" required/>
         </div>
         <div class="input-box">
-            <input type="email" id="email" name="email" placeholder="Email" required/>
+            <input asp-for="Email" type="email" id="email" name="email" placeholder="Email" required/>
         </div>
         <div class="input-box">
-            <input type="password" id="password" name="password" placeholder="Password" required/>
+            <input asp-for="Password" type="password" id="password" name="password" placeholder="Password" required/>
         </div>
         <div class="input-box">
-            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required/>
+            <input asp-for="ConfirmPassword" type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required/>
         </div>
         <div class="input-box">
-            <input type="date" id="dateOfBirth" name="dateOfBirth" placeholder="Date of birth" required/>
+            <input asp-for="DateOfBirth" type="date" id="dateOfBirth" name="dateOfBirth" placeholder="Date of birth" required/>
         </div>
         <div class="input-box">
-            <input type="number" id="weight" name="weight" placeholder="Weight (kg)" min="1" steps=".01" required/>
+            <input asp-for="Weight" type="number" id="weight" name="weight" placeholder="Weight (kg)" min="1" steps=".01" required/>
         </div>
         <div class="login-register">
             <div class="arrow-back">
                 <a asp-controller="Login" asp-action="Index">←</a>
             </div>
             <input class="login-button" type="submit" value="Register"/>
-
         </div>
 
     </form>

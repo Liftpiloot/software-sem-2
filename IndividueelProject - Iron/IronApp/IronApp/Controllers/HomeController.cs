@@ -19,6 +19,10 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        if (Request.Cookies["userId"] == null)
+        {
+            return RedirectToAction("Index", "Login");
+        }
         if (Request.Cookies["UserId"] != null)
         {
             SqlConnection conn = new SqlConnection(db);
