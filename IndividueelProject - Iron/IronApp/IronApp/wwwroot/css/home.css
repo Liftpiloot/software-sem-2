@@ -1,0 +1,138 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html:before {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    content: "";
+    box-shadow: 0 0 6em black inset;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+body {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: rgb(0,0,0);
+    background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,1,68,1) 50%, rgba(0,79,149,1) 100%);
+    background-attachment: fixed;
+    font-family: Inter;
+}
+
+.iron-logo {
+    position: fixed;
+    top:0;
+    width: 25%;
+    max-width: 500px;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.workout-card {
+    width: 100%;
+    max-width: 500px;
+    max-height: 100px;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.workout-select {
+    width: 100%;
+    max-height: 100%;
+    max-width: 40px;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.workout-select input {
+    width: 100%;
+    max-height: 100%;
+    max-width: 40px;
+    border-radius: 40px;
+    background-color: grey;
+    border-style: none;
+    box-shadow: 0px 4px 1px 0px rgba(0, 0, 0, 0.4);
+}
+
+.workout-select input:checked {
+    background-color: white;
+}
+
+.workout-info {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    border : 1px solid white;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.workout-logo{
+    width: 20%;
+    max-width: 500px;
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.workout-info h1 {
+    text-align: left;
+    color: white;
+}
+
+
+.workout {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    /*display: flex;*/
+    justify-content: center;
+    overflow: hidden;
+}
+
+.selectors {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.selector {
+    width: 50px;
+    max-width: 500px;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    margin-right: 10px;
+}
+
+.selector-div {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.selector-div h1 {
+    text-align: left;
+    color: white;
+    font-size: 10px;
+}
+
