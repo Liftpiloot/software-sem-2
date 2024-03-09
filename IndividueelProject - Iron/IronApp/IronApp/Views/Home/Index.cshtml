@@ -1,6 +1,8 @@
 ﻿@{
     Layout = null;
 }
+
+
 <!DOCTYPE html>
 <head>
     <title>Home</title>
@@ -16,42 +18,67 @@
     <img src="~/images/iron_logo_new.png" alt="logo" width="100%"/>
 </div>
 
-<div class="workout-card">
-    <div class="workout-select">
-        <input type="checkbox"/>
-    </div>
-    <div class="workout-info">
-        <div class="workout-logo">
-            <img src="~/images/bench_wireframe.png" alt="logo"/>
+<div class="workout-header">
+
+    @for (int i=0; i<4; i++)
+    {
+        <div class="workout-card">
+        <div class="workout-select">
+            <button class="workout-select-button" id="workout-select-button @i" OnClick="select_workout(@i)" Text="select"/>
         </div>
-        <div class="workout">
-            <h1>Bench-press</h1>
-            <div class="selectors">
-                <div class="selector-div">
-                    <h1>Weight:</h1>
-                    <select name="Weight" class="selector">
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="30">30</option>
-                    </select>
-                </div>
-                <div class="selector-div">
-                    <h1>Reps:</h1>
-                    <select name="Reps" class="selector">
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="30">30</option>
-                    </select>
-                </div>
-                <div class="selector-div">
-                    <h1>Sets:</h1>
-                    <select name="Sets" class="selector">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                    </select>
+        <div class="workout-info">
+            <div class="workout-logo">
+                <img src="~/images/bench_wireframe.png" alt="logo"/>
+            </div>
+            <div class="workout">
+                <h1>Bench-press</h1>
+                <div class="selectors">
+                    <div class="selector-div">
+                        <select name="Weight" class="selector">
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                        </select>
+                                <h1>KG</h1>
+                    </div>
+                    <div class="selector-div">
+                        <select name="Reps" class="selector">
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                        </select>
+                        <h1>R</h1>
+                    </div>
+                    <div class="selector-div">
+                        <select name="Sets" class="selector">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                                <h1>S</h1>
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+    }
+    </div>
+</body>
+
+
+
+<script>
+    function select_workout(i) {
+        var div = document.getElementById("workout-select-button " + i);
+        if (div.style.backgroundColor === "green") {
+            div.style.backgroundColor = "grey";
+        }
+        else {
+            div.style.backgroundColor = "green";
+        }
+
+    }
+
+</script>
