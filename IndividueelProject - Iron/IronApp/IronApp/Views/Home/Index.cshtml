@@ -2,6 +2,7 @@
     Layout = null;
 }
 
+@model List<string>
 
 <!DOCTYPE html>
 <head>
@@ -20,7 +21,7 @@
 
 <div class="workout-header">
 
-    @for (int i=0; i<4; i++)
+    @for (int i = 0; i < Model.Count; i++)
     {
         <div class="workout-card">
         <div class="workout-select">
@@ -31,31 +32,44 @@
                 <img src="~/images/bench_wireframe.png" alt="logo"/>
             </div>
             <div class="workout">
-                <h1>Bench-press</h1>
+                <h1>@Model[i]</h1>
                 <div class="selectors">
                     <div class="selector-div">
                         <select name="Weight" class="selector">
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="30">30</option>
+                            <option value="10">10KG</option>
+                            <option value="20">20KG</option>
+                            <option value="30">30KG</option>
+                            <option value="40">40KG</option>
+                            <option value="50">50KG</option>
+                            <option value="60">60KG</option>
+                            <option value="70">70KG</option>
+                            <option value="80">80KG</option>
+                            <option value="90">90KG</option>
+                            <option value="100">100KG</option>
                         </select>
-                                <h1>KG</h1>
                     </div>
                     <div class="selector-div">
                         <select name="Reps" class="selector">
+                            <option value="5">5 Reps</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
                             <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="30">30</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+
+
                         </select>
-                        <h1>R</h1>
                     </div>
                     <div class="selector-div">
                         <select name="Sets" class="selector">
-                            <option value="1">1</option>
+                            <option value="1">1 Set</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
                         </select>
-                                <h1>S</h1>
 
                     </div>
                 </div>

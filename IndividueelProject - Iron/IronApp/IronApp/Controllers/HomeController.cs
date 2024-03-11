@@ -35,7 +35,13 @@ public class HomeController : Controller
                 ViewBag.Username = reader["username"].ToString() ?? "No username";
             }
         }
-        return View();
+        List<string> exercises = new List<string>();
+        exercises.Add("Bench Press");
+        exercises.Add("Squat");
+        exercises.Add("Deadlift");
+        exercises.Add("Pull-up");
+        exercises.Add("Dumbbell Curl");
+        return View(exercises);
     }
 
     public IActionResult Privacy()
