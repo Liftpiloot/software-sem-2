@@ -2,7 +2,7 @@
     Layout = null;
 }
 
-@model List<string>
+@model List<ExerciseModel>;
 
 <!DOCTYPE html>
 <head>
@@ -34,10 +34,10 @@
         </div>
         <div class="workout-info">
             <div class="workout-logo">
-                <img src="~/images/bench_wireframe.png" alt="logo"/>
+                <img src="@Model[i].logo" alt="logo"/>
             </div>
             <div class="workout">
-                <h1>@Model[i]</h1>
+                <h1>@Model[i].Name</h1>
                 <div class="weight-reps-sets">
                     <table class="workout-table" id="workout-table @i">
                         <tr>
@@ -45,8 +45,8 @@
                             <th>Reps</th>
                         </tr>
                     </table>
-                    <button id="add-row @i" onclick="add_row(@i)">+</button>
-                    <button id="remove-row @i" onclick="delete_row(@i)">-</button>
+                    <button class="del-button" id="remove-row @i" onclick="delete_row(@i)">-</button>
+                    <button class="add-button" id="add-row @i" onclick="add_row(@i)">+</button>
                 </div>
             </div>
         </div>
