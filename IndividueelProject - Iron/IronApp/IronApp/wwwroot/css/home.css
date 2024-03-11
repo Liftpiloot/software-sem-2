@@ -20,20 +20,24 @@ body {
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     background: rgb(0,0,0);
     background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,1,68,1) 50%, rgba(0,79,149,1) 100%);
     background-attachment: fixed;
-    font-family: Inter;
+    font-family: "Anta", sans-serif;
+    font-weight: 300;
 }
 
 .iron-logo {
+    position:sticky;
     order:0;
+    top:0;
     width: 25%;
     max-width: 500px;
     display: flex;
     justify-content: center;
     overflow: hidden;
+    z-index:-1;
 }
 
 .workout-header {
@@ -50,7 +54,8 @@ body {
     display:block;
     width: 100%;
     max-width: 500px;
-    max-height: 100px;
+    height:auto;
+    /*max-height: fit-content;*/
     display: flex;
     justify-content: center;
     overflow: hidden;
@@ -63,9 +68,8 @@ body {
     display: flex;
     justify-content: center;
     overflow: hidden;
-    border: 4px solid Grey;
+    border: 2px solid white;
     border-radius: 20px;
-    background-color: Grey;
     margin-top: 10px;
     margin-bottom: 10px;
 }
@@ -84,16 +88,22 @@ body {
     display: flex;
     justify-content: center;
     overflow: hidden;
-    border : 1px solid white;
+    border: 1.5px solid #5ab2c4;
+    box-shadow: 0 0 4px rgb(0, 255, 255);
     border-radius: 24px;
     margin: 10px;
+    background-color: #003065d1;
 }
 
 .workout-logo{
-    width: 20%;
+    width: 40%;
     max-width: 500px;
-    margin: 10px;
+    height: 120px;
+    margin: 0px;
+    margin-right: 10px;
     display: flex;
+    border: 3px solid black;
+    border-radius: 21px 0px 0px 21px;
     justify-content: center;
     overflow: hidden;
 }
@@ -102,7 +112,12 @@ body {
     text-align: left;
     color: white;
     width: 100%;
-    margin-right:10px
+    margin-right: 10px;
+    font-size: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-decoration: underline;
+
 }
 
 
@@ -115,31 +130,47 @@ body {
     overflow: hidden;
 }
 
-.selectors {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    max-width: 200px;
-    display: flex;
-    justify-content: center;
-    overflow: hidden;
+.weight-reps-sets{
+    margin-right:10px;
 }
 
-.selector {
-    width: 100px;
-    max-width: 200px;
-    display: flex;
-    justify-content: center;
-    overflow: hidden;
-    margin-right: 10px;
+.workout-table {
+    width: 50px;
+    color: white;
+    text-align: left;
+    margin-left: 0px;
+    font-family: font-family: "Anta", sans-serif;
 }
 
-.selector-div {
-    width: 100%;
-    max-width: 200px;
-    display: flex;
-    justify-content: center;
-    overflow: hidden;
+.weight-input {
+    max-width: 75px;
+    padding: 4px;
+    margin: 2px;
+    border-radius: 5px;
+    border: none;
+    text-align: left;
+    background: none;
+    border: 2px solid white;
+    color: white;
+    font-weight: 600;
+    font-family: "Anta", sans-serif;
+}
+
+.reps-input {
+    max-width: 75px;
+    padding: 4px;
+    margin: 2px;
+    border-radius: 5px;
+    border: none;
+    text-align: left;
+    background: none;
+    border: 2px solid white;
+    color: white;
+    font-family: "Anta", sans-serif;
+    font-weight: 600;
+}
+
+.workout-table table{
 }
 
 .selector-div h1 {
@@ -147,4 +178,11 @@ body {
     color: white;
     font-size: 10px;
 }
+
+.selected {
+    box-shadow: 0 0 5px rgb(0, 255, 255);
+    border: 4px solid #5ab2c4;
+    background-color: #00000065
+}
+
 

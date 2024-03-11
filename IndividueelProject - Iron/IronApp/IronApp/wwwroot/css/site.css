@@ -2,6 +2,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Anta", sans-serif;
+    font-weight: 300;
 }
 
 html:before {
@@ -23,7 +25,7 @@ body {
     background: rgb(0,0,0);
     background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,1,68,1) 50%, rgba(0,79,149,1) 100%);
     background-attachment: fixed;
-    font-family: Inter;
+
 }
 
 .iron-logo {

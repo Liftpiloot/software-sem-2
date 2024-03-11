@@ -11,6 +11,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anta&display=swap" rel="stylesheet">
+
     <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0"/>
 </head>
 
@@ -24,7 +29,7 @@
     @for (int i = 0; i < Model.Count; i++)
     {
         <div class="workout-card">
-        <div class="workout-select">
+        <div class="workout-select" id="workout-select @i">
             <button class="workout-select-button" id="workout-select-button @i" OnClick="select_workout(@i)" Text="select"/>
         </div>
         <div class="workout-info">
@@ -33,45 +38,15 @@
             </div>
             <div class="workout">
                 <h1>@Model[i]</h1>
-                <div class="selectors">
-                    <div class="selector-div">
-                        <select name="Weight" class="selector">
-                            <option value="10">10KG</option>
-                            <option value="20">20KG</option>
-                            <option value="30">30KG</option>
-                            <option value="40">40KG</option>
-                            <option value="50">50KG</option>
-                            <option value="60">60KG</option>
-                            <option value="70">70KG</option>
-                            <option value="80">80KG</option>
-                            <option value="90">90KG</option>
-                            <option value="100">100KG</option>
-                        </select>
-                    </div>
-                    <div class="selector-div">
-                        <select name="Reps" class="selector">
-                            <option value="5">5 Reps</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-
-
-                        </select>
-                    </div>
-                    <div class="selector-div">
-                        <select name="Sets" class="selector">
-                            <option value="1">1 Set</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-
-                    </div>
+                <div class="weight-reps-sets">
+                    <table class="workout-table" id="workout-table @i">
+                        <tr>
+                            <th>Weight</th>
+                            <th>Reps</th>
+                        </tr>
+                    </table>
+                    <button id="add-row @i" onclick="add_row(@i)">+</button>
+                    <button id="remove-row @i" onclick="delete_row(@i)">-</button>
                 </div>
             </div>
         </div>
@@ -85,14 +60,37 @@
 
 <script>
     function select_workout(i) {
-        var div = document.getElementById("workout-select-button " + i);
-        if (div.style.backgroundColor === "green") {
-            div.style.backgroundColor = "grey";
+        var div = document.getElementById("workout-select " + i);
+        if (div.classList.contains("selected")) {
+            div.classList.remove("selected");
         }
         else {
-            div.style.backgroundColor = "green";
+            div.classList.add("selected");
         }
+    }
 
+    // When the page loads, add a row to each table
+    window.onload = function () {
+        for (var i = 0; i < @Model.Count; i++) {
+            add_row(i);
+        }
+    }
+
+    function add_row(i){
+            var table = document.getElementById('workout-table ' + i);
+            var row = table.insertRow(-1);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            cell1.innerHTML = '<input type="number" class="weight-input" placeholder="KG">';
+            cell2.innerHTML = '<input type="number" class="reps-input" placeholder="Reps">';
+    }
+
+    function delete_row(i){
+            var table = document.getElementById('workout-table ' + i);
+            var rowCount = table.rows.length;
+            if (rowCount > 2) {
+                table.deleteRow(-1);
+            }
     }
 
 </script>
