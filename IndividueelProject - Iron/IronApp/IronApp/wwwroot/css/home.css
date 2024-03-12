@@ -39,7 +39,7 @@ body {
     overflow: hidden;
     z-index:-1;
     margin-top:10px;
-    margin-bottom:50px;
+    margin-bottom:100px;
 }
 
 .workout-header {
@@ -47,6 +47,7 @@ body {
     max-width: 500px;
     justify-content: center;
     overflow: hidden;
+    margin-top: 100px;
 }
 
 .workout-card {
@@ -98,17 +99,18 @@ body {
     background-color: #003065d1;
 }
 
-.workout-logo{
+.workout-logo {
     width: 60%;
     max-width: 500px;
-    height: 150px;
-    margin: 0px;
-    margin-right: 10px;
+    height: 170px;
+    margin: auto;
+    margin-right: 5px;
     display: flex;
-    border: 3px solid black;
-    border-radius: 21px 0px 0px 21px;
     justify-content: center;
     overflow: hidden;
+    scale: 1.1;
+    -webkit-mask-image: url('data:image/svg+xml;utf8,<svg preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" viewBox="0 0 100 100" xml:space="preserve"><style type="text/css">.blur{filter:url(%23softedge);}</style><filter id="softedge"><feGaussianBlur stdDeviation="3.5"></feGaussianBlur></filter><g class="blur"><rect x="10" y="10" width="80" height="80"/></g></svg>');
+
 }
 
 .workout-info h1 {
@@ -126,11 +128,13 @@ body {
 
 .workout {
     position: relative;
-    width: 100%;
+    width: 110%;
     max-width: 500px;
     /*display: flex;*/
     justify-content: center;
     overflow: hidden;
+    outline:3px solid black;
+    padding-left:10px;
 }
 
 .weight-reps-sets{
@@ -216,6 +220,31 @@ body {
     margin-top: 10px;
     margin-bottom: 10px;
     transition: 1s;
+}
+
+#add_workout{
+}
+#add_workout input{
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
+    background-color: transparent;
+    border: 2px solid #5ab2c4;
+    border-radius: 24px;
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding:10px;
+    padding-left:20px;
+    padding-right:20px;
+    transition: 0.4s;
+}
+
+#add_workout button:hover{
+    background-color: #5ab2c4;
+    color: black;
 }
 
 

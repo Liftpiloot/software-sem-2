@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using IronApp.Models;
 using System.Data.SqlClient;
 using Microsoft.Data.SqlClient;
+using IronApp.Classes;
 
 namespace IronApp.Controllers;
 
@@ -34,8 +35,11 @@ public class HomeController : Controller
             {
                 ViewBag.Username = reader["username"].ToString() ?? "No username";
             }
+            reader.Close();
         }
-        return View(GetExercises());
+        Exercise exercise = new Exercise();
+        int userid = Convert.ToInt32(Request.Cookies["UserId"]);
+        return View(exercise.GetRecentExercises(userid));
     }
 
     public IActionResult Privacy()
@@ -50,8 +54,18 @@ public class HomeController : Controller
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 
+    public IActionResult ExerciseList()
+    {
+        return View();
+    }
+
     public List<ExerciseModel> GetExercises()
     {
+        Exercise exercise = new Exercise();
+        int userid = Convert.ToInt32(Request.Cookies["UserId"]);
+ 
+        exercise.GetExercises(userid);
+
         List<ExerciseModel> exercises = new List<ExerciseModel>();
         // fake list of exercises
         exercises.Add(new ExerciseModel { Name = "Bench Press", Description = "Lay on a bench and press the bar", logo= "images/bench_wireframe.png" });

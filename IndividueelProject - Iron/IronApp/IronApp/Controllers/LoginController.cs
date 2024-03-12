@@ -47,6 +47,7 @@ public class LoginController : Controller
             Response.Cookies.Append("UserId", reader["id"].ToString() ?? throw new InvalidOperationException(), cookieOptions);
             TempData["Id"] = reader["id"];
             TempData["Username"] = reader["username"].ToString();
+            reader.Close();
             return RedirectToAction("Index", "Home");
         }
         else
