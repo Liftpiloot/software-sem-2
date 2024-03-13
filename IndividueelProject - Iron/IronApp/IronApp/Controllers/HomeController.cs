@@ -68,9 +68,9 @@ public class HomeController : Controller
 
         List<ExerciseModel> exercises = new List<ExerciseModel>();
         // fake list of exercises
-        exercises.Add(new ExerciseModel { Name = "Bench Press", Description = "Lay on a bench and press the bar", logo= "images/bench_wireframe.png" });
-        exercises.Add(new ExerciseModel { Name = "Bicep Curl", Description = "Hold a dumbell, with one hand and lift it up engaging your bicep", logo = "images/bicep_curl_wireframe.png" });
-        exercises.Add(new ExerciseModel { Name = "Lat Pulldown", Description = "", logo = "images/lat_pulldown_wireframe.png" });
+        exercises.Add(new ExerciseModel { Name = "Bench Press", Description = "Lay on a bench and press the bar", Logo= "images/bench_wireframe.png" });
+        exercises.Add(new ExerciseModel { Name = "Bicep Curl", Description = "Hold a dumbell, with one hand and lift it up engaging your bicep", Logo = "images/bicep_curl_wireframe.png" });
+        exercises.Add(new ExerciseModel { Name = "Lat Pulldown", Description = "", Logo = "images/lat_pulldown_wireframe.png" });
         return exercises;
     }
 }

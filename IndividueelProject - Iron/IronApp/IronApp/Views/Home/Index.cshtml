@@ -24,6 +24,7 @@
     <img src="~/images/iron_logo_new.png" alt="logo" width="100%"/>
 </div>
 
+
 <div class="workout-header">
 
     @for (int i = 0; i < Model.Count; i++)
@@ -34,7 +35,7 @@
         </div>
         <div class="workout-info">
             <div class="workout-logo">
-                <img src="@Model[i].logo" alt="logo"/>
+                <img src="@Model[i].Logo" alt="logo"/>
             </div>
             <div class="workout">
                 <h1>@Model[i].Name</h1>
@@ -63,6 +64,8 @@
 
 
 <script>
+    var model = @Html.Raw(Json.Serialize(Model));
+
     function select_workout(i) {
         var div = document.getElementById("workout-select " + i);
         if (div.classList.contains("selected")) {
@@ -75,9 +78,33 @@
 
     // When the page loads, add a row to each table
     window.onload = function () {
-        for (var i = 0; i < @Model.Count; i++) {
+        for (var i = 0; i < model.length; i++) {
+        console.log("i: " + i); // Debugging line
+        var sets = model[i].sets;
+        console.log(model[i])
+        if (sets === undefined || sets.length === 0) {
             add_row(i);
         }
+            else{
+                for (var j = 0; j < sets.length; j++) {
+                    add_filled_row(i, sets[j].weight, sets[j].reps);
+                }
+            }
+        }
+    }
+
+    function add_filled_row(i, weight, reps){
+        var id = 'workout-table ' + i;
+        console.log("id: " + id); // Debugging line
+        var table = document.getElementById('workout-table ' + i);
+        var row = table.insertRow(-1);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        
+        console.log("weight: " + weight); // Debugging line
+        console.log("reps: " + reps); // Debugging line
+        cell1.innerHTML = '<input type="number" class="weight-input" placeholder="KG" value="' + weight + '">';
+        cell2.innerHTML = '<input type="number" class="reps-input" placeholder="Reps" value="' + reps + '">';
     }
 
     function add_row(i){

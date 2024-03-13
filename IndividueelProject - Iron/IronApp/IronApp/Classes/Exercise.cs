@@ -10,7 +10,7 @@ namespace IronApp.Classes
         {
             SqlConnection conn = new SqlConnection(db);
             conn.Open();
-            SqlCommand cmd = new SqlCommand("SELECT * FROM exercises WHERE UserId = @id", conn);
+            SqlCommand cmd = new SqlCommand("SELECT * FROM Exercises WHERE UserId = @id", conn);
             cmd.Parameters.AddWithValue("@id", userId);
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -26,22 +26,26 @@ namespace IronApp.Classes
             SqlConnection conn = new SqlConnection(db);
             conn.Open();
             SqlCommand cmd = new SqlCommand(
-                $"SELECT Name, max(Date), ExerciseTypeID, ExerciseType " +
+                $"SELECT Name, max(Date), ExerciseTypeID, ExerciseType, ExerciseID " +
                 $"FROM Exercises WHERE UserId={userId} " +
-                $"GROUP BY Name, ExerciseTypeID, ExerciseType", conn);
+                $"GROUP BY Name, ExerciseTypeID, ExerciseType, ExerciseID", conn);
             SqlDataReader reader = cmd.ExecuteReader();
             List<ExerciseModel> exercises = new List<ExerciseModel>();
             while (reader.Read())
             {
                 exercises.Add(new ExerciseModel
                 {
+                    Id = (int)reader["ExerciseID"],
                     Name = reader["Name"].ToString(),
                     ExerciseTypeId = Convert.ToInt32(reader["ExerciseTypeId"]),
-                    type = (ExerciseType)Enum.Parse(typeof(ExerciseType), reader["ExerciseType"].ToString())
+                    Type = (ExerciseType)Enum.Parse(typeof(ExerciseType), reader["ExerciseType"].ToString())
                 });
             }
+            conn.Close();
             reader.Close();
-            return AddExerciseInfo(exercises);
+            exercises = AddExerciseInfo(exercises);
+            exercises = addSets(exercises);
+            return exercises;
         }
 
         public List<ExerciseModel> AddExerciseInfo(List<ExerciseModel> exercises)
@@ -51,14 +55,14 @@ namespace IronApp.Classes
             foreach (var exercise in exercises)
             {
                 int id = exercise.ExerciseTypeId;
-                if (exercise.type == ExerciseType.custom)
+                if (exercise.Type == ExerciseType.Custom)
                 {
                     SqlCommand cmd = new SqlCommand($"SELECT * from custom_exercises WHERE CustomExerciseID = {id}", conn);
                     SqlDataReader reader = cmd.ExecuteReader();
                     if (reader.Read())
                     {
                         exercise.Description = reader["Description"].ToString();
-                        exercise.logo = reader["logo"].ToString();
+                        exercise.Logo = reader["logo"].ToString();
                     }
                     reader.Close();
                 }
@@ -70,11 +74,39 @@ namespace IronApp.Classes
                     if (reader.Read())
                     {
                         exercise.Description = reader["Description"].ToString();
-                        exercise.logo = reader["logo"].ToString();
+                        exercise.Logo = reader["logo"].ToString();
                     }
                     reader.Close();
                 }
             }
+
+            conn.Close();
+            return exercises;
+        }
+
+        public List<ExerciseModel> addSets(List<ExerciseModel> exercises)
+        {
+            SqlConnection conn = new SqlConnection(db);
+            conn.Open();
+            foreach (var exercise in exercises)
+            {
+                List<Set> sets = new List<Set>();
+                int id = exercise.Id;
+                SqlCommand cmd = new SqlCommand($"SELECT * from sets WHERE ExerciseID = {id}", conn);
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    sets.Add(new Set()
+                    {
+                        Weight = (Decimal)reader["Weight"],
+                        Reps = (int)reader["Reps"]
+                    });
+                }
+                exercise.Sets = sets;
+                reader.Close();
+            }
+
+            conn.Close();
             return exercises;
         }
     }

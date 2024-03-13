@@ -223,8 +223,16 @@ body {
 }
 
 #add_workout{
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
 }
-#add_workout input{
+#add_workout a{
     width: 100%;
     max-width: 500px;
     height: 100%;
