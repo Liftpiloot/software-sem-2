@@ -223,14 +223,7 @@ body {
 }
 
 #add_workout{
-    width: 100%;
-    max-width: 500px;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 50px;
 }
 #add_workout a{
     width: 100%;
@@ -250,7 +243,7 @@ body {
     transition: 0.4s;
 }
 
-#add_workout button:hover{
+#add_workout a:hover{
     background-color: #5ab2c4;
     color: black;
 }

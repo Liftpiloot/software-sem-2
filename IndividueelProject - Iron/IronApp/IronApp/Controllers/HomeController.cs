@@ -55,8 +55,10 @@ public class HomeController : Controller
     }
 
     public IActionResult ExerciseList()
-    {
-        return View();
+    {   
+        ExerciseDefinitions exerciseDefinitions = new ExerciseDefinitions();
+        List<ExerciseModel> exercises = exerciseDefinitions.GetExercises();
+        return View(exercises);
     }
 
     public List<ExerciseModel> GetExercises()

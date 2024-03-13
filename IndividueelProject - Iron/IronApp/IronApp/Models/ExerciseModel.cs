@@ -12,6 +12,7 @@ namespace IronApp.Models
         public ExerciseType Type { get; set; }
         public int ExerciseTypeId { get; set; }
         public List<Set> Sets { get; set; }
+        public string Desciption { get; set; }
     }
 
     public enum ExerciseType
