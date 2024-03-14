@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using IronApp.Classes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
@@ -17,6 +18,8 @@ public class LoginController : Controller
     [HttpPost]
     public IActionResult Index(string name, string password)
     {
+        User user = new User();
+        user.UserName = name;
         // Hash password
         using (SHA256 sha256Hash = SHA256.Create())
         {
@@ -28,26 +31,19 @@ public class LoginController : Controller
             }
             password = builder.ToString();
         }
-        
-        // Retrieve user from db
-        SqlConnection conn = new SqlConnection(_db);
-        conn.Open();
-        SqlCommand cmd = new SqlCommand("SELECT * FROM users WHERE (username = @name OR LOWER(email) = LOWER(@name)) AND passwordhash = @password", conn);
-        cmd.Parameters.AddWithValue("@name", name);
-        cmd.Parameters.AddWithValue("@password", password);
-        SqlDataReader reader = cmd.ExecuteReader();
-        if (reader.Read())
-        {
-            // Create cookie with user id
+        user.PasswordHash = password;
+        user = user.Login();
+        if (user != null){
             var cookieOptions = new CookieOptions
             {
                 Expires = DateTime.Now.AddDays(365), // Cookie expires after a year
                 IsEssential = true
             };
-            Response.Cookies.Append("UserId", reader["id"].ToString() ?? throw new InvalidOperationException(), cookieOptions);
-            TempData["Id"] = reader["id"];
-            TempData["Username"] = reader["username"].ToString();
-            reader.Close();
+            Response.Cookies.Append("UserId", user.Id.ToString(), cookieOptions);
+            Response.Cookies.Append("Username", user.UserName, cookieOptions);
+            Response.Cookies.Append("PasswordHash", user.PasswordHash, cookieOptions);
+            Response.Cookies.Append("DateOfBirth", user.DateOfBirth, cookieOptions);
+            Response.Cookies.Append("Weight", user.Weight.ToString(), cookieOptions);
             return RedirectToAction("Index", "Home");
         }
         else

@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using IronApp.Classes;
 using IronApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -23,54 +24,27 @@ public class RegisterController : Controller
         Console.WriteLine(model.DateOfBirth);
         if (ModelState.IsValid)
         {
-            // check if username or email already exists
-            SqlConnection conn = new SqlConnection(_db);
-            conn.Open();
-            SqlCommand cmd =
-                new SqlCommand("SELECT * FROM users WHERE username = @username OR LOWER(email) = LOWER(@email)", conn);
-            cmd.Parameters.AddWithValue("@username", model.Username);
-            cmd.Parameters.AddWithValue("@email", model.Email);
-            SqlDataReader reader = cmd.ExecuteReader();
-            if (reader.Read())
+            
+            
+            User user = new User(model.Username, model.Email, model.Password, model.DateOfBirth, model.Weight);
+            string response = user.AddUser();
+            if (response != "Success")
             {
-                ModelState.AddModelError("Username", "Username or email already exists.");
+                ModelState.AddModelError("Username", response);
                 return View(model);
             }
-
-            // Create sha256 hash
-            using (SHA256 sha256Hash = SHA256.Create())
-            {
-                Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(model.Password));
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    builder.Append(bytes[i].ToString("x2"));
-                }
-
-                model.Password = builder.ToString();
-            }
-
-            conn = new SqlConnection(_db);
-            conn.Open();
-            cmd = new SqlCommand(
-                "INSERT INTO users (username, passwordhash, email, dateofbirth, weight) OUTPUT INSERTED.id VALUES (@username, @password, @email, @dateOfBirth, @weight)",
-                conn);
-            cmd.Parameters.AddWithValue("@username", model.Username);
-            cmd.Parameters.AddWithValue("@password", model.Password);
-            cmd.Parameters.AddWithValue("@email", model.Email);
-            cmd.Parameters.AddWithValue("@dateOfBirth", model.DateOfBirth);
-            cmd.Parameters.AddWithValue("@weight", model.Weight);
-            int id = (int) cmd.ExecuteScalar();
-            conn.Close();
-            // Create cookie with user id
+            
+            // save user in cookies
             var cookieOptions = new CookieOptions
             {
                 Expires = DateTime.Now.AddDays(365), // Cookie expires after a year
                 IsEssential = true
             };
-            Response.Cookies.Append("UserId", id.ToString() ?? throw new InvalidOperationException(), cookieOptions);
-            TempData["Id"] = id;
-            TempData["Username"] = model.Username;
+            Response.Cookies.Append("UserId", user.Id.ToString(), cookieOptions);
+            Response.Cookies.Append("Username", user.UserName, cookieOptions);
+            Response.Cookies.Append("PasswordHash", user.PasswordHash, cookieOptions);
+            Response.Cookies.Append("DateOfBirth", user.DateOfBirth, cookieOptions);
+            Response.Cookies.Append("Weight", user.Weight.ToString(), cookieOptions);
             
             return RedirectToAction("Index", "Home");
         }

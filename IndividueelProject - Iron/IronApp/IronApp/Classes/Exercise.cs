@@ -5,7 +5,13 @@ namespace IronApp.Classes
 {
     public class Exercise
     {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int ExerciseTypeId { get; set; }
+        public ExerciseType Type { get; set; }
+
         private string db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
+
         public void GetExercises(int userId)
         {
             SqlConnection conn = new SqlConnection(db);
@@ -17,99 +23,81 @@ namespace IronApp.Classes
             {
                 Console.WriteLine(reader["name"].ToString());
             }
-
         }
 
-        public List<ExerciseModel> GetRecentExercises(int userId)
+        public void AddExercise()
         {
-            // get all exercises with unique names, and only show the most recent ones
+            // TODO add exercise
+        }
+
+
+        public dynamic GetExerciseInfo()
+        {
             SqlConnection conn = new SqlConnection(db);
             conn.Open();
-            SqlCommand cmd = new SqlCommand(
-                $"SELECT Name, max(Date), ExerciseTypeID, ExerciseType, ExerciseID " +
-                $"FROM Exercises WHERE UserId={userId} " +
-                $"GROUP BY Name, ExerciseTypeID, ExerciseType, ExerciseID", conn);
+
+            if (Type == ExerciseType.Custom)
+            {
+                SqlCommand cmd = new SqlCommand($"SELECT * from custom_exercises WHERE CustomExerciseID = @exerciseId",
+                    conn);
+                cmd.Parameters.AddWithValue("@exerciseId", ExerciseTypeId);
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    CustomExercise exercise = new CustomExercise();
+                    exercise.Id = (int)reader["CustomExerciseID"];
+                    exercise.Name = reader["Name"].ToString();
+                    exercise.Description = reader["Description"].ToString();
+                    reader.Close();
+                    return exercise;
+                }
+            }
+
+            else
+            {
+                SqlCommand cmd =
+                    new SqlCommand($"SELECT * from predefined_exercises WHERE PredefinedExerciseID = @exerciseId",
+                        conn);
+                cmd.Parameters.AddWithValue("@exerciseId", ExerciseTypeId);
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    PreDefinedExercise exercise = new PreDefinedExercise();
+                    exercise.Id = (int)reader["PredefinedExerciseID"];
+                    exercise.Name = reader["Name"].ToString();
+                    exercise.Description = reader["Description"].ToString();
+                    exercise.Logo = reader["logo"].ToString();
+                    reader.Close();
+                    return exercise;
+                }
+            }
+
+            conn.Close();
+            CustomExercise customExercise = new CustomExercise();
+            customExercise.Name = "No exercise found";
+            return customExercise;
+        }
+
+        public List<Set> GetSets()
+        {
+            SqlConnection conn = new SqlConnection(db);
+            conn.Open();
+            List<Set> sets = new List<Set>();
+            SqlCommand cmd = new SqlCommand($"SELECT * from sets WHERE ExerciseID = @id", conn);
+            cmd.Parameters.AddWithValue("@id", Id);
             SqlDataReader reader = cmd.ExecuteReader();
-            List<ExerciseModel> exercises = new List<ExerciseModel>();
             while (reader.Read())
             {
-                exercises.Add(new ExerciseModel
+                sets.Add(new Set()
                 {
-                    Id = (int)reader["ExerciseID"],
-                    Name = reader["Name"].ToString(),
-                    ExerciseTypeId = Convert.ToInt32(reader["ExerciseTypeId"]),
-                    Type = (ExerciseType)Enum.Parse(typeof(ExerciseType), reader["ExerciseType"].ToString())
+                    Weight = (Decimal)reader["Weight"],
+                    Reps = (int)reader["Reps"]
                 });
             }
-            conn.Close();
+            
             reader.Close();
-            exercises = AddExerciseInfo(exercises);
-            exercises = addSets(exercises);
-            return exercises;
-        }
-
-        public List<ExerciseModel> AddExerciseInfo(List<ExerciseModel> exercises)
-        {
-            SqlConnection conn = new SqlConnection(db);
-            conn.Open();
-            foreach (var exercise in exercises)
-            {
-                int id = exercise.ExerciseTypeId;
-                if (exercise.Type == ExerciseType.Custom)
-                {
-                    SqlCommand cmd = new SqlCommand($"SELECT * from custom_exercises WHERE CustomExerciseID = {id}", conn);
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    if (reader.Read())
-                    {
-                        exercise.Description = reader["Description"].ToString();
-                        exercise.Logo = reader["logo"].ToString();
-                    }
-                    reader.Close();
-                }
-                else
-                {
-                    SqlCommand cmd = new SqlCommand($"SELECT * from predefined_exercises WHERE PredefinedExerciseID = {id}", conn);
-
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    if (reader.Read())
-                    {
-                        exercise.Description = reader["Description"].ToString();
-                        exercise.Logo = reader["logo"].ToString();
-                    }
-                    reader.Close();
-                }
-            }
-
             conn.Close();
-            return exercises;
-        }
-
-        public List<ExerciseModel> addSets(List<ExerciseModel> exercises)
-        {
-            SqlConnection conn = new SqlConnection(db);
-            conn.Open();
-            foreach (var exercise in exercises)
-            {
-                List<Set> sets = new List<Set>();
-                int id = exercise.Id;
-                SqlCommand cmd = new SqlCommand($"SELECT * from sets WHERE ExerciseID = {id}", conn);
-                SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    sets.Add(new Set()
-                    {
-                        Weight = (Decimal)reader["Weight"],
-                        Reps = (int)reader["Reps"]
-                    });
-                }
-                exercise.Sets = sets;
-                reader.Close();
-            }
-
-            conn.Close();
-            return exercises;
+            return sets;
         }
     }
-
-
 }
