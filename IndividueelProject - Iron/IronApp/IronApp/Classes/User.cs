@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using IronApp.Models;
 using Microsoft.Data.SqlClient;
@@ -8,7 +7,7 @@ namespace IronApp.Classes;
 
 public class User
 {
-    private string db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
+    private string _db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
 
     public int Id { get; set; }
     public string UserName { get; set; }
@@ -43,7 +42,7 @@ public class User
     public string AddUser()
     {
         // check if username or email already exists
-        SqlConnection conn = new SqlConnection(db);
+        SqlConnection conn = new SqlConnection(_db);
         conn.Open();
         SqlCommand cmd =
             new SqlCommand("SELECT * FROM users WHERE username = @username OR LOWER(email) = LOWER(@email)", conn);
@@ -68,11 +67,9 @@ public class User
             PasswordHash = builder.ToString();
         }
 
-        conn = new SqlConnection(db);
+        conn = new SqlConnection(_db);
         conn.Open();
-        cmd = new SqlCommand(
-            "INSERT INTO users (username, passwordhash, email, dateofbirth, weight) OUTPUT INSERTED.id VALUES (@username, @password, @email, @dateOfBirth, @weight)",
-            conn);
+        cmd = new SqlCommand("INSERT INTO users (username, passwordhash, email, dateofbirth, weight) OUTPUT INSERTED.id VALUES (@username, @password, @email, @dateOfBirth, @weight)", conn);
         cmd.Parameters.AddWithValue("@username", UserName);
         cmd.Parameters.AddWithValue("@password", PasswordHash);
         cmd.Parameters.AddWithValue("@email", Email);
@@ -87,7 +84,7 @@ public class User
     public List<Exercise> GetRecentExercises()
     {
         // get all exercises with unique names, and only show the most recent ones
-        SqlConnection conn = new SqlConnection(db);
+        SqlConnection conn = new SqlConnection(_db);
         conn.Open();
         SqlCommand cmd = new SqlCommand("SELECT Name, max(Date), ExerciseTypeID, ExerciseType, ExerciseID FROM Exercises WHERE UserId=@userid GROUP BY Name, ExerciseTypeID, ExerciseType, ExerciseID", conn);
         cmd.Parameters.AddWithValue("@userid", Id);
@@ -117,7 +114,7 @@ public class User
 
     public List<CustomExercise> GetCustomExercises()
     {
-        SqlConnection conn = new SqlConnection(db);
+        SqlConnection conn = new SqlConnection(_db);
         conn.Open();
 
         SqlCommand cmd = new SqlCommand("SELECT * FROM custom_exercises WHERE UserId = @userId", conn);
@@ -141,7 +138,7 @@ public class User
 
     public List<PreDefinedExercise> GetPreDefinedExercises()
     {
-        SqlConnection conn = new SqlConnection(db);
+        SqlConnection conn = new SqlConnection(_db);
         conn.Open();
         SqlCommand cmd = new SqlCommand("SELECT * FROM predefined_exercises", conn);
         SqlDataReader reader = cmd.ExecuteReader();
@@ -165,7 +162,7 @@ public class User
     public User Login()
     {
         // Retrieve user from db
-        SqlConnection conn = new SqlConnection(db);
+        SqlConnection conn = new SqlConnection(_db);
         conn.Open();
         SqlCommand cmd =
             new SqlCommand(

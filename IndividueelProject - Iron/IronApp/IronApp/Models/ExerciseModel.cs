@@ -5,14 +5,13 @@ namespace IronApp.Models
     public class ExerciseModel
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Logo { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public string? Logo { get; set; }
         public bool Selected { get; set; }
         public ExerciseType Type { get; set; }
         public int ExerciseTypeId { get; set; }
-        public List<Set> Sets { get; set; }
-        public string Desciption { get; set; }
+        public List<Set>? Sets { get; set; }
     }
 
     public enum ExerciseType
