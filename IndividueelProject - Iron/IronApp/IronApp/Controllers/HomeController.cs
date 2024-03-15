@@ -41,15 +41,30 @@ public class HomeController : Controller
             var info = exercise.GetExerciseInfo();
             List<Set> sets = exercise.GetSets();
             if (info is CustomExercise)
-            { // TODO FINISH THIS
+            {
                 CustomExercise customExercise = (CustomExercise)info;
-                exercisemodels.Add(new ExerciseModel { Name = customExercise.Name, Description = customExercise.Description });
+                exercisemodels.Add(new ExerciseModel
+                {
+                    Name = customExercise.Name, 
+                    Description = customExercise.Description,
+                    Sets = sets, 
+                    Type = ExerciseType.Custom,
+                    ExerciseTypeId = customExercise.Id
+                });
                 
             }
             else
             {
                 PreDefinedExercise preDefinedExercise = (PreDefinedExercise)info;
-                exercisemodels.Add(new ExerciseModel { Name = preDefinedExercise.Name, Description = preDefinedExercise.Description, Logo = preDefinedExercise.Logo });
+                exercisemodels.Add(new ExerciseModel
+                {
+                    Name = preDefinedExercise.Name, 
+                    Description = preDefinedExercise.Description, 
+                    Logo = preDefinedExercise.Logo,
+                    Sets = sets,
+                    Type = ExerciseType.Predefined,
+                    ExerciseTypeId = preDefinedExercise.Id
+                });
             }
         }
         return View(exercisemodels);
