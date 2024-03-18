@@ -56,4 +56,15 @@ public class SelectedExercise
         }
         return null;
     }
+
+    internal void DeleteSelectedExercise()
+    {
+        SqlConnection conn = new SqlConnection(_db);
+        conn.Open();
+        SqlCommand cmd = new SqlCommand("DELETE FROM selected_exercises WHERE UserID = @userid AND ExerciseID = @exerciseid", conn);
+        cmd.Parameters.AddWithValue("@userid", UserId);
+        cmd.Parameters.AddWithValue("@exerciseid", ExerciseId);
+        cmd.ExecuteNonQuery();
+        conn.Close();
+    }
 }

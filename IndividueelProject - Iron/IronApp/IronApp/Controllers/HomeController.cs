@@ -42,6 +42,7 @@ public class HomeController : Controller
             Exercise exercise = selectedExercise.GetExercise();
             ExerciseModel exerciseModel = new ExerciseModel
             {
+                Id = exercise.Id,
                 Name = exercise.Name,
                 Description = exercise.Description,
                 Logo = exercise.Logo
@@ -117,6 +118,36 @@ public class HomeController : Controller
             ExerciseId = id
         };
         selectedExercise.AddSelectedExercise();
+        return RedirectToAction("Index", "Home");
+    }
+
+    public IActionResult Exercise(int ID)
+    {
+        Exercise exercise = new Exercise
+        {
+            Id = ID
+        };
+        Console.WriteLine(exercise.Id);
+        exercise = exercise.GetExercise();
+        Console.WriteLine(exercise.Id);
+        ExerciseModel exerciseModel = new ExerciseModel
+        {
+            Id = exercise.Id,
+            Name = exercise.Name,
+            Description = exercise.Description,
+            Logo = exercise.Logo
+        };
+        return View(exerciseModel);
+    }
+
+    public IActionResult DeleteExercise(int id)
+    {
+        SelectedExercise selectedExercise = new SelectedExercise
+        {
+            UserId = Convert.ToInt32(Request.Cookies["UserId"]),
+            ExerciseId = id
+        };
+        selectedExercise.DeleteSelectedExercise();
         return RedirectToAction("Index", "Home");
     }
 }

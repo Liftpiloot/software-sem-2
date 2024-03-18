@@ -44,5 +44,28 @@ public class Exercise
         }
         return null;
     }
+
+    public Exercise GetExercise()
+    {
+        // get the exercise with the given id
+        SqlConnection conn = new SqlConnection(_db);
+        conn.Open();
+        SqlCommand cmd = new SqlCommand("SELECT * FROM exercises WHERE ExerciseID = @id", conn);
+        cmd.Parameters.AddWithValue("@id", Id);
+        SqlDataReader reader = cmd.ExecuteReader();
+        if (reader.Read())
+        {
+            Exercise exercise = new Exercise
+            {
+                Id = (int)reader["ExerciseID"],
+                UserId = reader["UserID"] == DBNull.Value ? null : (int)reader["UserID"],
+                Name = reader["ExerciseName"].ToString(),
+                Description = reader["ExerciseDescription"].ToString(),
+                Logo = reader["LogoFilePath"].ToString()
+            };
+            return exercise;
+        }
+        return null;
+    }
     
 }
