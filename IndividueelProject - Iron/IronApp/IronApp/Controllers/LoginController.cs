@@ -16,9 +16,9 @@ public class LoginController : Controller
     }
     // POST
     [HttpPost]
-    public IActionResult Index(string name, string password)
+    public IActionResult Index(string? name, string? password)
     {
-        User user = new User();
+        User? user = new User();
         user.UserName = name;
         // Hash password
         using (SHA256 sha256Hash = SHA256.Create())

@@ -26,13 +26,16 @@ public class RegisterController : Controller
         {
             
             
-            User user = new User(model.Username, model.Email, model.Password, model.DateOfBirth, model.Weight);
+            User? user = new User(model.Username, model.Email, model.Password, model.DateOfBirth, model.Weight);
             string response = user.AddUser();
             if (response != "Success")
             {
                 ModelState.AddModelError("Username", response);
                 return View(model);
             }
+            
+            // Login user
+            user = user.Login();
             
             // save user in cookies
             var cookieOptions = new CookieOptions

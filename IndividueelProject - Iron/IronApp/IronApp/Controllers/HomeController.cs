@@ -11,8 +11,8 @@ namespace IronApp.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private string db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
-    private User user = new User();
+    private string _db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
+    private User _user = new User();
 
     public HomeController(ILogger<HomeController> logger)
     {
@@ -25,56 +25,55 @@ public class HomeController : Controller
         {
             return RedirectToAction("Index", "Login");
         }
-        if (Request.Cookies["UserId"] != null)
+
+        int userId = Convert.ToInt32(Request.Cookies["UserId"]);
+        _user.Id = userId;
+        Console.WriteLine(_user.Id);
+        _user.UserName = Request.Cookies["Username"];
+        _user.PasswordHash = Request.Cookies["PasswordHash"];
+        _user.DateOfBirth = Request.Cookies["DateOfBirth"];
+        _user.Weight = Convert.ToDecimal(Request.Cookies["Weight"]);
+
+        // get selected exercises, and add sets if there is an execution. Create a List of ExerciseModel to pass to the view
+        List<SelectedExercise> selectedExercises = _user.GetSelectedExercises();
+        List<ExerciseModel> exerciseModels = new List<ExerciseModel>();
+        foreach (SelectedExercise selectedExercise in selectedExercises)
         {
-            user.Id = Convert.ToInt32(Request.Cookies["UserId"]);
-            user.UserName = Request.Cookies["Username"];
-            user.PasswordHash = Request.Cookies["PasswordHash"];
-            user.DateOfBirth = Request.Cookies["DateOfBirth"];
-            user.Weight = Convert.ToDecimal(Request.Cookies["Weight"]);
+            Exercise exercise = selectedExercise.GetExercise();
+            ExerciseModel exerciseModel = new ExerciseModel
+            {
+                Name = exercise.Name,
+                Description = exercise.Description,
+                Logo = exercise.Logo
+            };
+
+            ExerciseExecution recentExecution = exercise.GetRecentExecution(userId);
+            if (recentExecution != null)
+            {
+                int? executionId = recentExecution.Id;
+                List<Set> sets = recentExecution.GetSets();
+                foreach (Set set in sets)
+                {
+                    if (exerciseModel.Sets == null)
+                    {
+                        exerciseModel.Sets = new List<Set>();
+                    }
+
+                    exerciseModel.Sets.Add(set);
+                }
+            }
+
+            exerciseModels.Add(exerciseModel);
         }
 
-        List<Exercise> exercises = user.GetRecentExercises();
-        List<ExerciseModel> exercisemodels = new List<ExerciseModel>();
-        foreach (Exercise exercise in exercises)
-        {
-            var info = exercise.GetExerciseInfo();
-            List<Set> sets = exercise.GetSets();
-            if (info is CustomExercise)
-            {
-                CustomExercise customExercise = (CustomExercise)info;
-                exercisemodels.Add(new ExerciseModel
-                {
-                    Name = customExercise.Name, 
-                    Description = customExercise.Description,
-                    Sets = sets, 
-                    Type = ExerciseType.Custom,
-                    ExerciseTypeId = customExercise.Id
-                });
-                
-            }
-            else
-            {
-                PreDefinedExercise preDefinedExercise = (PreDefinedExercise)info;
-                exercisemodels.Add(new ExerciseModel
-                {
-                    Name = preDefinedExercise.Name, 
-                    Description = preDefinedExercise.Description, 
-                    Logo = preDefinedExercise.Logo,
-                    Sets = sets,
-                    Type = ExerciseType.Predefined,
-                    ExerciseTypeId = preDefinedExercise.Id
-                });
-            }
-        }
-        return View(exercisemodels);
+        return View(exerciseModels);
     }
 
     public IActionResult Privacy()
     {
         return View();
     }
-    
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
@@ -84,33 +83,40 @@ public class HomeController : Controller
 
     public IActionResult ExerciseList()
     {
-        List<ExerciseModel> exercises = new List<ExerciseModel>();
-        List<PreDefinedExercise> preDefinedExercises = user.GetPreDefinedExercises();
-        List<CustomExercise> customExercises = user.GetCustomExercises();
-        foreach (PreDefinedExercise exercise in preDefinedExercises)
+        int userId = Convert.ToInt32(Request.Cookies["UserId"]);
+        _user.Id = userId;
+        List<ExerciseModel> exerciseModels = new List<ExerciseModel>();
+        List<Exercise> exercises = _user.GetExercises();
+        List<SelectedExercise> selectedEx = _user.GetSelectedExercises();
+        foreach (Exercise exercise in exercises)
         {
-            exercises.Add(new ExerciseModel { Name = exercise.Name, Description = exercise.Description, Logo = exercise.Logo });
+            bool selected = selectedEx.Any(x => x.ExerciseId == exercise.Id);
+            if (selected)
+            {
+                continue;
+            }
+
+            exerciseModels.Add(new ExerciseModel
+            {
+                Id = exercise.Id,
+                Name = exercise.Name,
+                Description = exercise.Description,
+                Logo = exercise.Logo
+            });
         }
-        foreach (CustomExercise exercise in customExercises)
-        {
-            exercises.Add(new ExerciseModel { Name = exercise.Name, Description = exercise.Description});
-        }
-        
-        return View(exercises);
+
+        return View(exerciseModels);
     }
 
-    public List<ExerciseModel> GetExercises()
+    [HttpPost]
+    public IActionResult AddSelectedExercise(int id)
     {
-        Exercise exercise = new Exercise();
-        int userid = Convert.ToInt32(Request.Cookies["UserId"]);
- 
-        exercise.GetExercises(userid);
-
-        List<ExerciseModel> exercises = new List<ExerciseModel>();
-        // fake list of exercises
-        exercises.Add(new ExerciseModel { Name = "Bench Press", Description = "Lay on a bench and press the bar", Logo= "images/bench_wireframe.png" });
-        exercises.Add(new ExerciseModel { Name = "Bicep Curl", Description = "Hold a dumbell, with one hand and lift it up engaging your bicep", Logo = "images/bicep_curl_wireframe.png" });
-        exercises.Add(new ExerciseModel { Name = "Lat Pulldown", Description = "", Logo = "images/lat_pulldown_wireframe.png" });
-        return exercises;
+        SelectedExercise selectedExercise = new SelectedExercise
+        {
+            UserId = Request.Cookies["UserId"] != null ? Convert.ToInt32(Request.Cookies["UserId"]) : 0,
+            ExerciseId = id
+        };
+        selectedExercise.AddSelectedExercise();
+        return RedirectToAction("Index", "Home");
     }
 }
