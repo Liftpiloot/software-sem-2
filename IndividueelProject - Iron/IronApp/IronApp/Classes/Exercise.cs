@@ -41,8 +41,10 @@ public class Exercise
                 Id = (int)reader["ExerciseExecutionID"],
                 ExerciseId = (int)reader["ExerciseID"]
             };
+            conn.Close();
             return exerciseExecution;
         }
+        conn.Close();
         return null;
     }
 
@@ -64,8 +66,10 @@ public class Exercise
                 Description = reader["ExerciseDescription"].ToString(),
                 Logo = reader["LogoFilePath"].ToString()
             };
+            conn.Close();
             return exercise;
         }
+        conn.Close();
         return null;
     }
     
