@@ -12,17 +12,18 @@ public class Exercise
     
     private readonly string _db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
     
-    public void AddExercise()
+    public int AddExercise()
     {
         SqlConnection conn = new SqlConnection(_db);
         conn.Open();
-        SqlCommand cmd = new SqlCommand("INSERT INTO exercises (UserID, ExerciseName, ExerciseDescription, LogoFilePath) VALUES (@userid, @name, @description, @logo)", conn);
+        SqlCommand cmd = new SqlCommand("INSERT INTO exercises (UserID, ExerciseName, ExerciseDescription, LogoFilePath) VALUES (@userid, @name, @description, @logo); SELECT SCOPE_IDENTITY();", conn);
         cmd.Parameters.AddWithValue("@userid", UserId);
         cmd.Parameters.AddWithValue("@name", Name);
         cmd.Parameters.AddWithValue("@description", Description);
         cmd.Parameters.AddWithValue("@logo", Logo);
-        cmd.ExecuteNonQuery();
+        int id = Convert.ToInt32(cmd.ExecuteScalar());
         conn.Close();
+        return id;
     }
 
     public ExerciseExecution? GetRecentExecution(int userId)

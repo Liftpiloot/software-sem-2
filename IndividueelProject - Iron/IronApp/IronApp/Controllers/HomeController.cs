@@ -150,4 +150,25 @@ public class HomeController : Controller
         selectedExercise.DeleteSelectedExercise();
         return RedirectToAction("Index", "Home");
     }
+
+    [HttpPost]
+    public IActionResult AddCustomExercise(string name)
+    {
+        Exercise exercise = new Exercise
+        {
+            UserId = Convert.ToInt32(Request.Cookies["UserId"]),
+            Name = name,
+            Description = name,
+            Logo = "/images/default.png"
+            
+        };
+        int id = exercise.AddExercise();
+        SelectedExercise selectedExercise = new SelectedExercise
+        {
+            UserId = Convert.ToInt32(Request.Cookies["UserId"]),
+            ExerciseId = id
+        };
+        selectedExercise.AddSelectedExercise();
+        return RedirectToAction("Index", "Home");
+    }
 }

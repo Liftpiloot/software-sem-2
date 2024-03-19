@@ -44,6 +44,21 @@
     </div>
 }
 
+    <div class="workout-card">
+        <div class="workout-info">
+            <div class="workout-logo">
+                <img src="/images/iron_logo_new.png" alt="logo"/>
+            </div>
+            <div class="workout">
+                <h1>Custom Exercise</h1>
+                <input type="text" id="custom_exercise_input" placeholder="Exercise name">
+                <div class="weight-reps-sets">
+                    <button class="add-button" id="add_button_custom" onclick="add_custom()">Add</button>"
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 <script>
@@ -58,4 +73,18 @@ function add_selected(id){
         }
     })
     }
+    
+function add_custom(){
+    const name = document.getElementById("custom_exercise_input").value.toString();
+    $.ajax({
+        url: '@Url.Action("AddCustomExercise", "Home")',
+        type: 'POST',
+        data: { name: name},
+        success: function() {
+            window.location.href = '@Url.Action("Index", "Home")';
+        }
+    })
+    }
+    
+    
 </script>
