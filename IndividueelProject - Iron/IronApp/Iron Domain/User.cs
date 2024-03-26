@@ -1,8 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using Microsoft.Data.SqlClient;
-
-namespace IronDomain;
+﻿namespace Iron_Domain;
 
 public class User
 {

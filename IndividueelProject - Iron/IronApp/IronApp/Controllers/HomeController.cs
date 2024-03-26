@@ -3,7 +3,6 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using IronApp.Models;
 using System.Data.SqlClient;
-using IronDomain;
 using Microsoft.Data.SqlClient;
 
 namespace IronApp.Controllers;

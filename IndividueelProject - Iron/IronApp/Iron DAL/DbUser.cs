@@ -1,8 +1,9 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using Iron_Domain;
 using Microsoft.Data.SqlClient;
 
-namespace IronDomain.Database;
+namespace Iron_DAL;
 
 public class DbUser
 {
@@ -31,7 +32,7 @@ public class DbUser
         // Create sha256 hash
         using (SHA256 sha256Hash = SHA256.Create())
         {
-            Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(user.PasswordHash));
+            Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes((string)user.PasswordHash));
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < bytes.Length; i++)
             {

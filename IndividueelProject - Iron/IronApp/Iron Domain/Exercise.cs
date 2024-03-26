@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 
-namespace IronDomain;
+namespace Iron_Domain;
 
 public class Exercise
 {

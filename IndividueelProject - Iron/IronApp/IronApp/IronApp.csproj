@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\IronDomain\IronDomain.csproj" />
+      <ProjectReference Include="..\Iron BLL\Iron BLL.csproj" />
     </ItemGroup>
 
 </Project>

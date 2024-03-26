@@ -1,7 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using IronApp.Models;
-using IronDomain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 

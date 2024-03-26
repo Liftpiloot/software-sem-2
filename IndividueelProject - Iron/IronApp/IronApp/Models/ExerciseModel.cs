@@ -1,6 +1,4 @@
-﻿using IronDomain;
-
-namespace IronApp.Models
+﻿namespace IronApp.Models
 {
     public class ExerciseModel
     {
