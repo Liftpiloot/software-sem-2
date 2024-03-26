@@ -1,7 +1,6 @@
-﻿using IronApp.Models;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 
-namespace IronApp.Classes;
+namespace IronDomain;
 
 public class SelectedExercise
 {
@@ -57,7 +56,7 @@ public class SelectedExercise
         return null;
     }
 
-    internal void DeleteSelectedExercise()
+    public void DeleteSelectedExercise()
     {
         SqlConnection conn = new SqlConnection(_db);
         conn.Open();

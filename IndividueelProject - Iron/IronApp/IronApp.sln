@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronApp", "IronApp\IronApp.csproj", "{F237FFBF-D977-48F6-BA6B-59F3F193928F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronDomain", "IronDomain\IronDomain.csproj", "{3B1244FA-53F2-499E-8A7C-4CF35D3F3BFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{F237FFBF-D977-48F6-BA6B-59F3F193928F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F237FFBF-D977-48F6-BA6B-59F3F193928F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F237FFBF-D977-48F6-BA6B-59F3F193928F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B1244FA-53F2-499E-8A7C-4CF35D3F3BFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B1244FA-53F2-499E-8A7C-4CF35D3F3BFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B1244FA-53F2-499E-8A7C-4CF35D3F3BFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B1244FA-53F2-499E-8A7C-4CF35D3F3BFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

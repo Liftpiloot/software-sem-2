@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 
-namespace IronApp.Classes;
+namespace IronDomain;
 
 public class Set
 {

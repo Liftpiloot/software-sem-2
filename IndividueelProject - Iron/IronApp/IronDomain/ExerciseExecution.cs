@@ -1,7 +1,6 @@
-﻿using IronApp.Models;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 
-namespace IronApp.Classes
+namespace IronDomain
 {
     public class ExerciseExecution
     {
@@ -23,7 +22,7 @@ namespace IronApp.Classes
             SqlCommand cmd = new SqlCommand("INSERT INTO exercise_executions (ExerciseExecutionDate ,UserID, ExerciseID) VALUES (GETDATE(), @userid, @exerciseid); SELECT SCOPE_IDENTITY();", conn);
             cmd.Parameters.AddWithValue("@userid", UserId);
             cmd.Parameters.AddWithValue("@exerciseid", ExerciseId);
-            int id = Convert.ToInt32(cmd.ExecuteScalar());
+            int id = Convert.ToInt32((object?)cmd.ExecuteScalar());
             conn.Close();
             return id;
         }

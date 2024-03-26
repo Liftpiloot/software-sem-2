@@ -15,11 +15,16 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Classes\" />
       <Folder Include="Pages\" />
     </ItemGroup>
 
     <ItemGroup>
       <None Include="wwwroot\images\IronTrack_bg_rem.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\IronDomain\IronDomain.csproj" />
     </ItemGroup>
 
 </Project>

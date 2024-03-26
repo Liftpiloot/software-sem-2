@@ -1,4 +1,4 @@
-﻿using IronApp.Classes;
+﻿using IronDomain;
 
 namespace IronApp.Models
 {

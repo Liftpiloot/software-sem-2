@@ -1,10 +1,8 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using IronApp.Models;
 using Microsoft.Data.SqlClient;
 
-
-namespace IronApp.Classes;
+namespace IronDomain;
 
 public class User
 {
@@ -12,7 +10,7 @@ public class User
 
     public int? Id { get; set; }
     public string? UserName { get; set; }
-    private string? Email { get; set; }
+    public string? Email { get; set; }
     public string? PasswordHash { get; set; }
     public string? DateOfBirth { get; set; }
     public decimal Weight { get; set; }
@@ -40,47 +38,7 @@ public class User
         Weight = weight;
     }
 
-    public string AddUser()
-    {
-        // check if username or email already exists
-        SqlConnection conn = new SqlConnection(_db);
-        conn.Open();
-        SqlCommand cmd =
-            new SqlCommand("SELECT * FROM users WHERE username = @username OR LOWER(email) = LOWER(@email)", conn);
-        cmd.Parameters.AddWithValue("@username", UserName);
-        cmd.Parameters.AddWithValue("@email", Email);
-        SqlDataReader reader = cmd.ExecuteReader();
-        if (reader.Read())
-        {
-            return "Username or email already exists";
-        }
 
-        // Create sha256 hash
-        using (SHA256 sha256Hash = SHA256.Create())
-        {
-            Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(PasswordHash));
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                builder.Append(bytes[i].ToString("x2"));
-            }
-
-            PasswordHash = builder.ToString();
-        }
-
-        conn = new SqlConnection(_db);
-        conn.Open();
-        cmd = new SqlCommand("INSERT INTO users (UserName, PasswordHash, Email, BirthDate, BodyWeight) VALUES (@username, @password, LOWER(@email), @dateOfBirth, @weight); SELECT SCOPE_IDENTITY();", conn);
-        cmd.Parameters.AddWithValue("@username", UserName);
-        cmd.Parameters.AddWithValue("@password", PasswordHash);
-        cmd.Parameters.AddWithValue("@email", Email);
-        cmd.Parameters.AddWithValue("@dateOfBirth", DateOfBirth);
-        cmd.Parameters.AddWithValue("@weight", Weight);
-        int id = Convert.ToInt32(cmd.ExecuteScalar());
-        conn.Close();
-        this.Id = id;
-        return "Success";
-    }
 
     public List<SelectedExercise> GetSelectedExercises()
     {
@@ -156,34 +114,6 @@ public class User
         return exercises;
     }
     
-    /// <summary>
-    /// Returns user on successful login, null otherwise. Either username or email must be set.
-    /// </summary>
-    /// <returns>User</returns>
-    public User? Login()
-    {
-        // Retrieve user from db
-        SqlConnection conn = new SqlConnection(_db);
-        conn.Open();
-        SqlCommand cmd =
-            new SqlCommand(
-                "SELECT * FROM users WHERE (UserName = @name OR LOWER(Email) = LOWER(@email)) AND PasswordHash = @password",
-                conn);
-        cmd.Parameters.AddWithValue("@name", UserName ?? (object)DBNull.Value);
-        cmd.Parameters.AddWithValue("@email", Email ?? (object)DBNull.Value);
-        cmd.Parameters.AddWithValue("@password", PasswordHash);
-        SqlDataReader reader = cmd.ExecuteReader();
-        if (reader.Read())
-        {
-            this.Id = (int)reader["UserID"];
-            this.DateOfBirth = reader["BirthDate"].ToString();
-            this.Email = reader["Email"].ToString();
-            this.Weight = (decimal)reader["BodyWeight"];
-            reader.Close();
 
-            return this;
-        }
-        return null;
-    }
     
 }

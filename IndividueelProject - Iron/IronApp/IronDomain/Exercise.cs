@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 
-namespace IronApp.Classes;
+namespace IronDomain;
 
 public class Exercise
 {
@@ -21,7 +21,7 @@ public class Exercise
         cmd.Parameters.AddWithValue("@name", Name);
         cmd.Parameters.AddWithValue("@description", Description);
         cmd.Parameters.AddWithValue("@logo", Logo);
-        int id = Convert.ToInt32(cmd.ExecuteScalar());
+        int id = Convert.ToInt32((object?)cmd.ExecuteScalar());
         conn.Close();
         return id;
     }
