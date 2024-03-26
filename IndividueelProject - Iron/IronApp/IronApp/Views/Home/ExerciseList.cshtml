@@ -18,7 +18,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Anta&display=swap" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    
+
     <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0"/>
 </head>
 
@@ -26,6 +26,7 @@
 <div class="iron-logo">
     <img src="~/images/iron_logo_new.png" alt="logo" width="100%"/>
 </div>
+
 
 @for (int i = 0; i < Model.Count; i++)
 {
@@ -37,27 +38,30 @@
             <div class="workout">
                 <h1>@Model[i].Name</h1>
                 <div class="weight-reps-sets">
-                    <button class="add-button" id="add_button_@i" onclick="add_selected(@Model[i].Id)">Add</button>"
+                    <button class="add-button" id="add_button_@i" onclick="add_selected(@Model[i].Id)">Add</button>
                 </div>
             </div>
         </div>
     </div>
 }
 
-    <div class="workout-card">
-        <div class="workout-info">
-            <div class="workout-logo">
-                <img src="/images/iron_logo_new.png" alt="logo"/>
-            </div>
-            <div class="workout">
-                <h1>Custom Exercise</h1>
-                <input type="text" id="custom_exercise_input" placeholder="Exercise name">
-                <div class="weight-reps-sets">
-                    <button class="add-button" id="add_button_custom" onclick="add_custom()">Add</button>"
-                </div>
+<div class="workout-card">
+    <div class="workout-info">
+        <div class="workout-logo">
+            <img src="/images/iron_logo_new.png" alt="logo"/>
+        </div>
+        <div class="workout">
+            <h1>Custom Exercise</h1>
+            <input type="text" id="custom_exercise_input" placeholder="Exercise name">
+            <div class="weight-reps-sets">
+                <button class="add-button" id="add_button_custom" onclick="add_custom()">Add</button>"
             </div>
         </div>
     </div>
+</div>
+<a href="@Url.Action("Index", "Home")" class="back-arrow">
+    <div>←</div>
+</a>
 
 </body>
 
@@ -76,6 +80,10 @@ function add_selected(id){
     
 function add_custom(){
     const name = document.getElementById("custom_exercise_input").value.toString();
+    if (name.length > 20){
+        alert("Exercise name cannot be more than 20 characters.");
+        return;
+    }
     $.ajax({
         url: '@Url.Action("AddCustomExercise", "Home")',
         type: 'POST',
