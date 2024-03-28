@@ -33,13 +33,5 @@ public class User
         DateOfBirth = dateOfBirth;
         Weight = weight;
     }
-
-
-
-
-
-
-    
-
     
 }

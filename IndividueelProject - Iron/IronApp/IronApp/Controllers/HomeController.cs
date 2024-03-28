@@ -3,6 +3,8 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using IronApp.Models;
 using System.Data.SqlClient;
+using Iron_Domain;
+using IronDomain;
 using Microsoft.Data.SqlClient;
 
 namespace IronApp.Controllers;
@@ -10,7 +12,9 @@ namespace IronApp.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private string _db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
+    private ExerciseContainer _exerciseContainer = new ExerciseContainer();
+    private ExerciseExecutionContainer _exerciseExecutionContainer = new ExerciseExecutionContainer();
+    private UserContainer _userContainer = new UserContainer();
     private User _user = new User();
 
     public HomeController(ILogger<HomeController> logger)
@@ -34,11 +38,12 @@ public class HomeController : Controller
         _user.Weight = Convert.ToDecimal(Request.Cookies["Weight"]);
 
         // get selected exercises, and add sets if there is an execution. Create a List of ExerciseModel to pass to the view
-        List<SelectedExercise> selectedExercises = _user.GetSelectedExercises();
+
+        List<SelectedExercise> selectedExercises = _exerciseContainer.GetSelectedExercises(_user);
         List<ExerciseModel> exerciseModels = new List<ExerciseModel>();
         foreach (SelectedExercise selectedExercise in selectedExercises)
         {
-            Exercise exercise = selectedExercise.GetExercise();
+            Exercise? exercise = _exerciseContainer.GetExerciseFromId(selectedExercise.ExerciseId);
             ExerciseModel exerciseModel = new ExerciseModel
             {
                 Id = exercise.Id,
@@ -47,11 +52,11 @@ public class HomeController : Controller
                 Logo = exercise.Logo
             };
 
-            ExerciseExecution recentExecution = exercise.GetRecentExecution(userId);
+            ExerciseExecution? recentExecution = _exerciseExecutionContainer.GetRecentExerciseExecution(_user, exercise);
             if (recentExecution != null)
             {
                 int? executionId = recentExecution.Id;
-                List<Set> sets = recentExecution.GetSets();
+                List<Set> sets = _exerciseExecutionContainer.GetSets(recentExecution);
                 foreach (Set set in sets)
                 {
                     if (exerciseModel.Sets == null)
@@ -86,8 +91,8 @@ public class HomeController : Controller
         int userId = Convert.ToInt32(Request.Cookies["UserId"]);
         _user.Id = userId;
         List<ExerciseModel> exerciseModels = new List<ExerciseModel>();
-        List<Exercise> exercises = _user.GetExercises();
-        List<SelectedExercise> selectedEx = _user.GetSelectedExercises();
+        List<Exercise> exercises = _exerciseContainer.GetExercises(_user);
+        List<SelectedExercise> selectedEx = _exerciseContainer.GetSelectedExercises(_user);
         foreach (Exercise exercise in exercises)
         {
             bool selected = selectedEx.Any(x => x.ExerciseId == exercise.Id);
@@ -116,27 +121,31 @@ public class HomeController : Controller
             UserId = Request.Cookies["UserId"] != null ? Convert.ToInt32(Request.Cookies["UserId"]) : 0,
             ExerciseId = id
         };
-        selectedExercise.AddSelectedExercise();
+        _exerciseContainer.AddSelectedExercise(selectedExercise);
         return RedirectToAction("Index", "Home");
     }
 
-    public IActionResult Exercise(int ID)
+    public IActionResult? Exercise(int ID)
     {
-        Exercise exercise = new Exercise
+        Exercise? exercise = new Exercise
         {
             Id = ID
         };
         Console.WriteLine(exercise.Id);
-        exercise = exercise.GetExercise();
-        Console.WriteLine(exercise.Id);
-        ExerciseModel exerciseModel = new ExerciseModel
+        exercise = _exerciseContainer.GetExerciseFromId(exercise.Id);
+        if (exercise != null)
         {
-            Id = exercise.Id,
-            Name = exercise.Name,
-            Description = exercise.Description,
-            Logo = exercise.Logo
-        };
-        return View(exerciseModel);
+            ExerciseModel exerciseModel = new ExerciseModel
+            {
+                Id = exercise.Id,
+                Name = exercise.Name,
+                Description = exercise.Description,
+                Logo = exercise.Logo
+            };
+            return View(exerciseModel);
+        }
+
+        return null;
     }
 
     public IActionResult DeleteExercise(int id)
@@ -146,7 +155,7 @@ public class HomeController : Controller
             UserId = Convert.ToInt32(Request.Cookies["UserId"]),
             ExerciseId = id
         };
-        selectedExercise.DeleteSelectedExercise();
+        _exerciseContainer.DeleteSelectedExercise(selectedExercise);
         return RedirectToAction("Index", "Home");
     }
 
@@ -161,13 +170,13 @@ public class HomeController : Controller
             Logo = "/images/default.png"
             
         };
-        int id = exercise.AddExercise();
+        int id = _exerciseContainer.AddExercise(_user, exercise);
         SelectedExercise selectedExercise = new SelectedExercise
         {
             UserId = Convert.ToInt32(Request.Cookies["UserId"]),
             ExerciseId = id
         };
-        selectedExercise.AddSelectedExercise();
+        _exerciseContainer.AddSelectedExercise(selectedExercise);
         return RedirectToAction("Index", "Home");
     }
 }

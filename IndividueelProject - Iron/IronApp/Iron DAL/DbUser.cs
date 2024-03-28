@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using Iron_Domain;
+using Iron_DAL.DTO;
 using Microsoft.Data.SqlClient;
 
 namespace Iron_DAL;
@@ -14,7 +14,7 @@ public class DbUser
     /// Returns user on successful registration, null otherwise.
     /// </summary>
     /// <returns>User</returns>
-    public User? AddUser(User? user)
+    public UserDto? AddUser(UserDto? user)
     {
         // check if username or email already exists
         SqlConnection conn = new SqlConnection(_db);
@@ -60,7 +60,7 @@ public class DbUser
     /// Returns user on successful login, null otherwise. Either username or email must be set.
     /// </summary>
     /// <returns>User</returns>
-    public User? Login(User user)
+    public UserDto? Login(UserDto user)
     {
         // Retrieve user from db
         SqlConnection conn = new SqlConnection(_db);

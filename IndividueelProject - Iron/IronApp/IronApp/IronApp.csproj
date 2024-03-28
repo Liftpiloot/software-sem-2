@@ -25,6 +25,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Iron BLL\Iron BLL.csproj" />
+      <ProjectReference Include="..\Iron Domain\Iron Domain.csproj" />
     </ItemGroup>
 
 </Project>
