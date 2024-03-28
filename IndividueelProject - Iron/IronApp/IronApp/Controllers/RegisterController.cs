@@ -1,6 +1,8 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using Iron_Domain;
 using IronApp.Models;
+using IronDomain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
@@ -8,7 +10,7 @@ namespace IronApp.Controllers;
 
 public class RegisterController : Controller
 {
-    private string _db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
+    UserContainer _userContainer = new UserContainer();
 
     // GET
     public IActionResult Index()
@@ -25,16 +27,16 @@ public class RegisterController : Controller
         {
             
             
-            User? user = new User(model.Username, model.Email, model.Password, model.DateOfBirth, model.Weight);
-            string response = user.AddUser();
-            if (response != "Success")
+            User? user = new User(model.Username, model.Email, model.Password, model.DateOfBirth, model.Weight); 
+            user = _userContainer.AddUser(user);
+            if (user?.Id == 0)
             {
-                ModelState.AddModelError("Username", response);
+                ModelState.AddModelError("Username", "Username already exists.");
                 return View(model);
             }
             
             // Login user
-            user = user.Login();
+            user = _userContainer.Login(user);
             
             // save user in cookies
             var cookieOptions = new CookieOptions

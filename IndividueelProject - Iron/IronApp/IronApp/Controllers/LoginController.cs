@@ -1,5 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using Iron_Domain;
+using IronDomain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
@@ -7,7 +9,7 @@ namespace IronApp.Controllers;
 
 public class LoginController : Controller
 {
-    private string _db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
+    UserContainer _userContainer = new UserContainer();
     // GET
     public IActionResult Index()
     {
@@ -31,7 +33,7 @@ public class LoginController : Controller
             password = builder.ToString();
         }
         user.PasswordHash = password;
-        user = user.Login();
+        user = _userContainer.Login(user);
         if (user != null){
             var cookieOptions = new CookieOptions
             {

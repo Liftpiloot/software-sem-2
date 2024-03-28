@@ -2,7 +2,7 @@
 
 public record UserDto
 {
-    public int? Id { get; set; }
+    public int Id { get; set; }
     public string? UserName { get; init; }
     public string? Email { get; set; }
     public string? PasswordHash { get; set; }
