@@ -21,6 +21,7 @@ public class LoginController : Controller
     {
         User? user = new User();
         user.UserName = name;
+        user.Email = name;
         // Hash password
         using (SHA256 sha256Hash = SHA256.Create())
         {

@@ -39,7 +39,7 @@ public class UserContainer
         {
             return null;
         }
-        User newUser = new(returnedUser.UserName, returnedUser.Email, returnedUser.PasswordHash, returnedUser.DateOfBirth, returnedUser.Weight);
+        User newUser = new(returnedUser.Id, returnedUser.UserName, returnedUser.Email, returnedUser.PasswordHash, returnedUser.DateOfBirth, returnedUser.Weight);
         return newUser;
     }
     
