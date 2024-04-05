@@ -25,14 +25,16 @@ public class RegisterController : Controller
         Console.WriteLine(model.DateOfBirth);
         if (ModelState.IsValid)
         {
-            
-            
-            User? user = new User(model.Username, model.Email, model.Password, model.DateOfBirth, model.Weight); 
-            user = _userContainer.AddUser(user);
-            if (user?.Id == 0)
+            var user = new User(model.Username, model.Email, model.Password, model.DateOfBirth, model.Weight); 
+            var userId = _userContainer.AddUser(user);
+            switch (userId)
             {
-                ModelState.AddModelError("Username", "Username already exists.");
-                return View(model);
+                case 0:
+                    ModelState.AddModelError("Username", "Username or email already exists.");
+                    return View(model);
+                case -1:
+                    ModelState.AddModelError("Username", "An error occurred.");
+                    return View(model);
             }
             
             // Login user

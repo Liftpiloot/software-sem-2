@@ -8,7 +8,7 @@ public class UserContainer
 {
     private readonly DbUser _dbUser = new();
     
-    public User? AddUser(User user)
+    public int AddUser(User user)
     {
         UserDto userDto = new()
         {
@@ -18,13 +18,8 @@ public class UserContainer
             DateOfBirth = user.DateOfBirth,
             Weight = user.Weight
         };
-        UserDto? returnedUser = _dbUser.AddUser(userDto);
-        if (returnedUser == null)
-        {
-            return null;
-        }
-        User newUser = new(returnedUser.Id, returnedUser.UserName, returnedUser.Email, returnedUser.PasswordHash, returnedUser.DateOfBirth, returnedUser.Weight);
-        return newUser;
+        int returnedUser = _dbUser.AddUser(userDto);
+        return returnedUser;
     }
     public User? Login(User user)
     {
