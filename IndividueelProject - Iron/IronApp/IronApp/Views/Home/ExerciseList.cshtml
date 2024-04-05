@@ -74,6 +74,9 @@ function add_selected(id){
         data: { id: id},
         success: function() {
             window.location.href = '@Url.Action("Index", "Home")';
+        },
+        error: function(){
+            alert("Error adding exercise.");
         }
     })
     }
@@ -90,9 +93,12 @@ function add_custom(){
         data: { name: name},
         success: function() {
             window.location.href = '@Url.Action("Index", "Home")';
+        },
+        error: function(){
+            alert("Error adding custom exercise.");
         }
     })
-    }
+}
     
     
 </script>

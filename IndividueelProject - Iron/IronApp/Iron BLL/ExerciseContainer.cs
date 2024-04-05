@@ -121,6 +121,29 @@ public class ExerciseContainer
         }
         return selectedExercises;
     }
+
+    public List<Exercise> GetUnselectedExercises(User user)
+    {
+        UserDto userDto = new()
+        {
+            Id = user.Id
+        };
+        List<ExerciseDto> exerciseDtos = _dbExercise.GetUnselectedExercises(userDto);
+        List<Exercise> exercises = new();
+        foreach (ExerciseDto exerciseDto in exerciseDtos)
+        {
+            Exercise exercise = new()
+            {
+                Id = exerciseDto.Id,
+                UserId = exerciseDto.UserId,
+                Name = exerciseDto.Name,
+                Description = exerciseDto.Description,
+                Logo = exerciseDto.Logo
+            };
+            exercises.Add(exercise);
+        }
+        return exercises;
+    }
     
 
     

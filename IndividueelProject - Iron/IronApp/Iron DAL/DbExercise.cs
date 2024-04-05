@@ -86,7 +86,8 @@ public class DbExercise
     {
         SqlConnection conn = new SqlConnection(_db);
         conn.Open();
-        SqlCommand cmd = new SqlCommand("SELECT * FROM selected_exercises WHERE UserID = @userid", conn);
+        SqlCommand cmd = new SqlCommand(
+            "SELECT * FROM selected_exercises WHERE UserID = @userid", conn);
         cmd.Parameters.AddWithValue("@userid", user.Id);
         SqlDataReader reader = cmd.ExecuteReader();
         List<SelectedExerciseDTO> selectedExercises = new List<SelectedExerciseDTO>();
@@ -101,6 +102,34 @@ public class DbExercise
         conn.Close();
         reader.Close();
         return selectedExercises;
+    }
+
+    public List<ExerciseDto> GetUnselectedExercises(UserDto user)
+    {
+        SqlConnection conn = new SqlConnection(_db);
+        conn.Open();
+        SqlCommand cmd = new SqlCommand(
+    "SELECT exercises.* " +
+            "FROM exercises " +
+            "LEFT JOIN selected_exercises ON exercises.ExerciseID = selected_exercises.ExerciseID AND selected_exercises.UserID = @userid " +
+            "WHERE selected_exercises.UserID IS NULL AND selected_exercises.ExerciseID IS NULL AND (exercises.UserID = @userid OR exercises.UserID IS NULL);", conn);
+        cmd.Parameters.AddWithValue("@userid", user.Id);
+        SqlDataReader reader = cmd.ExecuteReader();
+        List<ExerciseDto> exercises = new List<ExerciseDto>();
+        while (reader.Read())
+        {
+            exercises.Add(new ExerciseDto
+            {
+                Id = (int)reader["ExerciseID"],
+                UserId = reader["UserID"] == DBNull.Value ? null : (int)reader["UserID"],
+                Name = reader["ExerciseName"].ToString(),
+                Description = reader["ExerciseDescription"].ToString(),
+                Logo = reader["LogoFilePath"].ToString()
+            });
+        }
+        conn.Close();
+        reader.Close();
+        return exercises;
     }
 
 

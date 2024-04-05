@@ -91,23 +91,17 @@ public class HomeController : Controller
         int userId = Convert.ToInt32(Request.Cookies["UserId"]);
         _user.Id = userId;
         List<ExerciseModel> exerciseModels = new List<ExerciseModel>();
-        List<Exercise> exercises = _exerciseContainer.GetExercises(_user);
-        List<SelectedExercise> selectedEx = _exerciseContainer.GetSelectedExercises(_user);
+        List<Exercise> exercises = _exerciseContainer.GetUnselectedExercises(_user);
         foreach (Exercise exercise in exercises)
         {
-            bool selected = selectedEx.Any(x => x.ExerciseId == exercise.Id);
-            if (selected)
-            {
-                continue;
-            }
-
-            exerciseModels.Add(new ExerciseModel
+            ExerciseModel exerciseModel = new ExerciseModel
             {
                 Id = exercise.Id,
                 Name = exercise.Name,
                 Description = exercise.Description,
                 Logo = exercise.Logo
-            });
+            };
+            exerciseModels.Add(exerciseModel);
         }
 
         return View(exerciseModels);
