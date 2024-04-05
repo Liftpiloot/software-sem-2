@@ -170,7 +170,7 @@ public class HomeController : Controller
             Logo = "/images/default.png"
             
         };
-        int id = _exerciseContainer.AddExercise(_user, exercise);
+        int id = _exerciseContainer.AddExercise(exercise);
         SelectedExercise selectedExercise = new SelectedExercise
         {
             UserId = Convert.ToInt32(Request.Cookies["UserId"]),

@@ -8,18 +8,16 @@ public class ExerciseContainer
 {
     private readonly DbExercise _dbExercise = new();
     
-    public int AddExercise(User user, Exercise exercise)
+    public int AddExercise(Exercise exercise)
     {
         ExerciseDto exerciseDto = new()
         {
             Name = exercise.Name,
-            Description = exercise.Description
+            UserId = exercise.UserId,
+            Description = exercise.Description,
+            Logo = exercise.Logo
         };
-        UserDto userDto = new()
-        {
-            Id = user.Id
-        };
-        int? returnedExercise = _dbExercise.AddExercise(userDto, exerciseDto);
+        int? returnedExercise = _dbExercise.AddExercise(exerciseDto);
         return returnedExercise ?? -1;
     }
     
@@ -123,6 +121,7 @@ public class ExerciseContainer
         }
         return selectedExercises;
     }
+    
 
     
     

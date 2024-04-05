@@ -6,12 +6,12 @@ public class DbExercise
 {
     private readonly string _db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
     
-    public int AddExercise(UserDto user, ExerciseDto exercise)
+    public int AddExercise(ExerciseDto exercise)
     {
         SqlConnection conn = new SqlConnection(_db);
         conn.Open();
         SqlCommand cmd = new SqlCommand("INSERT INTO exercises (UserID, ExerciseName, ExerciseDescription, LogoFilePath) VALUES (@userid, @name, @description, @logo); SELECT SCOPE_IDENTITY();", conn);
-        cmd.Parameters.AddWithValue("@userid", user.Id);
+        cmd.Parameters.AddWithValue("@userid", exercise.UserId);
         cmd.Parameters.AddWithValue("@name", exercise.Name);
         cmd.Parameters.AddWithValue("@description", exercise.Description);
         cmd.Parameters.AddWithValue("@logo", exercise.Logo);
