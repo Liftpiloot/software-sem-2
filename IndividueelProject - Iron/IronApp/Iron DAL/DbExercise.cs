@@ -8,16 +8,32 @@ public class DbExercise
     
     public int AddExercise(ExerciseDto exercise)
     {
-        SqlConnection conn = new SqlConnection(_db);
-        conn.Open();
-        SqlCommand cmd = new SqlCommand("INSERT INTO exercises (UserID, ExerciseName, ExerciseDescription, LogoFilePath) VALUES (@userid, @name, @description, @logo); SELECT SCOPE_IDENTITY();", conn);
-        cmd.Parameters.AddWithValue("@userid", exercise.UserId);
-        cmd.Parameters.AddWithValue("@name", exercise.Name);
-        cmd.Parameters.AddWithValue("@description", exercise.Description);
-        cmd.Parameters.AddWithValue("@logo", exercise.Logo);
-        int id = Convert.ToInt32((object?)cmd.ExecuteScalar());
-        conn.Close();
-        return id;
+        using (SqlConnection conn = new SqlConnection(_db))
+        {
+            conn.Open();
+            // Check if the exercise already exists.
+            using SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM exercises WHERE ExerciseName = @name AND UserID = @userid OR UserID IS NULL", conn);
+            checkCmd.Parameters.AddWithValue("@name", exercise.Name);
+            checkCmd.Parameters.AddWithValue("@userid", exercise.UserId);
+            int count = (int)checkCmd.ExecuteScalar();
+            if (count > 0)
+            {
+                conn.Close();
+                return -1;
+            }
+            // Add the exercise to the database.
+            using SqlCommand cmd =
+                new SqlCommand(
+                    "INSERT INTO exercises (UserID, ExerciseName, ExerciseDescription, LogoFilePath) VALUES (@userid, @name, @description, @logo); SELECT SCOPE_IDENTITY();",
+                    conn);
+            cmd.Parameters.AddWithValue("@userid", exercise.UserId);
+            cmd.Parameters.AddWithValue("@name", exercise.Name);
+            cmd.Parameters.AddWithValue("@description", exercise.Description);
+            cmd.Parameters.AddWithValue("@logo", exercise.Logo);
+            var id = Convert.ToInt32((object?)cmd.ExecuteScalar());
+            conn.Close();
+            return id;
+        }
     }
     
 

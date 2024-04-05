@@ -95,7 +95,7 @@ function add_custom(){
             window.location.href = '@Url.Action("Index", "Home")';
         },
         error: function(){
-            alert("Error adding custom exercise.");
+            alert("Error adding custom exercise. (Exercise already exists)");
         }
     })
 }

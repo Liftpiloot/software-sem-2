@@ -86,6 +86,7 @@ public class HomeController : Controller
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 
+    [HttpGet]
     public IActionResult ExerciseList()
     {
         int userId = Convert.ToInt32(Request.Cookies["UserId"]);
@@ -162,15 +163,19 @@ public class HomeController : Controller
             Name = name,
             Description = name,
             Logo = "/images/default.png"
-            
+
         };
         int id = _exerciseContainer.AddExercise(exercise);
-        SelectedExercise selectedExercise = new SelectedExercise
+        if (id > 0)
         {
-            UserId = Convert.ToInt32(Request.Cookies["UserId"]),
-            ExerciseId = id
-        };
-        _exerciseContainer.AddSelectedExercise(selectedExercise);
-        return RedirectToAction("Index", "Home");
+            SelectedExercise selectedExercise = new SelectedExercise
+            {
+                UserId = Convert.ToInt32(Request.Cookies["UserId"]),
+                ExerciseId = id
+            };
+            _exerciseContainer.AddSelectedExercise(selectedExercise);
+            return RedirectToAction("Index", "Home");
+        }
+        return ExerciseList();
     }
 }
