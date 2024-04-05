@@ -29,22 +29,23 @@ public class HomeController : Controller
             return RedirectToAction("Index", "Login");
         }
 
-        int userId = Convert.ToInt32(Request.Cookies["UserId"]);
+        var userId = Convert.ToInt32(Request.Cookies["UserId"]);
         _user.Id = userId;
         Console.WriteLine(_user.Id);
-        _user.UserName = Request.Cookies["Username"];
-        _user.PasswordHash = Request.Cookies["PasswordHash"];
-        _user.DateOfBirth = Request.Cookies["DateOfBirth"];
+        _user.UserName = Request.Cookies["Username"] ?? string.Empty;
+        _user.PasswordHash = Request.Cookies["PasswordHash"] ?? string.Empty;
+        _user.DateOfBirth = Request.Cookies["DateOfBirth"] ?? string.Empty;
         _user.Weight = Convert.ToDecimal(Request.Cookies["Weight"]);
 
         // get selected exercises, and add sets if there is an execution. Create a List of ExerciseModel to pass to the view
 
-        List<SelectedExercise> selectedExercises = _exerciseContainer.GetSelectedExercises(_user);
-        List<ExerciseModel> exerciseModels = new List<ExerciseModel>();
-        foreach (SelectedExercise selectedExercise in selectedExercises)
+        var selectedExercises = _exerciseContainer.GetSelectedExercises(_user);
+        var exerciseModels = new List<ExerciseModel>();
+        foreach (var selectedExercise in selectedExercises)
         {
-            Exercise? exercise = _exerciseContainer.GetExerciseFromId(selectedExercise.ExerciseId);
-            ExerciseModel exerciseModel = new ExerciseModel
+            var exercise = _exerciseContainer.GetExerciseFromId(selectedExercise.ExerciseId);
+            if (exercise == null) continue;
+            var exerciseModel = new ExerciseModel
             {
                 Id = exercise.Id,
                 Name = exercise.Name,
@@ -52,17 +53,13 @@ public class HomeController : Controller
                 Logo = exercise.Logo
             };
 
-            ExerciseExecution? recentExecution = _exerciseExecutionContainer.GetRecentExerciseExecution(_user, exercise);
+            var recentExecution = _exerciseExecutionContainer.GetRecentExerciseExecution(_user, exercise);
             if (recentExecution != null)
             {
-                int? executionId = recentExecution.Id;
-                List<Set> sets = _exerciseExecutionContainer.GetSets(recentExecution);
-                foreach (Set set in sets)
+                var sets = _exerciseExecutionContainer.GetSets(recentExecution);
+                foreach (var set in sets)
                 {
-                    if (exerciseModel.Sets == null)
-                    {
-                        exerciseModel.Sets = new List<Set>();
-                    }
+                    exerciseModel.Sets ??= [];
 
                     exerciseModel.Sets.Add(set);
                 }
@@ -157,25 +154,21 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult AddCustomExercise(string name)
     {
-        Exercise exercise = new Exercise
+        var exercise = new Exercise
         {
             UserId = Convert.ToInt32(Request.Cookies["UserId"]),
             Name = name,
             Description = name,
             Logo = "/images/default.png"
-
         };
-        int id = _exerciseContainer.AddExercise(exercise);
-        if (id > 0)
+        var exerciseId = _exerciseContainer.AddExercise(exercise);
+        if (exerciseId <= 0) return ExerciseList();
+        SelectedExercise selectedExercise = new SelectedExercise
         {
-            SelectedExercise selectedExercise = new SelectedExercise
-            {
-                UserId = Convert.ToInt32(Request.Cookies["UserId"]),
-                ExerciseId = id
-            };
-            _exerciseContainer.AddSelectedExercise(selectedExercise);
-            return RedirectToAction("Index", "Home");
-        }
-        return ExerciseList();
+            UserId = Convert.ToInt32(Request.Cookies["UserId"]),
+            ExerciseId = exerciseId
+        };
+        _exerciseContainer.AddSelectedExercise(selectedExercise);
+        return RedirectToAction("Index", "Home");
     }
 }

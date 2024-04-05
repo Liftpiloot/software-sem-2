@@ -10,7 +10,7 @@ namespace IronApp.Controllers;
 
 public class RegisterController : Controller
 {
-    UserContainer _userContainer = new UserContainer();
+    private readonly UserContainer _userContainer = new();
 
     // GET
     public IActionResult Index()
@@ -39,6 +39,11 @@ public class RegisterController : Controller
             
             // Login user
             user = _userContainer.Login(user);
+            if (user == null)
+            {
+                ModelState.AddModelError("Username", "An error occurred.");
+                return View(model);
+            }
             
             // save user in cookies
             var cookieOptions = new CookieOptions
@@ -54,42 +59,39 @@ public class RegisterController : Controller
             
             return RedirectToAction("Index", "Home");
         }
+
+        if (string.IsNullOrEmpty(model.Password))
+        {
+            ModelState.AddModelError("Password", "Password is required.");
+        }
+
+        if (model.Password != model.ConfirmPassword)
+        {
+            ModelState.AddModelError("ConfirmPassword", "Password and confirmation password do not match.");
+        }
+
+        if (model.Password == null || model.Password.Length < 10)
+        {
+            ModelState.AddModelError("Password", "The password must be at least 10 characters long.");
+        }
+
+        if (model.DateOfBirth == null)
+        {
+            ModelState.AddModelError("DateOfBirth", "Date of birth is not required.");
+        }
         else
         {
-            if (string.IsNullOrEmpty(model.Password))
+            if (!DateTime.TryParse(model.DateOfBirth, out _))
             {
-                ModelState.AddModelError("Password", "Password is required.");
+                ModelState.AddModelError("DateOfBirth", "Invalid date format.");
             }
-
-            if (model.Password != model.ConfirmPassword)
-            {
-                ModelState.AddModelError("ConfirmPassword", "Password and confirmation password do not match.");
-            }
-
-            if (model.Password.Length < 10)
-            {
-                ModelState.AddModelError("Password", "The password must be at least 10 characters long.");
-            }
-
-            if (model.DateOfBirth == null)
-            {
-                ModelState.AddModelError("DateOfBirth", "Date of birth is not required.");
-            }
-            else
-            {
-                DateTime dob;
-                if (!DateTime.TryParse(model.DateOfBirth.ToString(), out dob))
-                {
-                    ModelState.AddModelError("DateOfBirth", "Invalid date format.");
-                }
-            }
-
-            if (model.Weight <= 0)
-            {
-                ModelState.AddModelError("Weight", "Weight is required.");
-            }
-
-            return View(model);
         }
+
+        if (model.Weight <= 0)
+        {
+            ModelState.AddModelError("Weight", "Weight is required.");
+        }
+
+        return View(model);
     }
 }

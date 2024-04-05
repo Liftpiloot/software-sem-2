@@ -9,48 +9,48 @@ namespace IronApp.Controllers;
 
 public class LoginController : Controller
 {
-    UserContainer _userContainer = new UserContainer();
+    private readonly UserContainer _userContainer = new();
     // GET
     public IActionResult Index()
     {
-        return PartialView();
+        return View();
     }
+    
     // POST
     [HttpPost]
-    public IActionResult Index(string? name, string? password)
+    public IActionResult Index(string name, string password)
     {
-        User? user = new User();
-        user.UserName = name;
-        user.Email = name;
+        var user = new User
+        {
+            UserName = name,
+            Email = name
+        };
         // Hash password
         using (SHA256 sha256Hash = SHA256.Create())
         {
             Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < bytes.Length; i++)
+            foreach (var t in bytes)
             {
-                builder.Append(bytes[i].ToString("x2"));
+                builder.Append(t.ToString("x2"));
             }
             password = builder.ToString();
         }
         user.PasswordHash = password;
         user = _userContainer.Login(user);
-        if (user != null){
-            var cookieOptions = new CookieOptions
-            {
-                Expires = DateTime.Now.AddDays(365), // Cookie expires after a year
-                IsEssential = true
-            };
-            Response.Cookies.Append("UserId", user.Id.ToString(), cookieOptions);
-            Response.Cookies.Append("Username", user.UserName, cookieOptions);
-            Response.Cookies.Append("PasswordHash", user.PasswordHash, cookieOptions);
-            Response.Cookies.Append("DateOfBirth", user.DateOfBirth, cookieOptions);
-            Response.Cookies.Append("Weight", user.Weight.ToString(), cookieOptions);
-            return RedirectToAction("Index", "Home");
-        }
-        else
+        if (user == null) return RedirectToAction("Index", "Login");
+        
+        var cookieOptions = new CookieOptions
         {
-            return RedirectToAction("Index", "Login");
-        }
+            Expires = DateTime.Now.AddDays(365), // Cookie expires after a year
+            IsEssential = true
+        };
+        Response.Cookies.Append("UserId", user.Id.ToString(), cookieOptions);
+        Response.Cookies.Append("Username", user.UserName, cookieOptions);
+        Response.Cookies.Append("PasswordHash", user.PasswordHash, cookieOptions);
+        Response.Cookies.Append("DateOfBirth", user.DateOfBirth, cookieOptions);
+        Response.Cookies.Append("Weight", user.Weight.ToString(), cookieOptions);
+        return RedirectToAction("Index", "Home");
+
     }
 }
