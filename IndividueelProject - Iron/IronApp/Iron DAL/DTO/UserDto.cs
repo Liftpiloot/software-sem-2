@@ -6,6 +6,6 @@ public record UserDto
     public string? UserName { get; init; }
     public string? Email { get; set; }
     public string? PasswordHash { get; set; }
-    public string? DateOfBirth { get; set; }
+    public DateTime DateOfBirth { get; set; }
     public decimal Weight { get; set; }
 }

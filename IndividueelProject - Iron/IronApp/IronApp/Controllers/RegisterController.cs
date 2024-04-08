@@ -54,7 +54,7 @@ public class RegisterController : Controller
             Response.Cookies.Append("UserId", user.Id.ToString(), cookieOptions);
             Response.Cookies.Append("Username", user.UserName, cookieOptions);
             Response.Cookies.Append("PasswordHash", user.PasswordHash, cookieOptions);
-            Response.Cookies.Append("DateOfBirth", user.DateOfBirth, cookieOptions);
+            Response.Cookies.Append("DateOfBirth", user.DateOfBirth.ToString(), cookieOptions);
             Response.Cookies.Append("Weight", user.Weight.ToString(), cookieOptions);
             
             return RedirectToAction("Index", "Home");
@@ -78,13 +78,6 @@ public class RegisterController : Controller
         if (model.DateOfBirth == null)
         {
             ModelState.AddModelError("DateOfBirth", "Date of birth is not required.");
-        }
-        else
-        {
-            if (!DateTime.TryParse(model.DateOfBirth, out _))
-            {
-                ModelState.AddModelError("DateOfBirth", "Invalid date format.");
-            }
         }
 
         if (model.Weight <= 0)

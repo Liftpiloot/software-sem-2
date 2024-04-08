@@ -34,7 +34,7 @@ public class HomeController : Controller
         Console.WriteLine(_user.Id);
         _user.UserName = Request.Cookies["Username"] ?? string.Empty;
         _user.PasswordHash = Request.Cookies["PasswordHash"] ?? string.Empty;
-        _user.DateOfBirth = Request.Cookies["DateOfBirth"] ?? string.Empty;
+        _user.DateOfBirth = Convert.ToDateTime(Request.Cookies["DateOfBirth"]);
         _user.Weight = Convert.ToDecimal(Request.Cookies["Weight"]);
 
         // get selected exercises, and add sets if there is an execution. Create a List of ExerciseModel to pass to the view

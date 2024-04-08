@@ -24,7 +24,7 @@ public class RegisterModel
 
 
     [Required(ErrorMessage = "Date of birth is required")]
-    public string? DateOfBirth { get; set; }
+    public DateTime DateOfBirth { get; set; }
 
 
     [Required(ErrorMessage = "Weight is required")]

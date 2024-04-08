@@ -98,7 +98,7 @@ public class DbUser
         if (reader.Read())
         {
             user.Id = (int)reader["UserID"];
-            user.DateOfBirth = reader["BirthDate"].ToString();
+            user.DateOfBirth = (DateTime)reader["BirthDate"];
             user.Email = reader["Email"].ToString();
             user.Weight = (decimal)reader["BodyWeight"];
             reader.Close();
