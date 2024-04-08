@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IronApp.Models.LoginModel
+@{
     Layout = null;
 }
 
@@ -22,7 +23,19 @@
     <img src="images/iron_logo_new.png" alt="logo" width="100%"/>
 </div>
 <div class="wrapper">
-    <form method="post" action="Login/Index" class="login-form">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div id="error-message" style="color: white;">
+            @foreach (var value in ViewData.ModelState.Values)
+            {
+                foreach (var error in value.Errors)
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            }
+        </div>
+    }
+    <form method="post" action="Login" class="login-form">
 
         <div class="input-box">
             <input type="text" id="name" name="name" placeholder="Email/Username" required/>

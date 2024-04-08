@@ -77,7 +77,7 @@ public class RegisterController : Controller
 
         if (model.DateOfBirth == null)
         {
-            ModelState.AddModelError("DateOfBirth", "Date of birth is not required.");
+            ModelState.AddModelError("DateOfBirth", "Date of birth is required.");
         }
 
         if (model.Weight <= 0)

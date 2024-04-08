@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using Iron_Domain;
+using IronApp.Models;
 using IronDomain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -18,17 +19,18 @@ public class LoginController : Controller
     
     // POST
     [HttpPost]
-    public IActionResult Index(string name, string password)
+    public IActionResult Index(LoginModel model)
     {
         var user = new User
         {
-            UserName = name,
-            Email = name
+            UserName = model.Name,
+            Email = model.Name
         };
         // Hash password
+        string password;
         using (SHA256 sha256Hash = SHA256.Create())
         {
-            Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
+            Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(model.Password));
             StringBuilder builder = new StringBuilder();
             foreach (var t in bytes)
             {
@@ -38,7 +40,12 @@ public class LoginController : Controller
         }
         user.PasswordHash = password;
         user = _userContainer.Login(user);
-        if (user == null) return RedirectToAction("Index", "Login");
+        if (user == null)
+        {
+            ModelState.Clear();
+            ModelState.AddModelError("Username", "Login failed");
+            return View(model);
+        }
         
         var cookieOptions = new CookieOptions
         {
