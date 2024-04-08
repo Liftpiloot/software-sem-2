@@ -123,7 +123,6 @@ public class HomeController : Controller
         {
             Id = ID
         };
-        Console.WriteLine(exercise.Id);
         exercise = _exerciseContainer.GetExerciseFromId(exercise.Id);
         if (exercise != null)
         {
@@ -134,6 +133,44 @@ public class HomeController : Controller
                 Description = exercise.Description,
                 Logo = exercise.Logo
             };
+            _user.Id = Convert.ToInt32(Request.Cookies["UserId"]);
+            List<List<SetModel>> allSets = new List<List<SetModel>>();
+            List<ExerciseExecution> exerciseExecutions = _exerciseExecutionContainer.GetExerciseExecutions(_user, exercise);
+            foreach (ExerciseExecution exerciseExecution in exerciseExecutions)
+            {
+                List<Set> executionSets = _exerciseExecutionContainer.GetSets(exerciseExecution);
+                List<SetModel> executionSetsModel = new List<SetModel>();
+                foreach (Set set in executionSets)
+                {
+                    SetModel setModel = new SetModel
+                    {
+                        Reps = set.Reps,
+                        Weight = set.Weight,
+                        Date = exerciseExecution.ExecutionDate
+                    };
+                    executionSetsModel.Add(setModel);
+                }
+                allSets.Add(executionSetsModel);
+            }
+            List<DataPointModel> dataPoints = new List<DataPointModel>();
+            foreach (List<SetModel> sets in allSets)
+            {
+                // Get highest weight
+                decimal highestWeight = 0;
+                foreach (SetModel set in sets)
+                {
+                    if (set.Weight > highestWeight)
+                    {
+                        highestWeight = set.Weight;
+                    }
+                }
+                // Get date
+                DateTime date = sets[0].Date;
+                DataPointModel dataPoint = new DataPointModel(date, highestWeight);
+                dataPoints.Add(dataPoint);
+            }
+            exerciseModel.DataPoints = dataPoints;
+            
             return View(exerciseModel);
         }
 

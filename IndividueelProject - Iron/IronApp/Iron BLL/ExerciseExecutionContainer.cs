@@ -76,4 +76,29 @@ public class ExerciseExecutionContainer
         }
         return sets;
     }
+
+    public List<ExerciseExecution> GetExerciseExecutions(User user, Exercise exercise)
+    {
+        UserDto userDto = new()
+        {
+            Id = user.Id,
+        };
+        ExerciseDto exerciseDto = new()
+        {
+            Id = exercise.Id,
+        };
+        List<ExerciseExecutionDto> exerciseExecutionDtos = _dbExerciseExecution.GetExerciseExecutions(userDto, exerciseDto);
+        List<ExerciseExecution> exerciseExecutions = new();
+        foreach (ExerciseExecutionDto exerciseExecutionDto in exerciseExecutionDtos)
+        {
+            exerciseExecutions.Add(new ExerciseExecution()
+            {
+                Id = exerciseExecutionDto.Id,
+                ExecutionDate = exerciseExecutionDto.ExecutionDate,
+                UserId = exerciseExecutionDto.UserId,
+                ExerciseId = exerciseExecutionDto.ExerciseId,
+            });
+        }
+        return exerciseExecutions;
+    }
 }

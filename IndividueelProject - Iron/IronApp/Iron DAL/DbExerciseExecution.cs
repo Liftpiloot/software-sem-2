@@ -108,5 +108,29 @@ public class DbExerciseExecution
         return exercises;
     }
     
+    // get all executions of a user of one exercise
+    public List<ExerciseExecutionDto> GetExerciseExecutions(UserDto user, ExerciseDto exercise)
+    {
+        SqlConnection conn = new SqlConnection(_db);
+        conn.Open();
+        SqlCommand cmd = new SqlCommand("SELECT * FROM exercise_executions WHERE UserID = @userid AND ExerciseID = @exerciseid", conn);
+        cmd.Parameters.AddWithValue("@userid", user.Id);
+        cmd.Parameters.AddWithValue("@exerciseid", exercise.Id);
+        SqlDataReader reader = cmd.ExecuteReader();
+        List<ExerciseExecutionDto> executions = new List<ExerciseExecutionDto>();
+        while (reader.Read())
+        {
+            executions.Add(new ExerciseExecutionDto
+            {
+                Id = (int)reader["ExerciseExecutionID"],
+                UserId = (int)reader["UserID"],
+                ExerciseId = (int)reader["ExerciseID"]
+            });
+        }
+        conn.Close();
+        reader.Close();
+        return executions;
+    }
+    
     
 }

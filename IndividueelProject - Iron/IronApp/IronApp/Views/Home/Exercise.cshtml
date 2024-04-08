@@ -15,6 +15,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anta&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-base.min.js"></script>
 
     <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0"/>
 </head>
@@ -22,7 +24,7 @@
 <body>
 <div class="workout-card">
     <div class="workout-logo">
-            <img src="@Model.Logo" alt="Logo" />
+        <img src="@Model.Logo" alt="Logo" />
     </div>
         
     <div class="workout-info">
@@ -32,4 +34,41 @@
         </button>
     </div>
 </div>
+
+<div id="chart"></div>
+
+    <script>
+      anychart.onDocumentReady(function () {
+  
+        // add data
+        var data = @Html.Raw(Json.Serialize(Model.DataPoints.Select(dp => new {x=dp.X, y=dp.Y})))
+  
+        // create a data set
+        var dataSet = anychart.data.set(data);
+        
+        var seriesData1 = dataSet.mapAs({x: 0, value: 1});
+
+        // create a line chart
+        var chart = anychart.line();
+
+        // create first series with mapped data
+        var series1 = chart.line(seriesData1);
+  
+        // add a title
+        chart.title("MAX WEIGHT");
+        
+        // set axes titles
+        chart.xAxis().title("Date");
+        chart.yAxis().title("Weight");
+  
+        // specify where to display the chart
+        chart.container("chart");
+  
+        // draw the resulting chart
+        chart.draw();
+  
+      });
+    </script>
+
 </body>
+
