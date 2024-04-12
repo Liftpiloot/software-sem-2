@@ -124,7 +124,8 @@ public class DbExerciseExecution
             {
                 Id = (int)reader["ExerciseExecutionID"],
                 UserId = (int)reader["UserID"],
-                ExerciseId = (int)reader["ExerciseID"]
+                ExerciseId = (int)reader["ExerciseID"],
+                ExecutionDate = (DateTime)reader["ExerciseExecutionDate"]
             });
         }
         conn.Close();

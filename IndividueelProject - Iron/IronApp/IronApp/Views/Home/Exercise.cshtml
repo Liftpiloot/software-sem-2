@@ -35,40 +35,40 @@
     </div>
 </div>
 
-<div id="chart"></div>
+<div id="chart" style="height: 300px; width: 80%"></div>
 
     <script>
-      anychart.onDocumentReady(function () {
-  
-        // add data
-        var data = @Html.Raw(Json.Serialize(Model.DataPoints.Select(dp => new {x=dp.X, y=dp.Y})))
-  
-        // create a data set
-        var dataSet = anychart.data.set(data);
-        
-        var seriesData1 = dataSet.mapAs({x: 0, value: 1});
-
-        // create a line chart
-        var chart = anychart.line();
-
-        // create first series with mapped data
-        var series1 = chart.line(seriesData1);
-  
-        // add a title
-        chart.title("MAX WEIGHT");
-        
-        // set axes titles
-        chart.xAxis().title("Date");
-        chart.yAxis().title("Weight");
-  
-        // specify where to display the chart
-        chart.container("chart");
-  
-        // draw the resulting chart
-        chart.draw();
-  
-      });
+    chart = (function () {
+        var dataPoints = @Html.Raw(Json.Serialize(Model.DataPoints));
+        dataPoints = dataPoints.map(function (item) {
+            return { x: new Date(item.x), y: item.y };
+        });
+            var chart = new CanvasJS.Chart("chart",{
+                animationEnabled: true,
+                title: {
+                    text: "Progress",
+                    fontFamily: "Anta"
+                },
+                toolTip: {
+                    shared: true
+                },
+                data: [{
+                    type: "spline",
+                    color: "rgba(54,158,173,.7)",
+                    lineThickness: 5,
+                    xValueType: "date",
+                    xValueFormatString: "DD MMM",
+                    yValueFormatString: "#,##0.##",
+                    // convert model.DataPoints to json
+                    dataPoints: dataPoints
+                }]
+            });
+            chart.render();
+            console.log("Chart rendered");
+            console.log(dataPoints)
+        });
+    window.onload = chart;
     </script>
-
+<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>	
 </body>
 
