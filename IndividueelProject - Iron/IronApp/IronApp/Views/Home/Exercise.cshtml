@@ -44,10 +44,18 @@
             return { x: new Date(item.x), y: item.y };
         });
             var chart = new CanvasJS.Chart("chart",{
+                backgroundColor: "transparent",
                 animationEnabled: true,
+                axisX: {
+                    labelFontColor: "white",
+                },
+                axisY: {
+                    labelFontColor: "white",
+                },
                 title: {
                     text: "Progress",
-                    fontFamily: "Anta"
+                    fontFamily: "Anta",
+                    fontColor: "white"
                 },
                 toolTip: {
                     shared: true
@@ -60,7 +68,8 @@
                     xValueFormatString: "DD MMM",
                     yValueFormatString: "#,##0.##",
                     // convert model.DataPoints to json
-                    dataPoints: dataPoints
+                    dataPoints: dataPoints,
+                    fontColor: "white"
                 }]
             });
             chart.render();

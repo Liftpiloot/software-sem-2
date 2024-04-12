@@ -139,6 +139,7 @@ public class HomeController : Controller
             foreach (ExerciseExecution exerciseExecution in exerciseExecutions)
             {
                 List<Set> executionSets = _exerciseExecutionContainer.GetSets(exerciseExecution);
+                if (executionSets.Count == 0) continue;
                 List<SetModel> executionSetsModel = new List<SetModel>();
                 foreach (Set set in executionSets)
                 {
