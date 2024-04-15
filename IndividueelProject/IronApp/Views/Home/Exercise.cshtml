@@ -35,7 +35,9 @@
     </div>
 </div>
 
+<div class="chart-container">
 <canvas id="chart"></canvas>
+</div>
 
 <script>
     let dataPoints = @Html.Raw(Json.Serialize(Model.DataPoints));
@@ -59,7 +61,7 @@
             datasets: [{
                 label: 'Max weight',
                 data: y,
-                borderColor: 'rgb(75,96,166)',
+                borderColor: '#5ab2c4',
                 backgroundColor: 'rgba(0,0,0,0)',
                 tension: 0.2
             }]
