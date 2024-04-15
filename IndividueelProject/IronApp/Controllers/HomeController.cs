@@ -31,7 +31,6 @@ public class HomeController : Controller
 
         var userId = Convert.ToInt32(Request.Cookies["UserId"]);
         _user.Id = userId;
-        Console.WriteLine(_user.Id);
         _user.UserName = Request.Cookies["Username"] ?? string.Empty;
         _user.PasswordHash = Request.Cookies["PasswordHash"] ?? string.Empty;
         _user.DateOfBirth = Convert.ToDateTime(Request.Cookies["DateOfBirth"]);
@@ -209,4 +208,39 @@ public class HomeController : Controller
         _exerciseContainer.AddSelectedExercise(selectedExercise);
         return RedirectToAction("Index", "Home");
     }
+
+    [HttpPost]
+    public IActionResult SaveWorkout([FromBody] List<WorkoutEntryModel> workout)
+    {
+        if (workout == null)
+        {
+            return BadRequest("The workout is null.");
+        }
+        Console.WriteLine("Workout count: " + workout.Count);
+        foreach (var exercise in workout)
+        {
+            Console.WriteLine("Exercise ID: " + exercise.Id);
+            var newExerciseExecution = new ExerciseExecution
+            {
+                UserId = Convert.ToInt32(Request.Cookies["UserId"]),
+                ExerciseId = exercise.Id,
+                ExecutionDate = DateTime.Now
+            };
+            var executionId = _exerciseExecutionContainer.AddExerciseExecution(newExerciseExecution);
+            if (executionId <= 0) return RedirectToAction("Index", "Home");
+            newExerciseExecution.Id = executionId;
+            foreach (var set in exercise.Sets)
+            {
+                var newSet = new Set
+                {
+                    Reps = set.Reps,
+                    Weight = set.Weight
+                };
+                _exerciseExecutionContainer.AddSet(newExerciseExecution, newSet);
+            }
+        }
+        return RedirectToAction("Index", "Home");
+
+    }
+    
 }

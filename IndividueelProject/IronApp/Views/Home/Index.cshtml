@@ -15,6 +15,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anta&display=swap" rel="stylesheet">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0"/>
 </head>
@@ -58,6 +60,10 @@
     }
 </div>
 
+<div id="save_workout">
+    <a onclick="save_workout()">Save Workout</a>
+</div>
+
 <div id="add_workout">
     <a asp-action="ExerciseList" asp-controller="Home">Add Exercise</a>
 </div>
@@ -83,7 +89,7 @@
         console.log("i: " + i); // Debugging line
         var sets = model[i].sets;
         console.log(model[i])
-        if (sets === undefined || sets.length === 0) {
+        if (sets===null || sets === undefined || sets.length === 0) {
             add_row(i);
         }
             else{
@@ -123,6 +129,39 @@
             if (rowCount > 2) {
                 table.deleteRow(-1);
             }
+    }
+    
+    function save_workout(){
+        // Get the selected workouts
+        var workout = [];
+        for (var i = 0; i < model.length; i++) {
+            var div = document.getElementById("workout-select " + i);
+            if (div.classList.contains("selected")) {
+                var sets = [];
+                var table = document.getElementById('workout-table ' + i);
+                for (var j = 1; j < table.rows.length; j++) {
+                    var weight = table.rows[j].cells[0].children[0].value;
+                    var reps = table.rows[j].cells[1].children[0].value;
+                    if (weight !== "" && reps !== ""){
+                        sets.push({ Weight: weight, Reps: reps , Date: new Date()});
+                    }
+                }
+                workout.push({ Id: model[i].id, Sets: sets });
+            }
+        }
+        console.log(workout);
+        $.ajax({
+            url: '@Url.Action("SaveWorkout", "Home")',
+            type: 'POST',
+            data:JSON.stringify(workout),
+            contentType: 'application/json',
+            success: function() {
+                window.location.href = '@Url.Action("Index", "Home")';
+            },
+            error: function(){
+                alert("Error saving workout.");
+            }
+        })
     }
 
 </script>
