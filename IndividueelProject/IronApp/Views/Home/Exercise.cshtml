@@ -15,18 +15,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anta&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-base.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    
     <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0"/>
 </head>
 
 <body>
 <div class="workout-card">
     <div class="workout-logo">
-        <img src="@Model.Logo" alt="Logo" />
+        <img src="@Model.Logo" alt="Logo"/>
     </div>
-        
+
     <div class="workout-info">
         <h1>@Model.Name</h1>
         <button id="del-button">
@@ -35,49 +35,55 @@
     </div>
 </div>
 
-<div id="chart" style="height: 300px; width: 80%"></div>
+<canvas id="chart"></canvas>
 
-    <script>
-    chart = (function () {
-        var dataPoints = @Html.Raw(Json.Serialize(Model.DataPoints));
-        dataPoints = dataPoints.map(function (item) {
-            return { x: new Date(item.x), y: item.y };
-        });
-            var chart = new CanvasJS.Chart("chart",{
-                backgroundColor: "transparent",
-                animationEnabled: true,
-                axisX: {
-                    labelFontColor: "white",
-                },
-                axisY: {
-                    labelFontColor: "white",
-                },
-                title: {
-                    text: "Progress",
-                    fontFamily: "Anta",
-                    fontColor: "white"
-                },
-                toolTip: {
-                    shared: true
-                },
-                data: [{
-                    type: "spline",
-                    color: "rgba(54,158,173,.7)",
-                    lineThickness: 5,
-                    xValueType: "date",
-                    xValueFormatString: "DD MMM",
-                    yValueFormatString: "#,##0.##",
-                    // convert model.DataPoints to json
-                    dataPoints: dataPoints,
-                    fontColor: "white"
-                }]
-            });
-            chart.render();
-            console.log("Chart rendered");
-            console.log(dataPoints)
-        });
-    window.onload = chart;
+<script>
+    let dataPoints = @Html.Raw(Json.Serialize(Model.DataPoints));
+    dataPoints = dataPoints.map(function (x) {
+        const date = new Date(x.x);
+        const month = date.toLocaleString('default', { month: 'short' });
+        const day = date.getDate();
+        return {
+            x: month + ' ' + day,
+            y: x.y
+        };
+    });
+    const x = dataPoints.map(x => x.x);
+    console.log(x);
+    const y = dataPoints.map(x => x.y);
+    var ctx = document.getElementById('chart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: x,
+            datasets: [{
+                label: 'Max weight',
+                data: y,
+                borderColor: 'rgb(75,96,166)',
+                backgroundColor: 'rgba(0,0,0,0)',
+                tension: 0.2
+            }]
+        },
+        
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day',
+                        displayFormats: {
+                            day: 'MMM DD',
+                        }
+                    }
+                }
+            },
+            legend: {
+                display: false
+            }
+        }
+       
+    });
+
+    
     </script>
-<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>	
 </body>
-
