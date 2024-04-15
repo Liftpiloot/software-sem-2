@@ -1,0 +1,83 @@
+﻿@{
+    Layout = null;
+}
+
+@model ExerciseModel
+
+<!DOCTYPE html>
+<head>
+    <title>@Model.Name</title>
+    <Link rel="stylesheet" href="~/css/exercise.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anta&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-base.min.js"></script>
+
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0"/>
+</head>
+
+<body>
+<div class="workout-card">
+    <div class="workout-logo">
+        <img src="@Model.Logo" alt="Logo" />
+    </div>
+        
+    <div class="workout-info">
+        <h1>@Model.Name</h1>
+        <button id="del-button">
+            <a href="@Url.Action("DeleteExercise", "Home", new { ID = Model.Id })">Delete from home</a>
+        </button>
+    </div>
+</div>
+
+<div id="chart" style="height: 300px; width: 80%"></div>
+
+    <script>
+    chart = (function () {
+        var dataPoints = @Html.Raw(Json.Serialize(Model.DataPoints));
+        dataPoints = dataPoints.map(function (item) {
+            return { x: new Date(item.x), y: item.y };
+        });
+            var chart = new CanvasJS.Chart("chart",{
+                backgroundColor: "transparent",
+                animationEnabled: true,
+                axisX: {
+                    labelFontColor: "white",
+                },
+                axisY: {
+                    labelFontColor: "white",
+                },
+                title: {
+                    text: "Progress",
+                    fontFamily: "Anta",
+                    fontColor: "white"
+                },
+                toolTip: {
+                    shared: true
+                },
+                data: [{
+                    type: "spline",
+                    color: "rgba(54,158,173,.7)",
+                    lineThickness: 5,
+                    xValueType: "date",
+                    xValueFormatString: "DD MMM",
+                    yValueFormatString: "#,##0.##",
+                    // convert model.DataPoints to json
+                    dataPoints: dataPoints,
+                    fontColor: "white"
+                }]
+            });
+            chart.render();
+            console.log("Chart rendered");
+            console.log(dataPoints)
+        });
+    window.onload = chart;
+    </script>
+<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>	
+</body>
+

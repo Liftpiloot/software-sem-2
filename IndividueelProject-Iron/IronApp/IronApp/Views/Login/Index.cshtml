@@ -1,0 +1,57 @@
+﻿@model IronApp.Models.LoginModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<head>
+    <title>Login</title>
+    <Link rel="stylesheet" href="~/css/site.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anta&display=swap" rel="stylesheet">
+
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0"/>
+</head>
+
+<body style="overflow: hidden">
+<div class="iron-logo">
+    <img src="images/iron_logo_new.png" alt="logo" width="100%"/>
+</div>
+<div class="wrapper">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div id="error-message" style="color: white;">
+            @foreach (var value in ViewData.ModelState.Values)
+            {
+                foreach (var error in value.Errors)
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            }
+        </div>
+    }
+    <form method="post" action="Login" class="login-form">
+
+        <div class="input-box">
+            <input type="text" id="name" name="name" placeholder="Email/Username" required/>
+        </div>
+        <div class="input-box">
+            <input type="password" id="password" name="password" placeholder="Password" required/>
+        </div>
+
+        <div class="login-register">
+            <div class="register">
+                <a asp-controller="Register" asp-action="Index">Register</a>
+            </div>
+            <input class="login-button" type="submit" value="Login"/>
+        </div>
+
+
+    </form>
+</div>
+</body>
