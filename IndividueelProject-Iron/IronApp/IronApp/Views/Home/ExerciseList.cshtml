@@ -1,0 +1,104 @@
+﻿@{
+    Layout = null;
+}
+
+@using System.Reflection.Metadata
+@model List<ExerciseModel>;
+
+<!DOCTYPE html>
+<head>
+    <title>Home</title>
+    <Link rel="stylesheet" href="~/css/list.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anta&display=swap" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0"/>
+</head>
+
+<body>
+<div class="iron-logo">
+    <img src="~/images/iron_logo_new.png" alt="logo" width="100%"/>
+</div>
+
+
+@for (int i = 0; i < Model.Count; i++)
+{
+    <div class="workout-card">
+        <div class="workout-info">
+            <div class="workout-logo">
+                <img src="@Model[i].Logo" alt="logo"/>
+            </div>
+            <div class="workout">
+                <h1>@Model[i].Name</h1>
+                <div class="weight-reps-sets">
+                    <button class="add-button" id="add_button_@i" onclick="add_selected(@Model[i].Id)">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="workout-card">
+    <div class="workout-info">
+        <div class="workout-logo">
+            <img src="/images/iron_logo_new.png" alt="logo"/>
+        </div>
+        <div class="workout">
+            <h1>Custom Exercise</h1>
+            <input type="text" id="custom_exercise_input" placeholder="Exercise name">
+            <div class="weight-reps-sets">
+                <button class="add-button" id="add_button_custom" onclick="add_custom()">Add</button>"
+            </div>
+        </div>
+    </div>
+</div>
+<a href="@Url.Action("Index", "Home")" class="back-arrow">
+    <div>←</div>
+</a>
+
+</body>
+
+<script>
+function add_selected(id){
+    console.log(id)
+    $.ajax({
+        url: '@Url.Action("AddSelectedExercise", "Home")',
+        type: 'POST',
+        data: { id: id},
+        success: function() {
+            window.location.href = '@Url.Action("Index", "Home")';
+        },
+        error: function(){
+            alert("Error adding exercise.");
+        }
+    })
+    }
+    
+function add_custom(){
+    const name = document.getElementById("custom_exercise_input").value.toString();
+    if (name.length > 20){
+        alert("Exercise name cannot be more than 20 characters.");
+        return;
+    }
+    $.ajax({
+        url: '@Url.Action("AddCustomExercise", "Home")',
+        type: 'POST',
+        data: { name: name},
+        success: function() {
+            window.location.href = '@Url.Action("Index", "Home")';
+        },
+        error: function(){
+            alert("Error adding custom exercise. (Exercise already exists)");
+        }
+    })
+}
+    
+    
+</script>
