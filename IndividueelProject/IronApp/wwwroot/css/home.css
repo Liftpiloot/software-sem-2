@@ -256,6 +256,32 @@ body {
     color: black;
 }
 
+#save_workout{
+    margin-bottom: 50px;
+}
+#save_workout a{
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
+    background: rgba(1, 84, 178, 0.6);
+    border: 2px solid #5ab2c4;
+    box-shadow: 0 0 5px rgb(0, 255, 255);
+    border-radius: 24px;
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    transition: 0.3s;
+}
+
+#save_workout a:hover{
+    background-color: #5ab2c4;
+    transform: translateY(1px);
+    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.4);
+}
+
 #custom_exercise_input {
     width: 80%;
     max-width: 500px;
