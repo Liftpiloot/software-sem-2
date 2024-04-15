@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal" created-in="RD-233.14475.66">
+    <data-source name="iron@localhost" uuid="1cbccffa-a272-40a2-9370-afbc5fc6d5c4">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MSSQL" />
+      <schema-mapping />
+    </data-source>
+    <data-source name="iron@localhost [2]" uuid="b04e97db-7204-4feb-9018-58d74ad90a74">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MSSQL" />
+      <schema-mapping />
+    </data-source>
+  </component>
+</project>
