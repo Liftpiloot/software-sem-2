@@ -7,7 +7,7 @@ namespace IronDomain;
 public class ExerciseExecutionContainer
 {
     private readonly DbExerciseExecution _dbExerciseExecution = new();
-    
+
     public int AddExerciseExecution(ExerciseExecution exerciseExecution)
     {
         ExerciseExecutionDto exerciseExecutionDto = new()
@@ -28,9 +28,8 @@ public class ExerciseExecutionContainer
             Reps = set.Reps,
             Weight = set.Weight,
         };
-        
+
         return _dbExerciseExecution.AddSet(setDto);
-        
     }
 
     public ExerciseExecution? GetRecentExerciseExecution(User user, Exercise exercise)
@@ -48,6 +47,7 @@ public class ExerciseExecutionContainer
         {
             return null;
         }
+
         ExerciseExecution? exerciseExecution = new()
         {
             Id = exerciseExecutionDto.Id,
@@ -74,6 +74,7 @@ public class ExerciseExecutionContainer
                 Weight = setDto.Weight,
             });
         }
+
         return sets;
     }
 
@@ -87,7 +88,8 @@ public class ExerciseExecutionContainer
         {
             Id = exercise.Id,
         };
-        List<ExerciseExecutionDto> exerciseExecutionDtos = _dbExerciseExecution.GetExerciseExecutions(userDto, exerciseDto);
+        List<ExerciseExecutionDto> exerciseExecutionDtos =
+            _dbExerciseExecution.GetExerciseExecutions(userDto, exerciseDto);
         List<ExerciseExecution> exerciseExecutions = new();
         foreach (ExerciseExecutionDto exerciseExecutionDto in exerciseExecutionDtos)
         {
@@ -99,6 +101,39 @@ public class ExerciseExecutionContainer
                 ExerciseId = exerciseExecutionDto.ExerciseId,
             });
         }
+
         return exerciseExecutions;
+    }
+
+    public bool AddWorkout(List<ExerciseExecution> exerciseExecutions)
+    {
+        foreach (ExerciseExecution exerciseExecution in exerciseExecutions)
+        {
+            ExerciseExecutionDto exerciseExecutionDto = new()
+            {
+                ExerciseId = exerciseExecution.ExerciseId,
+                UserId = exerciseExecution.UserId,
+                ExecutionDate = exerciseExecution.ExecutionDate,
+            };
+            var returnedExerciseExecution = _dbExerciseExecution.AddExerciseExecution(exerciseExecutionDto);
+            if (returnedExerciseExecution <= 0)
+            {
+                return false;
+            }
+            foreach (var setDto in exerciseExecution.Sets.Select(set => new SetDto()
+                     {
+                         ExerciseExecutionId = returnedExerciseExecution,
+                         Reps = set.Reps,
+                         Weight = set.Weight,
+                     }))
+            {
+                if (!_dbExerciseExecution.AddSet(setDto))
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }

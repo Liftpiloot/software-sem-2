@@ -205,29 +205,32 @@ public class HomeController : Controller
         {
             return BadRequest("No exercises in workout");
         }
-        
-        foreach (var exercise in workout) // execute in container??
+        List<ExerciseExecution> exerciseExecutions = new List<ExerciseExecution>();
+        foreach (var exercise in workout)
         {
-            Console.WriteLine("Exercise ID: " + exercise.Id);
-            var newExerciseExecution = new ExerciseExecution
-            {
-                UserId = Convert.ToInt32(Request.Cookies["UserId"]),
-                ExerciseId = exercise.Id,
-                ExecutionDate = DateTime.Now
-            };
-            var executionId = _exerciseExecutionContainer.AddExerciseExecution(newExerciseExecution);
-            if (executionId <= 0) return RedirectToAction("Index", "Home");
-            newExerciseExecution.Id = executionId;
+            List<Set> sets = new List<Set>();
             foreach (var set in exercise.Sets)
             {
-                var newSet = new Set
+                sets.Add(new Set
                 {
                     Reps = set.Reps,
                     Weight = set.Weight
-                };
-                _exerciseExecutionContainer.AddSet(newExerciseExecution, newSet);
+                });
             }
+            ExerciseExecution execution = new ExerciseExecution
+            {
+                UserId = Convert.ToInt32(Request.Cookies["UserId"]),
+                ExerciseId = exercise.Id,
+                ExecutionDate = DateTime.Now,
+                Sets = sets
+            };
+            exerciseExecutions.Add(execution);
         }
+        if (!_exerciseExecutionContainer.AddWorkout(exerciseExecutions))
+        {
+            return BadRequest("An error occurred while saving the workout.");
+        }
+        
         return RedirectToAction("Index", "Home");
 
     }
