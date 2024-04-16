@@ -15,7 +15,7 @@ public class DbExercise
             using SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM exercises WHERE ExerciseName = @name AND UserID = @userid OR UserID IS NULL", conn);
             checkCmd.Parameters.AddWithValue("@name", exercise.Name);
             checkCmd.Parameters.AddWithValue("@userid", exercise.UserId);
-            int count = (int)checkCmd.ExecuteScalar();
+            var count = (int)checkCmd.ExecuteScalar();
             if (count > 0)
             {
                 conn.Close();
@@ -66,7 +66,7 @@ public class DbExercise
         return null;
     }
     
-    public bool AddSelectedExercise(SelectedExerciseDTO selectedExerciseDto)
+    public bool AddSelectedExercise(SelectedExerciseDto selectedExerciseDto)
     {
         SqlConnection conn = new SqlConnection(_db);
         conn.Open();
@@ -81,7 +81,7 @@ public class DbExercise
         return rows > 0;
     }
 
-    public bool DeleteSelectedExercise(SelectedExerciseDTO selectedExerciseDto)
+    public bool DeleteSelectedExercise(SelectedExerciseDto selectedExerciseDto)
     {
         SqlConnection conn = new SqlConnection(_db);
         conn.Open();
@@ -98,7 +98,7 @@ public class DbExercise
     /// </summary>
     /// <param name="user"></param>
     /// <returns>List of SelectedExercise</returns>
-    public List<SelectedExerciseDTO> GetSelectedExercises(UserDto user)
+    public List<SelectedExerciseDto> GetSelectedExercises(UserDto user)
     {
         SqlConnection conn = new SqlConnection(_db);
         conn.Open();
@@ -106,10 +106,10 @@ public class DbExercise
             "SELECT * FROM selected_exercises WHERE UserID = @userid", conn);
         cmd.Parameters.AddWithValue("@userid", user.Id);
         SqlDataReader reader = cmd.ExecuteReader();
-        List<SelectedExerciseDTO> selectedExercises = new List<SelectedExerciseDTO>();
+        List<SelectedExerciseDto> selectedExercises = new List<SelectedExerciseDto>();
         while (reader.Read())
         {
-            selectedExercises.Add(new SelectedExerciseDTO
+            selectedExercises.Add(new SelectedExerciseDto
             {
                 UserId = (int)reader["UserID"],
                 ExerciseId = (int)reader["ExerciseID"]

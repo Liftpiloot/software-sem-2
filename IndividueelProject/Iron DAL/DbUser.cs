@@ -7,7 +7,7 @@ namespace Iron_DAL;
 
 public class DbUser
 {
-    private string _db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
+    private readonly string _db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
     
     
     /// <summary>
@@ -16,9 +16,13 @@ public class DbUser
     /// <returns>User</returns>
     public int AddUser(UserDto? user)
     {
+        if (user == null)
+        {
+            return -1;
+        }
         SqlConnection conn;
         SqlCommand cmd;
-        int id = -1;
+        int id;
         try
         {
             // check if username or email already exists

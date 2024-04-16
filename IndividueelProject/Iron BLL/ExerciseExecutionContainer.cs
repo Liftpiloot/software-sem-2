@@ -16,8 +16,8 @@ public class ExerciseExecutionContainer
             UserId = exerciseExecution.UserId,
             ExecutionDate = exerciseExecution.ExecutionDate,
         };
-        int? returnedExerciseExecution = _dbExerciseExecution.AddExerciseExecution(exerciseExecutionDto);
-        return returnedExerciseExecution ?? -1;
+        var returnedExerciseExecution = _dbExerciseExecution.AddExerciseExecution(exerciseExecutionDto);
+        return returnedExerciseExecution;
     }
 
     public bool AddSet(ExerciseExecution execution, Set set)

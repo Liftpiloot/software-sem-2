@@ -18,7 +18,12 @@ public class DbExerciseExecution
         SqlCommand cmd = new SqlCommand("INSERT INTO exercise_executions (ExerciseExecutionDate ,UserID, ExerciseID) VALUES (GETDATE(), @userid, @exerciseid); SELECT SCOPE_IDENTITY();", conn);
         cmd.Parameters.AddWithValue("@userid", exercise.UserId);
         cmd.Parameters.AddWithValue("@exerciseid", exercise.ExerciseId);
-        int id = Convert.ToInt32((object?)cmd.ExecuteScalar());
+        var result = cmd.ExecuteScalar();
+        if (result == null)
+        {
+            return -1;
+        }
+        var id = Convert.ToInt32(result);
         conn.Close();
         return id;
     }

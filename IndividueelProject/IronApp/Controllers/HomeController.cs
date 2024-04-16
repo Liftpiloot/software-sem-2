@@ -1,21 +1,17 @@
-using System.Collections.Immutable;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using IronApp.Models;
-using System.Data.SqlClient;
 using Iron_Domain;
 using IronDomain;
-using Microsoft.Data.SqlClient;
 
 namespace IronApp.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private ExerciseContainer _exerciseContainer = new ExerciseContainer();
-    private ExerciseExecutionContainer _exerciseExecutionContainer = new ExerciseExecutionContainer();
-    private UserContainer _userContainer = new UserContainer();
-    private User _user = new User();
+    private readonly ExerciseContainer _exerciseContainer = new ExerciseContainer();
+    private readonly ExerciseExecutionContainer _exerciseExecutionContainer = new ExerciseExecutionContainer();
+    private readonly User _user = new();
 
     public HomeController(ILogger<HomeController> logger)
     {
@@ -116,11 +112,11 @@ public class HomeController : Controller
         return RedirectToAction("Index", "Home");
     }
 
-    public IActionResult? Exercise(int ID)
+    public IActionResult? Exercise(int id)
     {
         Exercise? exercise = new Exercise
         {
-            Id = ID
+            Id = id
         };
         exercise = _exerciseContainer.GetExerciseFromId(exercise.Id);
         if (exercise != null)
@@ -156,14 +152,7 @@ public class HomeController : Controller
             foreach (List<SetModel> sets in allSets)
             {
                 // Get highest weight
-                decimal highestWeight = 0;
-                foreach (SetModel set in sets)
-                {
-                    if (set.Weight > highestWeight)
-                    {
-                        highestWeight = set.Weight;
-                    }
-                }
+                decimal highestWeight = sets.Select(set => set.Weight).Prepend(0).Max();
                 // Get date
                 DateTime date = sets[0].Date;
                 DataPointModel dataPoint = new DataPointModel(date, highestWeight);
@@ -212,12 +201,12 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult SaveWorkout([FromBody] List<WorkoutEntryModel> workout)
     {
-        if (workout == null)
+        if (workout.Count == 0)
         {
-            return BadRequest("The workout is null.");
+            return BadRequest("No exercises in workout");
         }
         
-        foreach (var exercise in workout)
+        foreach (var exercise in workout) // execute in container??
         {
             Console.WriteLine("Exercise ID: " + exercise.Id);
             var newExerciseExecution = new ExerciseExecution

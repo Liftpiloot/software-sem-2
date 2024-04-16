@@ -17,8 +17,8 @@ public class ExerciseContainer
             Description = exercise.Description,
             Logo = exercise.Logo
         };
-        int? returnedExercise = _dbExercise.AddExercise(exerciseDto);
-        return returnedExercise ?? -1;
+        var returnedExercise = _dbExercise.AddExercise(exerciseDto);
+        return returnedExercise;
     }
     
     public bool DeleteExercise(User user, Exercise exercise)
@@ -83,7 +83,7 @@ public class ExerciseContainer
     
     public bool AddSelectedExercise(SelectedExercise selectedExercise)
     {
-        SelectedExerciseDTO selectedExerciseDto = new()
+        SelectedExerciseDto selectedExerciseDto = new()
         {
             UserId = selectedExercise.UserId,
             ExerciseId = selectedExercise.ExerciseId
@@ -93,7 +93,7 @@ public class ExerciseContainer
     
     public bool DeleteSelectedExercise(SelectedExercise selectedExercise)
     {
-        SelectedExerciseDTO selectedExerciseDto = new()
+        SelectedExerciseDto selectedExerciseDto = new()
         {
             UserId = selectedExercise.UserId,
             ExerciseId = selectedExercise.ExerciseId
@@ -108,9 +108,9 @@ public class ExerciseContainer
         {
             Id = user.Id
         };
-        List<SelectedExerciseDTO> selectedExerciseDtos = _dbExercise.GetSelectedExercises(userDto);
+        List<SelectedExerciseDto> selectedExerciseDtos = _dbExercise.GetSelectedExercises(userDto);
         List<SelectedExercise> selectedExercises = new();
-        foreach (SelectedExerciseDTO selectedExerciseDto in selectedExerciseDtos)
+        foreach (SelectedExerciseDto selectedExerciseDto in selectedExerciseDtos)
         {
             SelectedExercise selectedExercise = new()
             {

@@ -1,10 +1,7 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using Iron_Domain;
+﻿using Iron_Domain;
 using IronApp.Models;
 using IronDomain;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 
 namespace IronApp.Controllers;
 
@@ -49,7 +46,9 @@ public class RegisterController : Controller
             var cookieOptions = new CookieOptions
             {
                 Expires = DateTime.Now.AddDays(365), // Cookie expires after a year
-                IsEssential = true
+                IsEssential = true,
+                Secure = true,
+                HttpOnly = true
             };
             Response.Cookies.Append("UserId", user.Id.ToString(), cookieOptions);
             Response.Cookies.Append("Username", user.UserName, cookieOptions);
@@ -75,7 +74,7 @@ public class RegisterController : Controller
             ModelState.AddModelError("Password", "The password must be at least 10 characters long.");
         }
 
-        if (model.DateOfBirth == null)
+        if (model.DateOfBirth == DateTime.MinValue)
         {
             ModelState.AddModelError("DateOfBirth", "Date of birth is required.");
         }

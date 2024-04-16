@@ -50,7 +50,9 @@ public class LoginController : Controller
         var cookieOptions = new CookieOptions
         {
             Expires = DateTime.Now.AddDays(365), // Cookie expires after a year
-            IsEssential = true
+            IsEssential = true,
+            Secure = true,
+            HttpOnly = true
         };
         Response.Cookies.Append("UserId", user.Id.ToString(), cookieOptions);
         Response.Cookies.Append("Username", user.UserName, cookieOptions);
