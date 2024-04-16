@@ -15,7 +15,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anta&display=swap" rel="stylesheet">
-    
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0"/>
@@ -86,9 +86,7 @@
     // When the page loads, add a row to each table
     window.onload = function () {
         for (var i = 0; i < model.length; i++) {
-        console.log("i: " + i); // Debugging line
         var sets = model[i].sets;
-        console.log(model[i])
         if (sets===null || sets === undefined || sets.length === 0) {
             add_row(i);
         }
@@ -102,16 +100,13 @@
 
     function add_filled_row(i, weight, reps){
         var id = 'workout-table ' + i;
-        console.log("id: " + id); // Debugging line
         var table = document.getElementById('workout-table ' + i);
         var row = table.insertRow(-1);
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
         
-        console.log("weight: " + weight); // Debugging line
-        console.log("reps: " + reps); // Debugging line
-        cell1.innerHTML = '<input type="number" class="weight-input" placeholder="KG" value="' + weight + '">';
-        cell2.innerHTML = '<input type="number" class="reps-input" placeholder="Reps" value="' + reps + '">';
+        cell1.innerHTML = '<input type="number" class="weight-input" placeholder="KG" min="0" max="999.99" value="' + weight + '">';
+        cell2.innerHTML = '<input type="number" class="reps-input" placeholder="Reps" min="0" max="999.99" value="' + reps + '">';
     }
 
     function add_row(i){
@@ -119,8 +114,8 @@
             var row = table.insertRow(-1);
             var cell1 = row.insertCell(0);
             var cell2 = row.insertCell(1);
-            cell1.innerHTML = '<input type="number" class="weight-input" placeholder="KG">';
-            cell2.innerHTML = '<input type="number" class="reps-input" placeholder="Reps">';
+            cell1.innerHTML = '<input type="number" class="weight-input" placeholder="KG" min="0" max="999.99">';
+            cell2.innerHTML = '<input type="number" class="reps-input" placeholder="Reps" min="0" max="999.99">';
     }
 
     function delete_row(i){
@@ -140,23 +135,28 @@
                 var sets = [];
                 var table = document.getElementById('workout-table ' + i);
                 for (var j = 1; j < table.rows.length; j++) {
-                    var weight = table.rows[j].cells[0].children[0].value;
-                    var reps = Math.floor(table.rows[j].cells[1].children[0].value);
-                    if (weight !== "" && reps !== ""){
-                        sets.push({ Weight: weight, Reps: reps , Date: new Date()});
+                    const weight = parseFloat(table.rows[j].cells[0].children[0].value);
+                    const reps = Math.floor(table.rows[j].cells[1].children[0].value);
+                    if (!isNaN(weight) && !isNaN(reps) && weight !== 0 && reps !== 0){
+                            sets.push({ Weight: weight, Reps: reps , Date: new Date()});
+                    }
+                    else{
+                        alert("Please enter a valid weight and reps for each set.");
+                        return;
                     }
                 }
-                workout.push({ Id: model[i].id, Sets: sets });
+                if (sets.length > 0){
+                    workout.push({ Id: model[i].id, Sets: sets });
+                }
             }
         }
-        console.log(workout);
         $.ajax({
             url: '@Url.Action("SaveWorkout", "Home")',
             type: 'POST',
             data:JSON.stringify(workout),
             contentType: 'application/json',
             success: function() {
-                window.location.href = '@Url.Action("Index", "Home")';
+                //window.location.href = '@Url.Action("Index", "Home")';
             },
             error: function(){
                 alert("Error saving workout. (Did you select at least one exercise?)");
