@@ -141,7 +141,7 @@
                 var table = document.getElementById('workout-table ' + i);
                 for (var j = 1; j < table.rows.length; j++) {
                     var weight = table.rows[j].cells[0].children[0].value;
-                    var reps = table.rows[j].cells[1].children[0].value;
+                    var reps = Math.floor(table.rows[j].cells[1].children[0].value);
                     if (weight !== "" && reps !== ""){
                         sets.push({ Weight: weight, Reps: reps , Date: new Date()});
                     }

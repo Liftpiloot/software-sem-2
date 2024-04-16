@@ -12,7 +12,7 @@ public class DbExercise
         {
             conn.Open();
             // Check if the exercise already exists.
-            using SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM exercises WHERE ExerciseName = @name AND UserID = @userid OR UserID IS NULL", conn);
+            using SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM exercises WHERE ExerciseName = @name AND UserID = @userid OR UserID IS NULL AND ExerciseName = @name", conn);
             checkCmd.Parameters.AddWithValue("@name", exercise.Name);
             checkCmd.Parameters.AddWithValue("@userid", exercise.UserId);
             var count = (int)checkCmd.ExecuteScalar();

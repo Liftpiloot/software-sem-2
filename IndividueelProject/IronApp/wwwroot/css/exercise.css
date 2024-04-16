@@ -68,7 +68,8 @@ body {
     max-width: 400px;
     height: 100%;
     background-color: transparent;
-    border: 2px solid #5ab2c4;
+    border: 2px solid #e83729;
+    box-shadow: 0 0 4px #e83729;
     border-radius: 24px;
     color: white;
     font-size: 16px;
@@ -87,12 +88,12 @@ body {
 }
 
 #del-button:hover {
-    background-color: #5ab2c4;
+    background-color: #e83729;
     color: black;
 }
 
 #del-button:active {
-    background-color: #003065d1;
+    background-color: #e83729;
     color: white;
 }
 .chart-container {
