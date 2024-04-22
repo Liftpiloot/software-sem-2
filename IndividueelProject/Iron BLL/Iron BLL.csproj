@@ -13,7 +13,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Iron DAL\Iron DAL.csproj" />
-      <ProjectReference Include="..\Iron Domain\Iron Domain.csproj" />
     </ItemGroup>
 
 </Project>
