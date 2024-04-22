@@ -1,8 +1,9 @@
 ﻿using Iron_DAL.DTO;
+using Iron_Interface;
 using Microsoft.Data.SqlClient;
 namespace Iron_DAL;
 
-public class DbExercise
+public class DbExercise : IDbExercise
 {
     private readonly string _db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
     

@@ -1,11 +1,12 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using Iron_DAL.DTO;
+using Iron_Interface;
 using Microsoft.Data.SqlClient;
 
 namespace Iron_DAL;
 
-public class DbUser
+public class DbUser : IDbUser
 {
     private readonly string _db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
     

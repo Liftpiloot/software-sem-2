@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iron BLL", "Iron BLL\Iron B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iron DAL", "Iron DAL\Iron DAL.csproj", "{9E334D23-E305-4363-A270-437BDB01D133}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iron Interface", "Iron Interface\Iron Interface.csproj", "{C62F3D18-EA31-45BB-9EA0-379F0A945C22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{9E334D23-E305-4363-A270-437BDB01D133}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E334D23-E305-4363-A270-437BDB01D133}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E334D23-E305-4363-A270-437BDB01D133}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C62F3D18-EA31-45BB-9EA0-379F0A945C22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C62F3D18-EA31-45BB-9EA0-379F0A945C22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C62F3D18-EA31-45BB-9EA0-379F0A945C22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C62F3D18-EA31-45BB-9EA0-379F0A945C22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
