@@ -157,6 +157,14 @@
             contentType: 'application/json',
             success: function() {
                 //window.location.href = '@Url.Action("Index", "Home")';
+                alert("Workout saved.");
+                //unset the selected workouts
+                for (var i = 0; i < model.length; i++) {
+                    var div = document.getElementById("workout-select " + i);
+                    if (div.classList.contains("selected")) {
+                        div.classList.remove("selected");
+                    }
+                }
             },
             error: function(){
                 alert("Error saving workout. (Did you select at least one exercise?)");
