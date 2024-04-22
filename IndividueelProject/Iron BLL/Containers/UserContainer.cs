@@ -2,12 +2,19 @@
 using Iron_DAL;
 using Iron_DAL.DTO;
 using Iron_Domain;
+using Iron_Interface;
+
 namespace IronDomain;
 
 public class UserContainer
 {
-    private readonly DbUser _dbUser = new();
-    
+    private readonly IDbUser _dbUser;
+
+    public UserContainer(IDbUser db)
+    {
+        _dbUser = db;
+    }
+
     public int AddUser(User user)
     {
         UserDto userDto = new()

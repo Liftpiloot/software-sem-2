@@ -1,13 +1,18 @@
 ﻿using Iron_DAL;
 using Iron_DAL.DTO;
 using Iron_Domain;
+using Iron_Interface;
 
 namespace IronDomain;
 
 public class ExerciseContainer
 {
-    private readonly DbExercise _dbExercise = new();
+    private readonly IDbExercise _dbExercise;
     
+    public ExerciseContainer(IDbExercise db)
+    {
+        _dbExercise = db;
+    }
     public int AddExercise(Exercise exercise)
     {
         ExerciseDto exerciseDto = new()

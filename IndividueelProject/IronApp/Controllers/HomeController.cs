@@ -1,23 +1,30 @@
 using System.Diagnostics;
+using Iron_DAL;
 using Microsoft.AspNetCore.Mvc;
 using IronApp.Models;
 using Iron_Domain;
+using Iron_Interface;
 using IronDomain;
 
 namespace IronApp.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-    private readonly ExerciseContainer _exerciseContainer = new ExerciseContainer();
-    private readonly ExerciseExecutionContainer _exerciseExecutionContainer = new ExerciseExecutionContainer();
+    private readonly ExerciseContainer _exerciseContainer;
+    private readonly ExerciseExecutionContainer _exerciseExecutionContainer;
+    private readonly IDbExercise _dbExercise;
+    private readonly IDbExerciseExecution _dbExerciseExecution;
     private readonly User _user = new();
-
-    public HomeController(ILogger<HomeController> logger)
+    
+    public HomeController()
     {
-        _logger = logger;
+        _dbExercise = new DbExercise();
+        _dbExerciseExecution = new DbExerciseExecution();
+        _exerciseContainer = new ExerciseContainer(_dbExercise);
+        _exerciseExecutionContainer = new ExerciseExecutionContainer(_dbExerciseExecution);
+        
     }
-
+    
     public IActionResult Index()
     {
         if (Request.Cookies["userId"] == null)

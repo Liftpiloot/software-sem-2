@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iron DAL", "Iron DAL\Iron D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iron Interface", "Iron Interface\Iron Interface.csproj", "{C62F3D18-EA31-45BB-9EA0-379F0A945C22}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{3FC6413F-11A1-4E6C-AC39-4A4219EB7766}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{C62F3D18-EA31-45BB-9EA0-379F0A945C22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C62F3D18-EA31-45BB-9EA0-379F0A945C22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C62F3D18-EA31-45BB-9EA0-379F0A945C22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FC6413F-11A1-4E6C-AC39-4A4219EB7766}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FC6413F-11A1-4E6C-AC39-4A4219EB7766}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FC6413F-11A1-4E6C-AC39-4A4219EB7766}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FC6413F-11A1-4E6C-AC39-4A4219EB7766}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

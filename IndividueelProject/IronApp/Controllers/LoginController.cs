@@ -1,6 +1,8 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using Iron_DAL;
 using Iron_Domain;
+using Iron_Interface;
 using IronApp.Models;
 using IronDomain;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +12,14 @@ namespace IronApp.Controllers;
 
 public class LoginController : Controller
 {
-    private readonly UserContainer _userContainer = new();
+    private readonly UserContainer _userContainer;
+    private readonly IDbUser _dbUser;
+    public LoginController()
+    { 
+        _dbUser = new DbUser();
+        _userContainer = new UserContainer(_dbUser);
+    }
+    
     // GET
     public IActionResult Index()
     {
