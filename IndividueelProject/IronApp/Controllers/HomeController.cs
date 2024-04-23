@@ -212,6 +212,7 @@ public class HomeController : Controller
         {
             return BadRequest("No exercises in workout");
         }
+        decimal volume = 0;
         List<ExerciseExecution> exerciseExecutions = new List<ExerciseExecution>();
         foreach (var exercise in workout)
         {
@@ -223,6 +224,7 @@ public class HomeController : Controller
                     Reps = set.Reps,
                     Weight = set.Weight
                 });
+                volume += set.Reps * set.Weight;
             }
             ExerciseExecution execution = new ExerciseExecution
             {
@@ -237,6 +239,11 @@ public class HomeController : Controller
         {
             return BadRequest("An error occurred while saving the workout.");
         }
+        
+        // Set number of PR's
+        ViewBag.PRs = _exerciseExecutionContainer.GetPRs(exerciseExecutions);
+        ViewBag.NumExercises = exerciseExecutions.Count;
+        ViewBag.Volume = volume;
         
         return RedirectToAction("Index", "Home");
 
