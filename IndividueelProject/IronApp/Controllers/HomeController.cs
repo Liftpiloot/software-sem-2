@@ -239,14 +239,7 @@ public class HomeController : Controller
         {
             return BadRequest("An error occurred while saving the workout.");
         }
-        
-        // Set number of PR's
-        ViewBag.PRs = _exerciseExecutionContainer.GetPRs(exerciseExecutions);
-        ViewBag.NumExercises = exerciseExecutions.Count;
-        ViewBag.Volume = volume;
-        
-        return RedirectToAction("Index", "Home");
-
+        return Json(new { numexercises = exerciseExecutions.Count, volume = volume });
     }
     
 }

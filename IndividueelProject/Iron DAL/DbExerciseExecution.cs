@@ -139,5 +139,4 @@ public class DbExerciseExecution : IDbExerciseExecution
         return executions;
     }
     
-    
 }

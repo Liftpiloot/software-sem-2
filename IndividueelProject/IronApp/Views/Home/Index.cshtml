@@ -26,6 +26,15 @@
     <img src="~/images/iron_logo_new.png" alt="logo" width="100%"/>
 </div>
 
+<div id="workout-info" style="display: none">
+    <button id="close-info" onclick="closeInfo()">X</button>
+    <h3>
+        WORKOUT SUMMARY
+    </h3>
+    <p id="workout-details">
+        Details
+    </p>
+</div>
 
 <div class="workout-header">
 
@@ -155,9 +164,8 @@
             type: 'POST',
             data:JSON.stringify(workout),
             contentType: 'application/json',
-            success: function() {
+            success: function(data) {
                 //window.location.href = '@Url.Action("Index", "Home")';
-                alert("Workout saved.");
                 //unset the selected workouts
                 for (var i = 0; i < model.length; i++) {
                     var div = document.getElementById("workout-select " + i);
@@ -165,11 +173,18 @@
                         div.classList.remove("selected");
                     }
                 }
+                var workoutInfo = "You have completed\n" + data.numexercises + " Exercises" + "\n\nWith a total volume of\n" + data.volume + "KG"
+                document.getElementById("workout-details").innerText = workoutInfo;
+                document.getElementById("workout-info").style.display = "block";
             },
             error: function(){
                 alert("Error saving workout. (Did you select at least one exercise?)");
             }
         })
+    }
+    
+    function closeInfo(){
+        document.getElementById("workout-info").style.display = "none";
     }
 
 </script>
