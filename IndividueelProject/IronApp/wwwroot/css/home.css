@@ -83,6 +83,13 @@ body {
     border-radius: 20px;
     margin-top: 10px;
     margin-bottom: 10px;
+    transition: 0.2s;
+}
+
+.workout-select:hover{
+    background-color: #5ab2c4;
+    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.4);
+
 }
 
 
