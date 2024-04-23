@@ -98,6 +98,7 @@ body {
 }
 .chart-container {
     width: 90%;
+    max-width: 500px;
     display: block;
     justify-content: center;
     align-items: center;
@@ -119,4 +120,18 @@ body {
     padding: 10px;
     border: 2px solid #5ab2c4;
     box-shadow: 0 0 4px rgb(0, 255, 255);
+}
+
+.back-arrow {
+    font-size: 24px;
+    color: white;
+    text-decoration: none;
+    border: 2px solid #5ab2c4;
+    border-radius: 24px;
+    padding: 10px;
+    align-items: center;
+    height: auto;
+    width: 75px;
+    align-self: start;
+    margin:50px;
 }
