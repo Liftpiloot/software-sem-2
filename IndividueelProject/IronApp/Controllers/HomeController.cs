@@ -156,16 +156,23 @@ public class HomeController : Controller
                 allSets.Add(executionSetsModel);
             }
             List<DataPointModel> dataPoints = new List<DataPointModel>();
+            List<DataPointModel> dataPoints2 = new List<DataPointModel>();
             foreach (List<SetModel> sets in allSets)
             {
-                // Get highest weight
+                // Get the highest weight
                 decimal highestWeight = sets.Select(set => set.Weight).Prepend(0).Max();
+                // Get the volume
+                decimal volume = sets.Select(set => set.Reps * set.Weight).Sum();
                 // Get date
                 DateTime date = sets[0].Date;
                 DataPointModel dataPoint = new DataPointModel(date, highestWeight);
+                DataPointModel dataPoint2 = new DataPointModel(date, volume);
                 dataPoints.Add(dataPoint);
+                dataPoints2.Add(dataPoint2);
             }
             exerciseModel.DataPoints = dataPoints;
+            exerciseModel.DataPoints2 = dataPoints2;
+            
             
             return View(exerciseModel);
         }

@@ -10,6 +10,7 @@ namespace IronApp.Models
         public string? Logo { get; set; }
         public List<Set>? Sets { get; set; }
         public List<DataPointModel> DataPoints { get; set; }
+        public List<DataPointModel> DataPoints2 { get; set; }
     }
 
     public enum ExerciseType
