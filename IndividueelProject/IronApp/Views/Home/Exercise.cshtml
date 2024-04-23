@@ -36,7 +36,13 @@
 </div>
 
 <div class="chart-container">
-<canvas id="chart"></canvas>
+    <h3>Max-weight</h3>
+    <canvas id="chart"></canvas>
+</div>
+
+<div class="chart-container">
+    <h3>Volume</h3>
+    <canvas id="chart2"></canvas>
 </div>
 
 <script>
@@ -85,6 +91,53 @@
         }
        
     });
+    
+    let dataPoints2 = @Html.Raw(Json.Serialize(Model.DataPoints2));
+    dataPoints2 = dataPoints2.map(function (x) {
+        const date = new Date(x.x);
+        const month = date.toLocaleString('default', { month: 'short' });
+        const day = date.getDate();
+        return {
+            x: month + ' ' + day,
+            y: x.y
+        };
+    });
+    const x2 = dataPoints2.map(x => x.x);
+    console.log(x2);
+    const y2 = dataPoints2.map(x => x.y);
+    var ctx2 = document.getElementById('chart2').getContext('2d');
+    const chart2 = new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: x2,
+            datasets: [{
+                label: 'Max reps',
+                data: y2,
+                borderColor: '#c45a5a',
+                backgroundColor: 'rgba(0,0,0,0)',
+                tension: 0.2
+            }]
+        },
+        
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day',
+                        displayFormats: {
+                            day: 'MMM DD',
+                        }
+                    }
+                }
+            },
+            legend: {
+                display: false
+            }
+        }
+       
+    });
+    
 
     
     </script>
