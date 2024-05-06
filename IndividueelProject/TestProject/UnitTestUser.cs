@@ -6,7 +6,7 @@ namespace TestProject;
 
 
 [TestClass]
-public class UnitTest1
+public class UnitTestUser
 {
     [TestMethod]
     public void Register()
