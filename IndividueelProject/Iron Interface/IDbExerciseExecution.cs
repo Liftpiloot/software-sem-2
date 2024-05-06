@@ -48,4 +48,5 @@ public interface IDbExerciseExecution
     /// <returns>List of exercise executions</returns>
     public List<ExerciseExecutionDto> GetExerciseExecutions(UserDto user, ExerciseDto exercise);
 
+    public bool IsPersonalBest(ExerciseExecutionDto exerciseExecutionDto, List<SetDto> setDtos);
 }

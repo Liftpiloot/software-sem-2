@@ -220,6 +220,7 @@ public class HomeController : Controller
             return BadRequest("No exercises in workout");
         }
         decimal volume = 0;
+        List<ExerciseExecution> personalBests = new List<ExerciseExecution>();
         List<ExerciseExecution> exerciseExecutions = new List<ExerciseExecution>();
         foreach (var exercise in workout)
         {
@@ -241,12 +242,19 @@ public class HomeController : Controller
                 Sets = sets
             };
             exerciseExecutions.Add(execution);
+            bool isPersonalBest = _exerciseExecutionContainer.IsPersonalBest(execution, sets);
+            if (isPersonalBest)
+            {
+                personalBests.Add(execution);
+            }
+            
         }
         if (!_exerciseExecutionContainer.AddWorkout(exerciseExecutions))
         {
             return BadRequest("An error occurred while saving the workout.");
         }
-        return Json(new { numexercises = exerciseExecutions.Count, volume = volume });
+        
+        return Json(new { numexercises = exerciseExecutions.Count, volume = volume, prs = personalBests.Count });
     }
     
 }

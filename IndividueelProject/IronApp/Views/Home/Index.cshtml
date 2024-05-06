@@ -186,7 +186,7 @@
                         select_workout(i);
                     }
                 }
-                var workoutInfo = "You have completed\n" + data.numexercises + " Exercises" + "\n\nWith a total volume of\n" + data.volume + "KG"
+                var workoutInfo = "You have completed\n" + data.numexercises + " Exercises" + "\n\nWith a total volume of\n" + data.volume + "KG" + "\n\nAnd beat\n" + data.prs + " Personal Records";
                 document.getElementById("workout-details").innerText = workoutInfo;
                 document.getElementById("workout-info").style.display = "block";
             },

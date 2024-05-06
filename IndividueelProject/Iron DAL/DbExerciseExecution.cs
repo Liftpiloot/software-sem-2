@@ -138,5 +138,43 @@ public class DbExerciseExecution : IDbExerciseExecution
         reader.Close();
         return executions;
     }
-    
+
+    public bool IsPersonalBest(ExerciseExecutionDto exerciseExecutionDto, List<SetDto> setDtos)
+    {
+        SqlConnection conn = new SqlConnection(_db);
+        conn.Open();
+        // Select all executions where exercise id is the same
+        SqlCommand cmd = new SqlCommand("SELECT * FROM exercise_executions WHERE ExerciseID = @exerciseid AND UserID = @userid", conn);
+        cmd.Parameters.AddWithValue("@exerciseid", exerciseExecutionDto.ExerciseId);
+        cmd.Parameters.AddWithValue("@userid", exerciseExecutionDto.UserId);
+        SqlDataReader reader = cmd.ExecuteReader();
+        List<int> executionIds = new List<int>();
+        while (reader.Read())
+        {
+            executionIds.Add((int)reader["ExerciseExecutionID"]);
+        }
+        reader.Close();
+
+        List<SetDto> allSets = new List<SetDto>();
+        foreach (var executionId in executionIds)
+        {
+            // Get all sets for each execution
+            SqlCommand setCmd = new SqlCommand("SELECT * FROM exercise_sets WHERE ExerciseExecutionID = @executionid", conn);
+            setCmd.Parameters.AddWithValue("@executionid", executionId);
+            SqlDataReader setReader = setCmd.ExecuteReader();
+            while (setReader.Read())
+            {
+                allSets.Add(new SetDto
+                {
+                    ExerciseExecutionId = (int)setReader["ExerciseExecutionID"],
+                    Reps = (int)setReader["SetRepetitions"],
+                    Weight = (decimal)setReader["SetWeight"]
+                });
+            }
+            setReader.Close();
+        }
+        conn.Close();
+        // Check if the new set is the best
+        return allSets.Count == 0 || allSets.Max(set => set.Weight) < setDtos.Max(set => set.Weight);
+    }
 }

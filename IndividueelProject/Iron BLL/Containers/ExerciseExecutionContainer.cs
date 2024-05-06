@@ -142,4 +142,25 @@ public class ExerciseExecutionContainer
 
         return true;
     }
+
+    public bool IsPersonalBest(ExerciseExecution execution, List<Set> sets)
+    {
+        List<SetDto> setDtos = new();
+        foreach (Set set in sets)
+        {
+            setDtos.Add(new SetDto()
+            {
+                Reps = set.Reps,
+                Weight = set.Weight,
+            });
+        }
+        return _dbExerciseExecution.IsPersonalBest(new ExerciseExecutionDto()
+        {
+            Id = execution.Id,
+            UserId = execution.UserId,
+            ExerciseId = execution.ExerciseId,
+            ExecutionDate = execution.ExecutionDate,
+        }, setDtos);
+        
+    }
 }
