@@ -44,7 +44,7 @@
             <div class="workout-select" id="workout-select @i">
                 <button class="workout-select-button" id="workout-select-button @i" OnClick="select_workout(@i)" Text="select"/>
             </div>
-            <div class="workout-info">
+            <div class="workout-info" id="workout-info @i">
                 <div class="workout-logo">
                     <a href="@Url.Action("Exercise", "Home", new { ID = Model[i].Id })">
                         <img src="@Model[i].Logo" alt="logo"/>
@@ -84,11 +84,24 @@
 
     function select_workout(i) {
         var div = document.getElementById("workout-select " + i);
+        var table = document.getElementById('workout-table ' + i);
+        var info = document.getElementById('workout-info ' + i);
+        var inputs = table.getElementsByTagName('input');
         if (div.classList.contains("selected")) {
             div.classList.remove("selected");
+            for (var j = 0; j < inputs.length; j++) {
+                inputs[j].disabled = false;
+                inputs[j].style.backgroundColor = "transparent";
+            }
+            info.classList.remove("workout-selected");
         }
         else {
             div.classList.add("selected");
+            for (var j = 0; j < inputs.length; j++) {
+                inputs[j].disabled = true;
+                inputs[j].style.backgroundColor = "rgba(0,0,0,0.5)";
+            }
+            info.classList.add("workout-selected");
         }
     }
 
