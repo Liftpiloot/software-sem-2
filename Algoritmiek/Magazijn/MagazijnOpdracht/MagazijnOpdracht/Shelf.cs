@@ -3,6 +3,7 @@
 public class Shelf
 {
     public List<Product> Products { get; set; }
+    public int Height { get; set; }
     
     public bool IsEmpty()
     {
