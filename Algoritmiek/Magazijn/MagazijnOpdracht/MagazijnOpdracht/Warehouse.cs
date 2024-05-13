@@ -17,7 +17,29 @@ public class Warehouse
 
     public bool AddProduct(Product product)
     {
-        foreach (int layer in layerNumbers)
+        int[] layers = [];
+
+        if (product.Speed == Speed.Slow)
+        {
+            layers = layerNumbers.Reverse().ToArray();
+        }
+        else if (product.Size == Size.Medium)
+        {
+            int middleIndex = layerNumbers.Length / 2;
+        
+            List<int> firstHalf = layerNumbers.Take(middleIndex+1).Reverse().ToList();
+            List<int> secondHalf = layerNumbers.Skip(middleIndex).ToList();
+            
+            for (int i = 0; i < Math.Min(firstHalf.Count, secondHalf.Count); i++)
+            {
+                layers.Append(firstHalf[i]);
+                layers.Append(secondHalf[i]);
+            }
+        }
+        else
+        {
+            layers = layerNumbers;
+        }        foreach (int layer in layers)
         {
             // return false if product doesn't fit on height
             if (product.Size == Size.Large && layer != 1 && layer != 5)

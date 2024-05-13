@@ -6,14 +6,14 @@ namespace MagazijnOpdracht;
 
 public class FillWarehouse
 {
-    private static readonly int NumberOfRacks = 3;
+    private static readonly int NumberOfRacks = 2;
     private static readonly int NumberOfClosets = 6;
     private static Warehouse _warehouse;
     private static List<Product> Products { get; set; }
     
     
     // import products from csv file
-    private static List<Product> ImportProducts(string path, int limit=10000)
+    private static List<Product> ImportProducts(string path, int limit=1000)
     {
         using var reader = new StreamReader(path);
         Products = new List<Product>();
@@ -74,7 +74,7 @@ public class FillWarehouse
     public static void Fill(string path, int limit)
     {
         ImportProducts(path, limit);
-        SortProducts();
+        //SortProducts();
         Warehouse warehouse = new Warehouse(NumberOfRacks, NumberOfClosets);
         foreach (var product in Products)
         {
@@ -89,7 +89,7 @@ public class FillWarehouse
 
     public static void Main()
     {
-        Fill("C:\\Users\\Abel\\OneDrive\\ICT-1\\Sem-2\\Opdrachten\\Magazijn\\Product_mock_data.csv", 1000);
+        Fill("C:\\Users\\Abel\\OneDrive\\ICT-1\\Sem-2\\Opdrachten\\Magazijn\\Product_mock_data3.csv", 300);
 
         PrintRacks(_warehouse.Racks);
     }
