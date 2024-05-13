@@ -36,6 +36,22 @@ public class Shelf
     
     public bool AddProduct(Product product)
     {
+        if (product.Size == Size.Large) // Large products can only be placed on the first and 5th shelf
+        {
+            if (this.Height != 1 && this.Height != 5)
+            {
+                return false;
+            }
+        }
+        
+        if (product.Size == Size.Medium) // Medium products cannot be placed on the top shelf
+        {
+            if (this.Height == 8)
+            {
+                return false;
+            }
+        }
+        
         if (this.IsEmpty())
         {
             Products.Add(product);
