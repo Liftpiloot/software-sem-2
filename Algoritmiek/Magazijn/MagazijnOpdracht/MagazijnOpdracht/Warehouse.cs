@@ -3,8 +3,8 @@
 public class Warehouse
 {
     public List<Rack> Racks { get; set; }
-    
-    public int[] layerNumbers = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+    private readonly int[] _layerNumbers = { 1, 2, 3, 4, 5, 6, 7, 8 };
     
     public Warehouse(int numberOfRacks, int numberOfClosets)
     {
@@ -17,7 +17,7 @@ public class Warehouse
 
     public bool AddProduct(Product product)
     {
-        foreach (int layer in layerNumbers)
+        foreach (int layer in _layerNumbers)
         {
             // return false if product doesn't fit on height
             if (product.Size == Size.Large && layer != 1 && layer != 5)
@@ -35,7 +35,7 @@ public class Warehouse
                     if (closet.TopShelf().Height < layer)
                     {
                         Shelf newShelf = new Shelf(layer);
-                        bool add = closet.AddShelf(newShelf);
+                        closet.AddShelf(newShelf);
                     }
                     foreach (Shelf shelf in closet.Shelves)
                     {
