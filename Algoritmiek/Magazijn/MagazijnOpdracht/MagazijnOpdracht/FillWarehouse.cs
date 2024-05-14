@@ -1,7 +1,3 @@
-using System.Globalization;
-using System.IO;
-using System.Runtime.CompilerServices;
-
 namespace MagazijnOpdracht;
 
 public class FillWarehouse
@@ -14,7 +10,7 @@ public class FillWarehouse
     
     
     // import products from csv file
-    private static List<Product> ImportProducts(string path, int limit=10000)
+    private static void ImportProducts(string path, int limit = 10000)
     {
         using var reader = new StreamReader(path);
         Products = new List<Product>();
@@ -34,16 +30,6 @@ public class FillWarehouse
             {
                 break;
             }
-        }
-
-        return Products;
-    }
-
-    private static void PrintProducts(List<Product> products)
-    {
-        foreach (var product in products)
-        {
-            Console.WriteLine($"Size: {product.Size}, Speed: {product.Speed}");
         }
     }
 
