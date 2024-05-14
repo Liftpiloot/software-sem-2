@@ -6,10 +6,11 @@ namespace MagazijnOpdracht;
 
 public class FillWarehouse
 {
-    private static readonly int NumberOfRacks = 3;
-    private static readonly int NumberOfClosets = 6;
+    private static readonly int NumberOfRacks = 1;
+    private static readonly int NumberOfClosets = 2;
     private static Warehouse _warehouse;
     private static List<Product> Products { get; set; }
+    private static List<Product> OverFlowProducts { get; set; }
     
     
     // import products from csv file
@@ -60,10 +61,12 @@ public class FillWarehouse
                     {
                         Console.WriteLine($"    Shelf {shelf.Height}:");
                     }
+                    
+                    var groupedProducts = shelf.Products.GroupBy(p => new{p.Size, p.Speed});
 
-                    foreach (var product in shelf.Products)
+                    foreach (var group in groupedProducts)
                     {
-                        Console.WriteLine($"      - Size: {product.Size}, Speed: {product.Speed}");
+                        Console.WriteLine($"        {group.Count()} X Size: {group.Key.Size}, Speed: {group.Key.Speed}");
                     }
                 }
             }
@@ -75,12 +78,13 @@ public class FillWarehouse
     {
         ImportProducts(path, limit);
         SortProducts();
+        OverFlowProducts = new List<Product>();
         Warehouse warehouse = new Warehouse(NumberOfRacks, NumberOfClosets);
         foreach (var product in Products)
         {
             if (!warehouse.AddProduct(product))
             {
-                Console.WriteLine("No space for product" + product.Size +" "+ product.Speed);
+                OverFlowProducts.Add(product);
             }
         }
         _warehouse = warehouse;
@@ -89,9 +93,19 @@ public class FillWarehouse
 
     public static void Main()
     {
-        Fill("C:\\Users\\Abel\\OneDrive\\ICT-1\\Sem-2\\Opdrachten\\Magazijn\\Product_mock_data.csv", 1000);
-
+        Fill("C:\\Users\\Abel\\OneDrive\\ICT-1\\Sem-2\\Opdrachten\\Magazijn\\Product_mock_data.csv", 100);
         PrintRacks(_warehouse.Racks);
+        PrintOverflow();
+    }
+
+    private static void PrintOverflow()
+    {
+        var groupedProducts = OverFlowProducts.GroupBy(p => new{p.Size, p.Speed});
+        Console.WriteLine($"Overflow count: {OverFlowProducts.Count}");
+        foreach (var group in groupedProducts)
+        {
+            Console.WriteLine($"    {group.Count()} X Size: {group.Key.Size}, Speed: {group.Key.Speed}");
+        }
     }
 
     private static void SortProducts()
