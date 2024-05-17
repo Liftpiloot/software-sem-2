@@ -32,14 +32,7 @@ public interface IDbExerciseExecution
     /// <param name="exercise"></param>
     /// <returns>Exercise Execution, null if not found</returns>
     public ExerciseExecutionDto? GetRecentExecution(UserDto user, ExerciseDto exercise);
-    
-    /// <summary>
-    /// Gets the most recent exercise executions of unique names of a user.
-    /// </summary>
-    /// <param name="user"></param>
-    /// <returns>List of exercise executions</returns>
-    public List<ExerciseExecutionDto> GetRecentExerciseExecutions(UserDto user);
-    
+
     /// <summary>
     /// get all executions of a user of one exercise
     /// </summary>
