@@ -87,6 +87,10 @@ function add_custom(){
         alert("Exercise name cannot be more than 20 characters.");
         return;
     }
+    if (name.length < 1){
+        alert("Exercise name cannot be empty.");
+        return;
+    }
     $.ajax({
         url: '@Url.Action("AddCustomExercise", "Home")',
         type: 'POST',

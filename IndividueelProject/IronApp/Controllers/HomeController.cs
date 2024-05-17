@@ -194,6 +194,10 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult AddCustomExercise(string name)
     {
+        if (string.IsNullOrEmpty(name))
+        {
+            return ExerciseList();
+        }
         var exercise = new Exercise
         {
             UserId = Convert.ToInt32(Request.Cookies["UserId"]),
