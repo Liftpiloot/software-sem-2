@@ -80,7 +80,7 @@ public class UnitTestExercise
             ExerciseId = 1
         };
         bool deleted = exerciseContainer.DeleteSelectedExercise(selectedExercise);
-        Assert.IsFalse(deleted);
+        Assert.IsTrue(deleted);
     }
     
     [TestMethod]

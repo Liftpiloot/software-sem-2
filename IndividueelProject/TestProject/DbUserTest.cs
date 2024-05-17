@@ -5,13 +5,18 @@ namespace TestProject;
 
 public class DbUserTest : IDbUser
 {
+    
     public int AddUser(UserDto? user)
     {
-        throw new NotImplementedException();
+        return user != null ? 1 : 0;
     }
 
     public UserDto? Login(UserDto? user)
     {
-        throw new NotImplementedException();
+        if (user != null)
+        {
+            return user with { Id = 1, Weight = 80 };
+        }
+        return null;
     }
 }
