@@ -1,4 +1,5 @@
-﻿using Iron_Domain;
+﻿using System.Data;
+using Iron_Domain;
 using Iron_Interface;
 using IronDomain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -12,72 +13,119 @@ public class UnitTestExerciseExecution
     private readonly ExerciseExecutionContainer _exerciseExecutionContainer = new(Db);
     
     [TestMethod]
-    public void AddExerciseExecution()
+    [DataRow(1, 1)]
+    [DataRow(0, 1)]
+    [DataRow(1, 0)]
+    [DataRow(0, 0)]
+    public void AddExerciseExecution(int exerciseId, int userId)
     {
         ExerciseExecution exerciseExecution = new()
         {
-            ExerciseId = 1,
-            UserId = 1
+            ExerciseId = exerciseId,
+            UserId = userId
         };
         int id = _exerciseExecutionContainer.AddExerciseExecution(exerciseExecution);
-        Assert.AreEqual(1, id);
+        if (exerciseId == 0 || userId == 0)
+        {
+            Assert.AreEqual(-1, id);
+        }
+        else
+        {
+            Assert.AreEqual(1, id);
+        }
     }
     
     [TestMethod]
-    public void GetSets()
+    [DataRow(0)]
+    [DataRow(1)]
+    public void GetSets(int id)
     {
         ExerciseExecution exerciseExecution = new()
         {
-            Id = 1
+            Id = id
         };
         List<Set> sets = _exerciseExecutionContainer.GetSets(exerciseExecution);
-        Assert.IsNotNull(sets);
+        Assert.AreEqual(id == 0 ? 0 : 2, sets.Count);
     }
     
     [TestMethod]
-    public void AddSet()
+    [DataRow(0, 0, 0)]
+    [DataRow(1, 0, 0)]
+    [DataRow(0, 1, 0)]
+    [DataRow(0, 0, 1)]
+    [DataRow(1, 10, 10)]
+    public void AddSet(int id,int reps, int weight)
     {
         Set set = new()
         {
-            Reps = 10,
-            Weight = 10
+            Reps = reps,
+            Weight = weight
         };
         ExerciseExecution execution = new()
         {
-            Id = 1
+            Id = id
         };
-        bool added = _exerciseExecutionContainer.AddSet(execution, set);
-        Assert.IsTrue(added);
+        var added = _exerciseExecutionContainer.AddSet(execution, set);
+        if (weight == 0 || reps==0 || id==0)
+        {
+            Assert.IsFalse(added);
+        }
+        else
+        {
+            Assert.IsTrue(added);
+        }
     }
     
     [TestMethod]
-    public void GetRecentExecution()
+    [DataRow(0, 0)]
+    [DataRow(1, 0)]
+    [DataRow(0, 1)]
+    [DataRow(1, 1)]
+    public void GetRecentExecution(int userId, int exerciseId)
     {
         User user = new()
         {
-            Id = 1
+            Id = userId
         };
         Exercise exercise = new()
         {
-            Id = 1
+            Id = exerciseId
         };
         ExerciseExecution? exerciseExecution = _exerciseExecutionContainer.GetRecentExerciseExecution(user, exercise);
-        Assert.IsNotNull(exerciseExecution);
+        if (userId == 0 || exerciseId == 0)
+        {
+            Assert.IsNull(exerciseExecution);
+        }
+        else
+        {
+            Assert.IsNotNull(exerciseExecution);
+        }
     }
     
     [TestMethod]
-    public void GetExerciseExecutions()
+    [DataRow(0, 0)]
+    [DataRow(1, 0)]
+    [DataRow(0, 1)]
+    [DataRow(1, 1)]
+    public void GetExerciseExecutions(int userId, int exerciseId)
     {
         User user = new()
         {
-            Id = 1
+            Id = userId
         };
         Exercise exercise = new()
         {
-            Id = 1
+            Id = exerciseId
         };
         List<ExerciseExecution> exerciseExecutions = _exerciseExecutionContainer.GetExerciseExecutions(user, exercise);
-        Assert.IsNotNull(exerciseExecutions);
+        if (userId == 0 || exerciseId == 0)
+        {
+            Assert.AreEqual(0, exerciseExecutions.Count);
+        }
+        else
+        {
+            Assert.AreNotEqual(0, exerciseExecutions.Count);
+        }
     }
     
     [TestMethod]
