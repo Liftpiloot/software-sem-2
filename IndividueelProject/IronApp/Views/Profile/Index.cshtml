@@ -1,0 +1,146 @@
+﻿@model IronApp.Models.ProfileModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<head>
+    <title>Profile</title>
+    <Link rel="stylesheet" href="~/css/exercise.css"/>
+    <Link rel="stylesheet" href="~/css/site.css"/>
+    <Link rel="stylesheet" href="~/css/home.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anta&display=swap" rel="stylesheet">
+
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0"/>
+</head>
+
+<body style="overflow: hidden">
+<div class="logo-and-content">
+<div class="iron-logo">
+    <img src="images/iron_logo_new.png" alt="logo" width="100%"/>
+</div>
+
+<div class="content">
+<div class="profile-stats">
+    <table class="profile-stats-table">
+        <tr>
+            <th>
+                <h3>
+                    Average:
+                </h3>
+            </th>
+            <th>
+                <h3>
+                    @Model.AveragePerWeek p/w
+                </h3>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                <h3>
+                    Total volume:
+                </h3>
+            </th>
+            <th>
+            <h3>
+                @Model.TotalVolume KG
+            </h3>
+        </tr>
+    </table>
+</div>
+
+<div class="chart-container">
+    <h3>Workouts per week</h3>
+    <canvas id="chart"></canvas>
+</div>
+
+<div class="account-details">
+    <table class="account-details-table">
+        <tr>
+            <th>
+                <h3>
+                    @Model.UserModel.Username
+                </h3>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                <h3>
+                    @Model.UserModel.Email
+                </h3>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                <h3>
+                    Weight:
+                </h3>
+            </th>
+            <th>
+                <form style="display: flex">
+                    <input type="number" placeholder="@Model.UserModel.Weight" name="weight" id="weight" required class="weight-input">
+                    <input type="submit" value="Save" class="save-button">
+                </form>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                <form>
+                    <input type="submit" value="Change password" class="save-button">
+                </form>
+            </th>
+        </tr>
+    </table>
+</div>
+</div>
+
+</div>
+
+<script>
+    let dataPoints = @Html.Raw(Json.Serialize(Model.WorkoutsPerWeek));
+    // Extract the week numbers and workout counts into separate arrays
+    let x = dataPoints.map(dp => dp.week); // Week numbers
+    let y = dataPoints.map(dp => dp.workouts); // Workout counts
+
+    var ctx = document.getElementById('chart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: x,
+            datasets: [{
+                label: 'Workouts per week',
+                data: y,
+                borderColor: '#5ab2c4',
+                backgroundColor: 'rgba(0,0,0,0)',
+                tension: 0.2
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    },
+                y: {
+                    beginAtZero: true,
+                }
+            },
+            legend: {
+                display: false
+            }
+        }
+    });
+
+</script>
+
+</body>
+

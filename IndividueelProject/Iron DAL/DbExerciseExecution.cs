@@ -177,4 +177,27 @@ public class DbExerciseExecution : IDbExerciseExecution
         // Check if the new set is the best
         return allSets.Count == 0 || allSets.Max(set => set.Weight) < setDtos.Max(set => set.Weight);
     }
+
+    public List<ExerciseExecutionDto> GetAllExecutionsForUser(int userId)
+    {
+        SqlConnection conn = new SqlConnection(_db);
+        conn.Open();
+        SqlCommand cmd = new SqlCommand("SELECT * FROM exercise_executions WHERE UserID = @userid", conn);
+        cmd.Parameters.AddWithValue("@userid", userId);
+        SqlDataReader reader = cmd.ExecuteReader();
+        List<ExerciseExecutionDto> executions = new List<ExerciseExecutionDto>();
+        while (reader.Read())
+        {
+            executions.Add(new ExerciseExecutionDto
+            {
+                Id = (int)reader["ExerciseExecutionID"],
+                UserId = (int)reader["UserID"],
+                ExerciseId = (int)reader["ExerciseID"],
+                ExecutionDate = (DateTime)reader["ExerciseExecutionDate"]
+            });
+        }
+        conn.Close();
+        reader.Close();
+        return executions;
+    }
 }

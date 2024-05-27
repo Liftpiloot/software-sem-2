@@ -1,4 +1,5 @@
-﻿using Iron_DAL;
+﻿using System.Globalization;
+using Iron_DAL;
 using Iron_Domain;
 using Iron_DAL.DTO;
 using Iron_Interface;
@@ -162,5 +163,19 @@ public class ExerciseExecutionContainer
             ExecutionDate = execution.ExecutionDate,
         }, setDtos);
         
+    }
+
+    public List<(int, int)> GetWorkoutsPerWeek(int userId)
+    {
+        // get all exercise executions for the user
+        List<ExerciseExecutionDto> exerciseExecutions = _dbExerciseExecution.GetAllExecutionsForUser(userId);
+        // group by week
+        var workoutsPerWeek = exerciseExecutions
+            .GroupBy(e =>
+                CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(e.ExecutionDate, CalendarWeekRule.FirstDay,
+                    DayOfWeek.Sunday))
+            .Select(g => (Week: g.Key, DaysWithWorkout: g.Select(e => e.ExecutionDate.Date).Distinct().Count()))
+            .ToList();
+        return workoutsPerWeek;
     }
 }
