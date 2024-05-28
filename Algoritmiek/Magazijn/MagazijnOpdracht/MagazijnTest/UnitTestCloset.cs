@@ -38,7 +38,7 @@ public class Tests
         // Assert
         Assert.That(result, Is.True);
         Assert.That(_closet.Shelves.Count, Is.EqualTo(2));
-        Assert.That(_closet.Shelves[0], Is.EqualTo(shelf));
+        Assert.That(_closet.Shelves[1], Is.EqualTo(shelf));
     }
 
     [Test]
