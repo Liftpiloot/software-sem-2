@@ -112,4 +112,9 @@ public class DbExerciseExecutionTest : IDbExerciseExecution
         }
         return false;
     }
+
+    public List<ExerciseExecutionDto> GetAllExecutionsForUser(int userId)
+    {
+        throw new NotImplementedException();
+    }
 }

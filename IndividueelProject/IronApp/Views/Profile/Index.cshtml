@@ -24,87 +24,89 @@
     <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0"/>
 </head>
 
-<body style="overflow: hidden">
+<body>
 <div class="logo-and-content">
-<div class="iron-logo">
-    <img src="images/iron_logo_new.png" alt="logo" width="100%"/>
+    <div class="logo">
+        <img src="images/iron_logo_new.png" alt="logo" width="100%"/>
+    </div>
+
+    <div class="content">
+        <div class="profile-stats">
+            <table class="profile-stats-table">
+                <tr>
+                    <th>
+                        <h3>
+                            Average:
+                        </h3>
+                    </th>
+                    <th>
+                        <h3>
+                            @Model.AveragePerWeek p/w
+                        </h3>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        <h3>
+                            Total volume:
+                        </h3>
+                    </th>
+                    <th>
+                    <h3>
+                        @Model.TotalVolume KG
+                    </h3>
+                </tr>
+            </table>
+        </div>
+
+        <div class="chart-container">
+            <h3>Workouts per week</h3>
+            <canvas id="chart"></canvas>
+        </div>
+
+        <div class="account-details">
+            <table class="account-details-table">
+                <tr>
+                    <th>
+                        <h3>
+                            @Model.UserModel.Username
+                        </h3>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        <h3>
+                            @Model.UserModel.Email
+                        </h3>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        <h3>
+                            Weight:
+                        </h3>
+                    </th>
+                    <th>
+                        <form style="display: flex">
+                            <input type="number" placeholder="@Model.UserModel.Weight" name="weight" id="weight" required class="weight-input">
+                            <input type="submit" value="Save" class="save-button">
+                        </form>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        <form>
+                            <input type="submit" value="Change password" class="save-button">
+                        </form>
+                    </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
 </div>
 
-<div class="content">
-<div class="profile-stats">
-    <table class="profile-stats-table">
-        <tr>
-            <th>
-                <h3>
-                    Average:
-                </h3>
-            </th>
-            <th>
-                <h3>
-                    @Model.AveragePerWeek p/w
-                </h3>
-            </th>
-        </tr>
-        <tr>
-            <th>
-                <h3>
-                    Total volume:
-                </h3>
-            </th>
-            <th>
-            <h3>
-                @Model.TotalVolume KG
-            </h3>
-        </tr>
-    </table>
-</div>
 
-<div class="chart-container">
-    <h3>Workouts per week</h3>
-    <canvas id="chart"></canvas>
-</div>
-
-<div class="account-details">
-    <table class="account-details-table">
-        <tr>
-            <th>
-                <h3>
-                    @Model.UserModel.Username
-                </h3>
-            </th>
-        </tr>
-        <tr>
-            <th>
-                <h3>
-                    @Model.UserModel.Email
-                </h3>
-            </th>
-        </tr>
-        <tr>
-            <th>
-                <h3>
-                    Weight:
-                </h3>
-            </th>
-            <th>
-                <form style="display: flex">
-                    <input type="number" placeholder="@Model.UserModel.Weight" name="weight" id="weight" required class="weight-input">
-                    <input type="submit" value="Save" class="save-button">
-                </form>
-            </th>
-        </tr>
-        <tr>
-            <th>
-                <form>
-                    <input type="submit" value="Change password" class="save-button">
-                </form>
-            </th>
-        </tr>
-    </table>
-</div>
-</div>
-
-</div>
 
 <script>
     let dataPoints = @Html.Raw(Json.Serialize(Model.WorkoutsPerWeek));
