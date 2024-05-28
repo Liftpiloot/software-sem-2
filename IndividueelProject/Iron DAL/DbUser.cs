@@ -112,6 +112,23 @@ public class DbUser : IDbUser
         }
         return null;
     }
-    
-    
+
+    public bool EditWeight(int userId, decimal result)
+    {
+        try
+        {
+            SqlConnection conn = new SqlConnection(_db);
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("UPDATE users SET BodyWeight = @weight WHERE UserID = @id", conn);
+            cmd.Parameters.AddWithValue("@weight", result);
+            cmd.Parameters.AddWithValue("@id", userId);
+            int rows = cmd.ExecuteNonQuery();
+            conn.Close();
+            return rows > 0;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
 }

@@ -44,6 +44,10 @@ public class UserContainer
         User newUser = new(returnedUser.Id, returnedUser.UserName, returnedUser.Email, returnedUser.PasswordHash, returnedUser.DateOfBirth, returnedUser.Weight);
         return newUser;
     }
-    
 
+
+    public bool EditWeight(int userId, decimal result)
+    {
+        return _dbUser.EditWeight(userId, result);
+    }
 }

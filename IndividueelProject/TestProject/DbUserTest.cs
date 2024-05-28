@@ -19,4 +19,9 @@ public class DbUserTest : IDbUser
         }
         return null;
     }
+
+    public bool EditWeight(int userId, decimal result)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -41,4 +41,27 @@ public class ProfileController : Controller
         profileModel.TotalVolume = 20;
         return View(profileModel);
     }
+
+    public IActionResult EditWeight(decimal weight)
+    {
+            if (weight <= 0)
+            {
+                return RedirectToAction("Index");
+            }
+            int userId = int.Parse(Request.Cookies["UserId"] ?? string.Empty);
+            if (_userContainer.EditWeight(userId, weight))
+            {
+                var cookieOptions = new CookieOptions
+                {
+                    Expires = DateTime.Now.AddDays(365), // Cookie expires after a year
+                    IsEssential = true,
+                    Secure = true,
+                    HttpOnly = true
+                };
+                Response.Cookies.Append("Weight", weight.ToString(), cookieOptions);
+            }
+            return RedirectToAction("Index");
+        
+        return RedirectToAction("Index");
+    }
 }
