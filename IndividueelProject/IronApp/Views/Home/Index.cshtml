@@ -21,8 +21,10 @@
     <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0"/>
 </head>
 
-<body>
-<div class="iron-logo">
+<body style="display: flex">
+
+<div>
+<div class="iron-logo" style="position: initial;">
     <img src="~/images/iron_logo_new.png" alt="logo" width="100%"/>
 </div>
 
@@ -35,7 +37,9 @@
         Details
     </p>
 </div>
+</div>
 
+<div>
 <div class="workout-header">
 
     @for (int i = 0; i < Model.Count; i++)
@@ -67,14 +71,17 @@
             </div>
         </div>
     }
+    <div id="save_workout">
+        <a onclick="save_workout()">Save Workout</a>
+    </div>
+
+    <div id="add_workout">
+        <a asp-action="ExerciseList" asp-controller="Home">Add Exercise</a>
+    </div>
 </div>
 
-<div id="save_workout">
-    <a onclick="save_workout()">Save Workout</a>
-</div>
 
-<div id="add_workout">
-    <a asp-action="ExerciseList" asp-controller="Home">Add Exercise</a>
+
 </div>
 </body>
 
