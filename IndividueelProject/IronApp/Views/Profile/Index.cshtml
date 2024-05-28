@@ -87,8 +87,8 @@
                         </h3>
                     </th>
                     <th>
-                        <form style="display: flex">
-                            <input type="number" placeholder="@Model.UserModel.Weight" name="weight" id="weight" required class="weight-input">
+                        <form style="display: flex" asp-controller="Profile" asp-action="EditWeight">
+                            <input type="number" placeholder="@Model.UserModel.Weight" name="weight" id="weight" required class="weight-input" min="0">
                             <input type="submit" value="Save" class="save-button">
                         </form>
                     </th>
