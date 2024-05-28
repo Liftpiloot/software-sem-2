@@ -131,4 +131,23 @@ public class DbUser : IDbUser
             return false;
         }
     }
+
+    public bool ChangePassword(int userId, string modelNewPassword)
+    {
+        try
+        {
+            SqlConnection conn = new SqlConnection(_db);
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("UPDATE users SET PasswordHash = @password WHERE UserID = @id", conn);
+            cmd.Parameters.AddWithValue("@password", modelNewPassword);
+            cmd.Parameters.AddWithValue("@id", userId);
+            int rows = cmd.ExecuteNonQuery();
+            conn.Close();
+            return rows > 0;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
 }

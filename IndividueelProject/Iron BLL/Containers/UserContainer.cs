@@ -50,4 +50,9 @@ public class UserContainer
     {
         return _dbUser.EditWeight(userId, result);
     }
+
+    public bool ChangePassword(int userId, string modelNewPassword)
+    {
+        return _dbUser.ChangePassword(userId, modelNewPassword);
+    }
 }

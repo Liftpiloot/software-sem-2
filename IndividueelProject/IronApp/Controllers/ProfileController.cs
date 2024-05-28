@@ -1,5 +1,8 @@
 ﻿using System.Runtime.InteropServices.JavaScript;
+using System.Security.Cryptography;
+using System.Text;
 using Iron_DAL;
+using Iron_Domain;
 using Iron_Interface;
 using IronApp.Models;
 using IronDomain;
@@ -63,5 +66,70 @@ public class ProfileController : Controller
             return RedirectToAction("Index");
         
         return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    public IActionResult ChangePassword()
+    {
+        return View();
+    }
+    
+    [HttpPost]
+    public IActionResult ChangePassword(ChangePasswordModel model)
+    {
+        string oldPassword = model.OldPassword;
+        using (SHA256 sha256Hash = SHA256.Create())
+        {
+            Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(oldPassword));
+            StringBuilder builder = new StringBuilder();
+            foreach (var t in bytes)
+            {
+                builder.Append(t.ToString("x2"));
+            }
+            oldPassword = builder.ToString();
+        }
+        var user = new User
+        {
+            UserName = Request.Cookies["Username"] ?? string.Empty,
+            Email = Request.Cookies["Email"] ?? string.Empty,
+            PasswordHash = oldPassword
+        };
+        user = _userContainer.Login(user);
+        if (user == null)
+        {
+            ModelState.AddModelError("OldPassword", "Old password is incorrect.");
+            return View(model);
+        }
+        
+        if (model.NewPassword != model.ConfirmPassword)
+        {
+            ModelState.AddModelError("ConfirmPassword", "Password and confirmation password do not match.");
+            return View(model);
+        }
+        
+        if (model.NewPassword.Length < 10)
+        {
+            ModelState.AddModelError("NewPassword", "Password must be at least 10 characters long.");
+            return View(model);
+        }
+        
+        using (SHA256 sha256Hash = SHA256.Create())
+        {
+            Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(model.NewPassword));
+            StringBuilder builder = new StringBuilder();
+            foreach (var t in bytes)
+            {
+                builder.Append(t.ToString("x2"));
+            }
+            model.NewPassword = builder.ToString();
+        }
+        
+        if (_userContainer.ChangePassword(user.Id, model.NewPassword))
+        {
+            return RedirectToAction("Index");
+        }
+        
+        ModelState.AddModelError("NewPassword", "An error occurred.");
+        return View(model);
     }
 }
