@@ -8,4 +8,5 @@ public interface IDbUser
     UserDto? Login(UserDto? user);
     bool EditWeight(int userId, decimal result);
     bool ChangePassword(int userId, string modelNewPassword);
+    UserDto? GetUser(int userId);
 }

@@ -77,24 +77,25 @@ public class ProfileController : Controller
     [HttpPost]
     public IActionResult ChangePassword(ChangePasswordModel model)
     {
-        string oldPassword = model.OldPassword;
-        using (SHA256 sha256Hash = SHA256.Create())
+        // Check if user is logged in
+        var userId = Request.Cookies["UserId"] ?? string.Empty;
+        if (string.IsNullOrEmpty(userId))
         {
-            Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(oldPassword));
-            StringBuilder builder = new StringBuilder();
-            foreach (var t in bytes)
-            {
-                builder.Append(t.ToString("x2"));
-            }
-            oldPassword = builder.ToString();
+            return RedirectToAction("Index", "Login");
         }
-        var user = new User
+        int id = int.Parse(userId);
+        
+        var user = _userContainer.GetUser(id);
+        if (user == null)
         {
-            UserName = Request.Cookies["Username"] ?? string.Empty,
-            Email = Request.Cookies["Email"] ?? string.Empty,
-            PasswordHash = oldPassword
-        };
+            return RedirectToAction("Index", "Login");
+        }
+        
+        // Check if old password is correct
+        user.PasswordHash = model.OldPassword;
+        user.HashPassword();
         user = _userContainer.Login(user);
+        
         if (user == null)
         {
             ModelState.AddModelError("OldPassword", "Old password is incorrect.");
@@ -111,17 +112,6 @@ public class ProfileController : Controller
         {
             ModelState.AddModelError("NewPassword", "Password must be at least 10 characters long.");
             return View(model);
-        }
-        
-        using (SHA256 sha256Hash = SHA256.Create())
-        {
-            Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(model.NewPassword));
-            StringBuilder builder = new StringBuilder();
-            foreach (var t in bytes)
-            {
-                builder.Append(t.ToString("x2"));
-            }
-            model.NewPassword = builder.ToString();
         }
         
         if (_userContainer.ChangePassword(user.Id, model.NewPassword))

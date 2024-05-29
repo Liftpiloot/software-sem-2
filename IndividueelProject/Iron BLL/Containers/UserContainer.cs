@@ -36,6 +36,16 @@ public class UserContainer
         };
         return userDto;
     }
+    
+    public User? GetUser(int userId)
+    {
+        UserDto? userDto = _dbUser.GetUser(userId);
+        if (userDto == null)
+        {
+            return null;
+        }
+        return ConvertToUser(userDto);
+    }
 
     public int AddUser(User user)
     {

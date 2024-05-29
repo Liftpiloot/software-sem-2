@@ -30,24 +30,9 @@ public class LoginController : Controller
     [HttpPost]
     public IActionResult Index(LoginModel model)
     {
-        var user = new User
-        {
-            UserName = model.Name,
-            Email = model.Name
-        };
+        var user = new User(0, model.Name, model.Name, model.Password, DateTime.Now, 0);
         // Hash password
-        string password;
-        using (SHA256 sha256Hash = SHA256.Create())
-        {
-            Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(model.Password));
-            StringBuilder builder = new StringBuilder();
-            foreach (var t in bytes)
-            {
-                builder.Append(t.ToString("x2"));
-            }
-            password = builder.ToString();
-        }
-        user.PasswordHash = password;
+        user.HashPassword();
         user = _userContainer.Login(user);
         if (user == null)
         {

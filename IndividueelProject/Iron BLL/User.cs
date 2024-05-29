@@ -1,4 +1,7 @@
-﻿namespace Iron_Domain;
+﻿using System.Security.Cryptography;
+using System.Text;
+
+namespace Iron_Domain;
 
 public class User
 {
@@ -20,4 +23,18 @@ public class User
         Weight = weight;
     }
     
+    public void HashPassword()
+    {
+        // Create sha256 hash
+        using (SHA256 sha256Hash = SHA256.Create())
+        {
+            Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes((string)this.PasswordHash));
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                builder.Append(bytes[i].ToString("x2"));
+            }
+            this.PasswordHash = builder.ToString();
+        }
+    }
 }

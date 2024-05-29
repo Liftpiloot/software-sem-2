@@ -139,4 +139,34 @@ public class DbUser : IDbUser
             return false;
         }
     }
+
+    public UserDto? GetUser(int userId)
+    {
+        try
+        {
+            SqlConnection conn = new SqlConnection(_db);
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("SELECT * FROM users WHERE UserID = @id", conn);
+            cmd.Parameters.AddWithValue("@id", userId);
+            SqlDataReader reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                UserDto user = new UserDto
+                {
+                    Id = (int)reader["UserID"],
+                    UserName = reader["UserName"].ToString() ?? string.Empty,
+                    Email = reader["Email"].ToString() ?? string.Empty,
+                    DateOfBirth = (DateTime)reader["BirthDate"],
+                    Weight = (decimal)reader["BodyWeight"]
+                };
+                reader.Close();
+                return user;
+            }
+            return null;
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
 }
