@@ -5,6 +5,7 @@ using IronApp.Models;
 using Iron_Domain;
 using Iron_Interface;
 using IronDomain;
+using Microsoft.AspNetCore.SignalR;
 
 namespace IronApp.Controllers;
 
@@ -14,7 +15,8 @@ public class HomeController : Controller
     private readonly ExerciseExecutionContainer _exerciseExecutionContainer;
     private readonly IDbExercise _dbExercise;
     private readonly IDbExerciseExecution _dbExerciseExecution;
-    private readonly User _user = new();
+    private readonly UserContainer _userContainer;
+    private readonly IDbUser _dbUser;
     
     public HomeController()
     {
@@ -22,7 +24,8 @@ public class HomeController : Controller
         _dbExerciseExecution = new DbExerciseExecution();
         _exerciseContainer = new ExerciseContainer(_dbExercise);
         _exerciseExecutionContainer = new ExerciseExecutionContainer(_dbExerciseExecution);
-        
+        _dbUser = new DbUser();
+        _userContainer = new UserContainer(_dbUser);
     }
     
     public IActionResult Index()
@@ -33,15 +36,14 @@ public class HomeController : Controller
         }
 
         var userId = Convert.ToInt32(Request.Cookies["UserId"]);
-        _user.Id = userId;
-        _user.UserName = Request.Cookies["Username"] ?? string.Empty;
-        _user.PasswordHash = Request.Cookies["PasswordHash"] ?? string.Empty;
-        _user.DateOfBirth = Convert.ToDateTime(Request.Cookies["DateOfBirth"]);
-        _user.Weight = Convert.ToDecimal(Request.Cookies["Weight"]);
-
+        User? user = _userContainer.GetUser(userId);
+        if (user == null)
+        {
+            return RedirectToAction("Index", "Login");
+        }
         // get selected exercises, and add sets if there is an execution. Create a List of ExerciseModel to pass to the view
 
-        var selectedExercises = _exerciseContainer.GetSelectedExercises(_user);
+        var selectedExercises = _exerciseContainer.GetSelectedExercises(user);
         var exerciseModels = new List<ExerciseModel>();
         foreach (var selectedExercise in selectedExercises)
         {
@@ -55,7 +57,7 @@ public class HomeController : Controller
                 Logo = exercise.Logo
             };
 
-            var recentExecution = _exerciseExecutionContainer.GetRecentExerciseExecution(_user, exercise);
+            var recentExecution = _exerciseExecutionContainer.GetRecentExerciseExecution(user, exercise);
             if (recentExecution != null)
             {
                 var sets = _exerciseExecutionContainer.GetSets(recentExecution);
@@ -89,9 +91,13 @@ public class HomeController : Controller
     public IActionResult ExerciseList()
     {
         int userId = Convert.ToInt32(Request.Cookies["UserId"]);
-        _user.Id = userId;
+        User? user = _userContainer.GetUser(userId);
+        if (user == null)
+        {
+            return RedirectToAction("Index", "Login");
+        }
         List<ExerciseModel> exerciseModels = new List<ExerciseModel>();
-        List<Exercise> exercises = _exerciseContainer.GetUnselectedExercises(_user);
+        List<Exercise> exercises = _exerciseContainer.GetUnselectedExercises(user);
         foreach (Exercise exercise in exercises)
         {
             ExerciseModel exerciseModel = new ExerciseModel
@@ -110,22 +116,16 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult AddSelectedExercise(int id)
     {
-        SelectedExercise selectedExercise = new SelectedExercise
-        {
-            UserId = Request.Cookies["UserId"] != null ? Convert.ToInt32(Request.Cookies["UserId"]) : 0,
-            ExerciseId = id
-        };
+        int userId = Convert.ToInt32(Request.Cookies["UserId"]);
+        SelectedExercise selectedExercise = new SelectedExercise(userId, id);
         _exerciseContainer.AddSelectedExercise(selectedExercise);
         return RedirectToAction("Index", "Home");
     }
 
     public IActionResult? Exercise(int id)
     {
-        Exercise? exercise = new Exercise
-        {
-            Id = id
-        };
-        exercise = _exerciseContainer.GetExerciseFromId(exercise.Id);
+        // Get exercise information
+        Exercise? exercise = _exerciseContainer.GetExerciseFromId(id);
         if (exercise != null)
         {
             ExerciseModel exerciseModel = new ExerciseModel
@@ -135,9 +135,17 @@ public class HomeController : Controller
                 Description = exercise.Description,
                 Logo = exercise.Logo
             };
-            _user.Id = Convert.ToInt32(Request.Cookies["UserId"]);
+            
+            // Get user information
+            var userId = Convert.ToInt32(Request.Cookies["UserId"]);
+            User? user = _userContainer.GetUser(userId);
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+            
             List<List<SetModel>> allSets = new List<List<SetModel>>();
-            List<ExerciseExecution> exerciseExecutions = _exerciseExecutionContainer.GetExerciseExecutions(_user, exercise);
+            List<ExerciseExecution> exerciseExecutions = _exerciseExecutionContainer.GetExerciseExecutions(user, exercise);
             foreach (ExerciseExecution exerciseExecution in exerciseExecutions)
             {
                 List<Set> executionSets = _exerciseExecutionContainer.GetSets(exerciseExecution);
@@ -182,11 +190,12 @@ public class HomeController : Controller
 
     public IActionResult DeleteExercise(int id)
     {
-        SelectedExercise selectedExercise = new SelectedExercise
+        var userId = Convert.ToInt32(Request.Cookies["UserId"]);
+        if (userId == 0)
         {
-            UserId = Convert.ToInt32(Request.Cookies["UserId"]),
-            ExerciseId = id
-        };
+            return RedirectToAction("Index", "Login");
+        }
+        SelectedExercise selectedExercise = new SelectedExercise(userId, id);
         _exerciseContainer.DeleteSelectedExercise(selectedExercise);
         return RedirectToAction("Index", "Home");
     }
@@ -198,20 +207,15 @@ public class HomeController : Controller
         {
             return ExerciseList();
         }
-        var exercise = new Exercise
+        var userId = Convert.ToInt32(Request.Cookies["UserId"]);
+        if (userId == 0)
         {
-            UserId = Convert.ToInt32(Request.Cookies["UserId"]),
-            Name = name,
-            Description = name,
-            Logo = "/images/default.png"
-        };
+            return RedirectToAction("Index", "Login");
+        }
+        var exercise = new Exercise(0, userId, name, name, "/images/default.png");
         var exerciseId = _exerciseContainer.AddExercise(exercise);
         if (exerciseId <= 0) return ExerciseList();
-        SelectedExercise selectedExercise = new SelectedExercise
-        {
-            UserId = Convert.ToInt32(Request.Cookies["UserId"]),
-            ExerciseId = exerciseId
-        };
+        SelectedExercise selectedExercise = new SelectedExercise(userId, exerciseId);
         _exerciseContainer.AddSelectedExercise(selectedExercise);
         return RedirectToAction("Index", "Home");
     }
@@ -223,6 +227,13 @@ public class HomeController : Controller
         {
             return BadRequest("No exercises in workout");
         }
+        
+        var userId = Convert.ToInt32(Request.Cookies["UserId"]);
+        if (userId == 0)
+        {
+            return RedirectToAction("Index", "Login");
+        }
+
         decimal volume = 0;
         List<ExerciseExecution> personalBests = new List<ExerciseExecution>();
         List<ExerciseExecution> exerciseExecutions = new List<ExerciseExecution>();
@@ -231,20 +242,10 @@ public class HomeController : Controller
             List<Set> sets = new List<Set>();
             foreach (var set in exercise.Sets)
             {
-                sets.Add(new Set
-                {
-                    Reps = set.Reps,
-                    Weight = set.Weight
-                });
+                sets.Add(new Set(set.Weight, set.Reps));
                 volume += set.Reps * set.Weight;
             }
-            ExerciseExecution execution = new ExerciseExecution
-            {
-                UserId = Convert.ToInt32(Request.Cookies["UserId"]),
-                ExerciseId = exercise.Id,
-                ExecutionDate = DateTime.Now,
-                Sets = sets
-            };
+            ExerciseExecution execution = new ExerciseExecution(0, DateTime.Now, userId, exercise.Id, sets);
             exerciseExecutions.Add(execution);
             bool isPersonalBest = _exerciseExecutionContainer.IsPersonalBest(execution, sets);
             if (isPersonalBest)
