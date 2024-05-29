@@ -6,4 +6,5 @@ public record ExerciseExecutionDto
     public DateTime ExecutionDate { get; init; }
     public int UserId { get; init; }
     public int ExerciseId { get; init; }
+    public List<SetDto> Sets { get; init; }
 }

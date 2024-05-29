@@ -10,7 +10,7 @@ public class Exercise
     public string Description { get;}
     public string Logo { get;}
     
-    public Exercise(int id, int userId, string name, string description, string logo)
+    public Exercise(int id, int? userId, string name, string description, string logo)
     {
         Id = id;
         UserId = userId;
@@ -19,11 +19,4 @@ public class Exercise
         Logo = logo;
     }
     
-    public Exercise(int id, string name, string description, string logo)
-    {
-        Id = id;
-        Name = name;
-        Description = description;
-        Logo = logo;
-    }
 }

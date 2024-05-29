@@ -14,35 +14,44 @@ public class UserContainer
     {
         _dbUser = db;
     }
-
-    public int AddUser(User user)
+    
+    // method to convert user dto to user
+    private User ConvertToUser(UserDto userDto)
+    {
+        User user = new User(userDto.Id, userDto.UserName, userDto.Email, userDto.PasswordHash, userDto.DateOfBirth, userDto.Weight);
+        return user;
+    }
+    
+    // method to convert user to user dto
+    private UserDto ConvertToUserDto(User user)
     {
         UserDto userDto = new()
         {
+            Id = user.Id,
             UserName = user.UserName,
             Email = user.Email,
             PasswordHash = user.PasswordHash,
             DateOfBirth = user.DateOfBirth,
             Weight = user.Weight
         };
+        return userDto;
+    }
+
+    public int AddUser(User user)
+    {
+        UserDto userDto = ConvertToUserDto(user);
         int returnedUser = _dbUser.AddUser(userDto);
         return returnedUser;
     }
     public User? Login(User user)
     {
-        UserDto userDto = new()
-        {
-            UserName = user.UserName,
-            Email = user.Email,
-            PasswordHash = user.PasswordHash
-        };
+        UserDto userDto = ConvertToUserDto(user);
         UserDto? returnedUser = _dbUser.Login(userDto);
         if (returnedUser == null)
         {
             return null;
         }
-        User newUser = new(returnedUser.Id, returnedUser.UserName, returnedUser.Email, returnedUser.PasswordHash, returnedUser.DateOfBirth, returnedUser.Weight);
-        return newUser;
+        return ConvertToUser(returnedUser);
     }
 
 
