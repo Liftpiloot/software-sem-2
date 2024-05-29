@@ -60,10 +60,6 @@ public class RegisterController : Controller
                 HttpOnly = true
             };
             Response.Cookies.Append("UserId", user.Id.ToString(), cookieOptions);
-            Response.Cookies.Append("Username", user.UserName, cookieOptions);
-            Response.Cookies.Append("PasswordHash", user.PasswordHash, cookieOptions);
-            Response.Cookies.Append("DateOfBirth", user.DateOfBirth.ToString(), cookieOptions);
-            Response.Cookies.Append("Weight", user.Weight.ToString(), cookieOptions);
             
             return RedirectToAction("Index", "Home");
         }

@@ -49,11 +49,6 @@ public class LoginController : Controller
             HttpOnly = true
         };
         Response.Cookies.Append("UserId", user.Id.ToString(), cookieOptions);
-        Response.Cookies.Append("Username", user.UserName, cookieOptions);
-        Response.Cookies.Append("PasswordHash", user.PasswordHash, cookieOptions);
-        Response.Cookies.Append("Email", user.Email, cookieOptions);
-        Response.Cookies.Append("DateOfBirth", user.DateOfBirth.ToString(), cookieOptions);
-        Response.Cookies.Append("Weight", user.Weight.ToString(), cookieOptions);
         return RedirectToAction("Index", "Home");
 
     }

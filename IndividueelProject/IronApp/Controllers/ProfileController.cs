@@ -31,10 +31,6 @@ public class ProfileController : Controller
         // Get user data from cookies
         profileModel.UserModel = new UserModel();
         profileModel.UserModel.Id = int.Parse(Request.Cookies["UserId"] ?? string.Empty);
-        profileModel.UserModel.Username = Request.Cookies["Username"] ?? string.Empty;
-        profileModel.UserModel.Email = Request.Cookies["Email"] ?? string.Empty;
-        profileModel.UserModel.Weight = decimal.Parse(Request.Cookies["Weight"] ?? string.Empty);
-        profileModel.UserModel.DateOfBirth = DateTime.Parse(Request.Cookies["DateOfBirth"] ?? string.Empty);
         
         // Get graph data
         profileModel.WorkoutsPerWeek = _exerciseExecutionContainer.GetWorkoutsPerWeek(profileModel.UserModel.Id).Select(w => new Dictionary<string, int> {{"week", w.Item1}, {"workouts", w.Item2}}).ToList();
@@ -61,7 +57,6 @@ public class ProfileController : Controller
                     Secure = true,
                     HttpOnly = true
                 };
-                Response.Cookies.Append("Weight", weight.ToString(), cookieOptions);
             }
             return RedirectToAction("Index");
         
