@@ -2,8 +2,8 @@ namespace MagazijnOpdracht;
 
 public class FillWarehouse
 {
-    private static readonly int NumberOfRacks = 1;
-    private static readonly int NumberOfClosets = 2;
+    private static readonly int NumberOfRacks = 3;
+    private static readonly int NumberOfClosets = 6;
     private static Warehouse _warehouse;
     private static List<Product> Products { get; set; }
     private static List<Product> OverFlowProducts { get; set; }
@@ -22,7 +22,8 @@ public class FillWarehouse
 
             var product = new Product
             {
-                Size = (Size)Enum.Parse(typeof(Size), values[0], true),
+                Height = (Height)Enum.Parse(typeof(Height), values[0], true),
+                Width = (Width)Enum.Parse(typeof(Width), values[0], true),
                 Speed = (Speed)Enum.Parse(typeof(Speed), values[1], true)
             };
             Products.Add(product);
@@ -48,11 +49,11 @@ public class FillWarehouse
                         Console.WriteLine($"    Shelf {shelf.Height}:");
                     }
                     
-                    var groupedProducts = shelf.Products.GroupBy(p => new{p.Size, p.Speed});
+                    var groupedProducts = shelf.Products.GroupBy(p => new{p.Width, p.Speed});
 
                     foreach (var group in groupedProducts)
                     {
-                        Console.WriteLine($"        {group.Count()} X Size: {group.Key.Size}, Speed: {group.Key.Speed}");
+                        Console.WriteLine($"        {group.Count()} X Size: {group.Key.Width}, Speed: {group.Key.Speed}");
                     }
                 }
             }
@@ -86,17 +87,17 @@ public class FillWarehouse
 
     private static void PrintOverflow()
     {
-        var groupedProducts = OverFlowProducts.GroupBy(p => new{p.Size, p.Speed});
+        var groupedProducts = OverFlowProducts.GroupBy(p => new{p.Width, p.Speed});
         Console.WriteLine($"Overflow count: {OverFlowProducts.Count}");
         foreach (var group in groupedProducts)
         {
-            Console.WriteLine($"    {group.Count()} X Size: {group.Key.Size}, Speed: {group.Key.Speed}");
+            Console.WriteLine($"    {group.Count()} X Size: {group.Key.Width}, Speed: {group.Key.Speed}");
         }
     }
 
     private static void SortProducts()
     {
         // Sort products large to small, fast to slow
-        Products = Products.OrderByDescending(product => product.Speed).ThenBy(product => product.Size).ToList();
+        Products = Products.OrderByDescending(product => product.Speed).ThenBy(product => product.Width).ToList();
     }
 }
