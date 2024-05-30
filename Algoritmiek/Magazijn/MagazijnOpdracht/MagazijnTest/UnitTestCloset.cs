@@ -4,58 +4,135 @@ namespace MagazijnTest;
 
 public class Tests
 {
-    private Closet _closet;
-    
-    [SetUp]
-    public void Setup()
-    {
-        _closet = new Closet();
-    }
-    
     [Test]
-    public void Init_ShouldCreateClosetWithOneShelf()
-    {
-        // Arrange
-        var closet = new Closet();
-        
-        // Act
-        var result = closet.Shelves.Count;
-        
-        // Assert
-        Assert.That(result, Is.EqualTo(1));
-        Assert.That(closet.Shelves[0].Height, Is.EqualTo(1));
-    }
+        public void AddShelf_SuccessfullyAddsShelf()
+        {
+            // Arrange
+            Closet closet = new Closet(3);
+            Shelf shelf = new Shelf(2);
 
-    [Test]
-    public void AddShelf_ShouldAddShelfToCloset()
-    {
-        // Arrange
-        var shelf = new Shelf(2);
+            // Act
+            bool added = closet.AddShelf(shelf);
 
-        // Act
-        var result = _closet.AddShelf(shelf);
+            // Assert
+            Assert.IsTrue(added);
+            Assert.Contains(shelf, closet.Shelves);
+        }
 
-        // Assert
-        Assert.That(result, Is.True);
-        Assert.That(_closet.Shelves.Count, Is.EqualTo(2));
-        Assert.That(_closet.Shelves[1], Is.EqualTo(shelf));
-    }
+        [Test]
+        public void AddShelf_SameHeightShelf_ReturnsFalse()
+        {
+            // Arrange
+            Closet closet = new Closet(3);
+            Shelf shelf1 = new Shelf(2);
+            Shelf shelf2 = new Shelf(2);
 
-    [Test]
-    public void TopShelf_ShouldReturnTopShelf()
-    {
-        // Arrange
-        var shelf1 = new Shelf(1);
-        var shelf2 = new Shelf(2);
-        _closet.AddShelf(shelf1);
-        _closet.AddShelf(shelf2);
+            // Act
+            closet.AddShelf(shelf1);
+            bool added = closet.AddShelf(shelf2);
 
-        // Act
-        var result = _closet.TopShelf();
+            // Assert
+            Assert.IsFalse(added);
+            Assert.AreEqual(1, closet.Shelves.Count);
+        }
 
-        // Assert
-        Assert.AreEqual(shelf2, result);
-    }
+        [Test]
+        public void AddShelf_TooHighShelf_ReturnsFalse()
+        {
+            // Arrange
+            Closet closet = new Closet(3);
+            Shelf shelf = new Shelf(4);
+
+            // Act
+            bool added = closet.AddShelf(shelf);
+
+            // Assert
+            Assert.IsFalse(added);
+            Assert.IsEmpty(closet.Shelves);
+        }
+
+        [Test]
+        public void AddProduct_SuccessfullyAddsProduct()
+        {
+            // Arrange
+            Closet closet = new Closet(3);
+            Product product = new Product(Width.Medium, Height.Medium, Speed.Fast);
+
+            // Act
+            bool added = closet.AddProduct(product, 2);
+
+            // Assert
+            Assert.IsTrue(added);
+            Assert.AreEqual(1, closet.Shelves.Count);
+            Assert.AreEqual(1, closet.Shelves[0].Products.Count);
+        }
+
+        [Test]
+        public void AddProduct_TooHighLayer_ReturnsFalse()
+        {
+            // Arrange
+            Closet closet = new Closet(3);
+            Product product = new Product(Width.Medium, Height.Medium, Speed.Fast);
+
+            // Act
+            bool added = closet.AddProduct(product, 4);
+
+            // Assert
+            Assert.IsFalse(added);
+            Assert.IsEmpty(closet.Shelves);
+        }
+
+        [Test]
+        public void AddProduct_FitsExistingShelf_SuccessfullyAddsProduct()
+        {
+            // Arrange
+            Closet closet = new Closet(3);
+            Product product1 = new Product(Width.Medium, Height.Medium, Speed.Fast);
+            Product product2 = new Product(Width.Medium, Height.Medium, Speed.Medium);
+            closet.AddShelf(new Shelf(1));
+
+            // Act
+            closet.AddProduct(product1, 1);
+            bool added = closet.AddProduct(product2, 1);
+
+            // Assert
+            Assert.IsTrue(added);
+            Assert.AreEqual(1, closet.Shelves.Count);
+            Assert.AreEqual(2, closet.Shelves[0].Products.Count);
+        }
+
+        [Test]
+        public void AddProduct_FitsNewShelf_SuccessfullyAddsProduct()
+        {
+            // Arrange
+            Closet closet = new Closet(3);
+            Product product1 = new Product(Width.Small, Height.Small, Speed.Fast);
+            Product product2 = new Product(Width.Medium, Height.Medium, Speed.Medium);
+
+            // Act
+            closet.AddProduct(product1, 1);
+            bool added = closet.AddProduct(product2, 2);
+
+            // Assert
+            Assert.IsTrue(added);
+            Assert.AreEqual(2, closet.Shelves.Count);
+            Assert.AreEqual(1, closet.Shelves[1].Products.Count);
+        }
+
+        [Test]
+        public void AddProduct_NoRoomForNewShelf_ReturnsFalse()
+        {
+            // Arrange
+            Closet closet = new Closet(1);
+            Product product = new Product(Width.Medium, Height.Medium, Speed.Fast);
+
+            // Act
+            bool added = closet.AddProduct(product, 2);
+
+            // Assert
+            Assert.IsFalse(added);
+            Assert.IsEmpty(closet.Shelves);
+        }
     
     
 }

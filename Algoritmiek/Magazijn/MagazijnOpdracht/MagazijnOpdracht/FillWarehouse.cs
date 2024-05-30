@@ -21,12 +21,9 @@ public class FillWarehouse
             var line = reader.ReadLine();
             var values = line.Split(',');
 
-            var product = new Product
-            {
-                Height = (Height)Enum.Parse(typeof(Height), values[0], true),
-                Width = (Width)Enum.Parse(typeof(Width), values[0], true),
-                Speed = (Speed)Enum.Parse(typeof(Speed), values[1], true)
-            };
+            var product = new Product(((Width)Enum.Parse(typeof(Width), values[0], true)),
+                ((Height)Enum.Parse(typeof(Height), values[0], true)),
+                (Speed)Enum.Parse(typeof(Speed), values[1], true));
             Products.Add(product);
             
             if (Products.Count >= limit)

@@ -18,6 +18,10 @@ public class Shelf
 
     public bool IsFull()
     {
+        if (IsEmpty())
+        {
+            return false;
+        }
         return Products.Count >= (int)Products[0].Width;
     }
 
