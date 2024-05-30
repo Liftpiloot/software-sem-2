@@ -9,6 +9,11 @@ public class Rack
         Closets = new List<Closet>();
         for (int i = 0; i < numberOfClosets; i++)
         {
+            if (i % 2 == 0) // TODO remove if statement
+            {
+                Closets.Add(new Closet(6));
+                continue;
+            }
             Closets.Add(new Closet(8));
         }
     }

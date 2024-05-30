@@ -26,7 +26,11 @@ public class FillWarehouse
                 Width = (Width)Enum.Parse(typeof(Width), values[0], true),
                 Speed = (Speed)Enum.Parse(typeof(Speed), values[1], true)
             };
-            Products.Add(product);
+            if (product.Height != Height.Large) // TODO remove if statement
+            {
+                Products.Add(product);
+            }
+            
             if (Products.Count >= limit)
             {
                 break;
@@ -42,6 +46,8 @@ public class FillWarehouse
             foreach (var closet in racks[i].Closets)
             {
                 Console.WriteLine($"  Closet {racks[i].Closets.IndexOf(closet) + 1}:");
+                // write topshelf height
+                Console.WriteLine($"    Topshelf height: {closet.Layers.Max()}"); // TODO remove line
                 foreach (var shelf in closet.Shelves)
                 {
                     //if (!shelf.IsEmpty())

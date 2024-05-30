@@ -54,6 +54,13 @@ public class Closet
 
     public bool AddProduct(Product product, int layer)
     {
+        if (Shelves.Count != 0 && TopShelf().Height == layer)
+        {
+            if (TopShelf().AddProduct(product))
+            {
+                return true; // Product added
+            }
+        }
         if (Shelves.Count == 0 || TopShelf().Height < layer)
         {
             Shelf newShelf = new Shelf(layer);
