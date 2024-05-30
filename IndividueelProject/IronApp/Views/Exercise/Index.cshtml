@@ -50,7 +50,7 @@
             </div>
             <div class="workout-info" id="workout-info @i">
                 <div class="workout-logo">
-                    <a href="@Url.Action("Exercise", "Home", new { ID = Model[i].Id })">
+                    <a href="@Url.Action("Exercise", "Exercise", new { ID = Model[i].Id })">
                         <img src="@Model[i].Logo" alt="logo"/>
                     </a>
 
@@ -76,7 +76,7 @@
     </div>
 
     <div id="add_workout">
-        <a asp-action="ExerciseList" asp-controller="Home">Add Exercise</a>
+        <a asp-action="ExerciseList" asp-controller="Exercise">Add Exercise</a>
     </div>
 </div>
 
@@ -180,12 +180,12 @@
             }
         }
         $.ajax({
-            url: '@Url.Action("SaveWorkout", "Home")',
+            url: '@Url.Action("SaveWorkout", "Exercise")',
             type: 'POST',
             data:JSON.stringify(workout),
             contentType: 'application/json',
             success: function(data) {
-                //window.location.href = '@Url.Action("Index", "Home")';
+                //window.location.href = '@Url.Action("Index", "Exercise")';
                 //unset the selected workouts
                 for (var i = 0; i < model.length; i++) {
                     var div = document.getElementById("workout-select " + i);

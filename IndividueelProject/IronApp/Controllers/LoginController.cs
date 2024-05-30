@@ -49,7 +49,7 @@ public class LoginController : Controller
             HttpOnly = true
         };
         Response.Cookies.Append("UserId", user.Id.ToString(), cookieOptions);
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Index", "Exercise");
 
     }
 }

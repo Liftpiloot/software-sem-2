@@ -59,7 +59,7 @@
         </div>
     </div>
 </div>
-<a href="@Url.Action("Index", "Home")" class="back-arrow">
+<a href="@Url.Action("Index", "Exercise")" class="back-arrow">
     <div>←</div>
 </a>
 
@@ -69,11 +69,11 @@
 function add_selected(id){
     console.log(id)
     $.ajax({
-        url: '@Url.Action("AddSelectedExercise", "Home")',
+        url: '@Url.Action("AddSelectedExercise", "Exercise")',
         type: 'POST',
         data: { id: id},
         success: function() {
-            window.location.href = '@Url.Action("Index", "Home")';
+            window.location.href = '@Url.Action("Index", "Exercise")';
         },
         error: function(){
             alert("Error adding exercise.");
@@ -92,11 +92,11 @@ function add_custom(){
         return;
     }
     $.ajax({
-        url: '@Url.Action("AddCustomExercise", "Home")',
+        url: '@Url.Action("AddCustomExercise", "Exercise")',
         type: 'POST',
         data: { name: name},
         success: function() {
-            window.location.href = '@Url.Action("Index", "Home")';
+            window.location.href = '@Url.Action("Index", "Exercise")';
         },
         error: function(){
             alert("Error adding custom exercise. (Exercise already exists)");

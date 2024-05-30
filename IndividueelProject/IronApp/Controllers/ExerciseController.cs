@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace IronApp.Controllers;
 
-public class HomeController : Controller
+public class ExerciseController : Controller
 {
     private readonly ExerciseContainer _exerciseContainer;
     private readonly ExerciseExecutionContainer _exerciseExecutionContainer;
@@ -18,7 +18,7 @@ public class HomeController : Controller
     private readonly UserContainer _userContainer;
     private readonly IDbUser _dbUser;
     
-    public HomeController()
+    public ExerciseController()
     {
         _dbExercise = new DbExercise();
         _dbExerciseExecution = new DbExerciseExecution();
@@ -119,7 +119,7 @@ public class HomeController : Controller
         int userId = Convert.ToInt32(Request.Cookies["UserId"]);
         SelectedExercise selectedExercise = new SelectedExercise(userId, id);
         _exerciseContainer.AddSelectedExercise(selectedExercise);
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Index", "Exercise");
     }
 
     public IActionResult? Exercise(int id)
@@ -197,7 +197,7 @@ public class HomeController : Controller
         }
         SelectedExercise selectedExercise = new SelectedExercise(userId, id);
         _exerciseContainer.DeleteSelectedExercise(selectedExercise);
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Index", "Exercise");
     }
 
     [HttpPost]
@@ -217,7 +217,7 @@ public class HomeController : Controller
         if (exerciseId <= 0) return ExerciseList();
         SelectedExercise selectedExercise = new SelectedExercise(userId, exerciseId);
         _exerciseContainer.AddSelectedExercise(selectedExercise);
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Index", "Exercise");
     }
 
     [HttpPost]

@@ -23,7 +23,7 @@
 
 <body>
 
-<a href="@Url.Action("Index", "Home")" class="back-arrow">
+<a href="@Url.Action("Index", "Exercise")" class="back-arrow">
     <div>←</div>
 </a>
 <div class="workout-card">
@@ -34,7 +34,7 @@
     <div class="workout-info">
         <h1>@Model.Name</h1>
         <button id="del-button">
-            <a href="@Url.Action("DeleteExercise", "Home", new { ID = Model.Id })">Delete from home</a>
+            <a href="@Url.Action("DeleteExercise", "Exercise", new { ID = Model.Id })">Delete from home</a>
         </button>
     </div>
 </div>

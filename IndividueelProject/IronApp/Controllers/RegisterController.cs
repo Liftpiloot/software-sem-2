@@ -31,7 +31,7 @@ public class RegisterController : Controller
         Console.WriteLine(model.DateOfBirth);
         if (ModelState.IsValid)
         {
-            var user = new User(model.Username, model.Email, model.Password, model.DateOfBirth, model.Weight); 
+            var user = new User(0, model.Username, model.Email, model.Password, model.DateOfBirth, model.Weight); 
             var userId = _userContainer.AddUser(user);
             switch (userId)
             {
@@ -61,7 +61,7 @@ public class RegisterController : Controller
             };
             Response.Cookies.Append("UserId", user.Id.ToString(), cookieOptions);
             
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Exercise");
         }
 
         if (string.IsNullOrEmpty(model.Password))

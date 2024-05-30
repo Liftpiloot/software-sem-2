@@ -19,11 +19,17 @@ public class ExerciseExecutionContainer
     private ExerciseExecution ConvertToExerciseExecution(ExerciseExecutionDto exerciseExecutionDto)
     {
         List<Set> sets = new();
-        foreach (SetDto setDto in exerciseExecutionDto.Sets)
+        if (exerciseExecutionDto.Sets != null)
         {
-            sets.Add(ConvertToSet(setDto));
+            foreach (SetDto setDto in exerciseExecutionDto.Sets)
+            {
+                sets.Add(ConvertToSet(setDto));
+            }
         }
-
+        else
+        {
+            sets = new List<Set>();
+        }
         ExerciseExecution exerciseExecution = new ExerciseExecution(exerciseExecutionDto.Id,
             exerciseExecutionDto.ExecutionDate, exerciseExecutionDto.UserId, exerciseExecutionDto.ExerciseId, sets);
         return exerciseExecution;
@@ -63,6 +69,7 @@ public class ExerciseExecutionContainer
         {
             Reps = set.Reps,
             Weight = set.Weight,
+            ExerciseExecutionId = set.ExerciseExecutionId
         };
         return setDto;
     }
@@ -143,10 +150,15 @@ public class ExerciseExecutionContainer
             {
                 return false;
             }
-
-            if (exerciseExecution.Sets.Select(ConvertToSetDto).Any(setDto => !_dbExerciseExecution.AddSet(setDto)))
+            
+            foreach (var set in exerciseExecution.Sets)
             {
-                return false;
+                set.ExerciseExecutionId = returnedExerciseExecution;
+                SetDto setDto = ConvertToSetDto(set);
+                if (!_dbExerciseExecution.AddSet(setDto))
+                {
+                    return false;
+                }
             }
         }
 
