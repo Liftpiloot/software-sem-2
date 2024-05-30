@@ -10,7 +10,7 @@ public class UnitTestWarehouse
     {
         // Arrange
         Warehouse warehouse = new Warehouse(1, 1, 3);
-        Product product = new Product(Width.Medium, Height.Large, Speed.Fast);
+        Product product = new Product(Width.Medium, Height.Medium, Speed.Fast);
 
         // Act
         bool added = warehouse.AddProduct(product);
