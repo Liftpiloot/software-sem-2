@@ -2,15 +2,16 @@ namespace MagazijnOpdracht;
 
 public class FillWarehouse
 {
-    private static readonly int NumberOfRacks = 3;
+    private static readonly int NumberOfRacks = 2;
     private static readonly int NumberOfClosets = 6;
+    private static readonly int NumberOfLayers = 8;
     private static Warehouse _warehouse;
     private static List<Product> Products { get; set; }
     private static List<Product> OverFlowProducts { get; set; }
     
     
     // import products from csv file
-    private static void ImportProducts(string path, int limit = 10000)
+    private static void ImportProducts(string path, int limit = 480)
     {
         using var reader = new StreamReader(path);
         Products = new List<Product>();
@@ -26,10 +27,7 @@ public class FillWarehouse
                 Width = (Width)Enum.Parse(typeof(Width), values[0], true),
                 Speed = (Speed)Enum.Parse(typeof(Speed), values[1], true)
             };
-            if (product.Height != Height.Large) // TODO remove if statement
-            {
-                Products.Add(product);
-            }
+            Products.Add(product);
             
             if (Products.Count >= limit)
             {
@@ -72,7 +70,7 @@ public class FillWarehouse
         ImportProducts(path, limit);
         SortProducts();
         OverFlowProducts = new List<Product>();
-        Warehouse warehouse = new Warehouse(NumberOfRacks, NumberOfClosets);
+        Warehouse warehouse = new Warehouse(NumberOfRacks, NumberOfClosets, NumberOfLayers);
         foreach (var product in Products)
         {
             if (!warehouse.AddProduct(product))
@@ -86,7 +84,7 @@ public class FillWarehouse
 
     public static void Main()
     {
-        Fill("C:\\Users\\Abel\\OneDrive\\ICT-1\\Sem-2\\Opdrachten\\Magazijn\\Product_mock_data.csv", 100);
+        Fill("C:\\Users\\Abel\\OneDrive\\ICT-1\\Sem-2\\Opdrachten\\Magazijn\\Product_mock_data.csv", 300);
         PrintRacks(_warehouse.Racks);
         PrintOverflow();
     }

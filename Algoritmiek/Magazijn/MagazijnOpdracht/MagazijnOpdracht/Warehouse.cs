@@ -5,12 +5,12 @@ public class Warehouse
     public List<Rack> Racks { get; set; }
     private List<int> _layerNumbers;
     
-    public Warehouse(int numberOfRacks, int numberOfClosets)
+    public Warehouse(int numberOfRacks, int numberOfClosets, int numberOfLayers)
     {
         Racks = new List<Rack>();
         for (int i = 0; i < numberOfRacks; i++)
         {
-            Racks.Add(new Rack(numberOfClosets));
+            Racks.Add(new Rack(numberOfClosets, numberOfLayers));
         }
         _layerNumbers = GetLayerNumbers();
     }

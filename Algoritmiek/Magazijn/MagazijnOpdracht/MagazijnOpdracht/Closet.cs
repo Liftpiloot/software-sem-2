@@ -21,6 +21,11 @@ public class Closet
         return Shelves.OrderByDescending(shelf => shelf.Height).First();
     }
 
+    private int ClosetHeight()
+    {
+        return Layers.Max()+1;
+    }
+
     public bool AddShelf(Shelf newshelf)
     {
         // if new shelf is higher than the highest layer, return false
@@ -56,7 +61,7 @@ public class Closet
     {
         if (Shelves.Count != 0 && TopShelf().Height == layer)
         {
-            if (TopShelf().AddProduct(product))
+            if (TopShelf().AddProduct(product, ClosetHeight()))
             {
                 return true; // Product added
             }
@@ -64,15 +69,24 @@ public class Closet
         if (Shelves.Count == 0 || TopShelf().Height < layer)
         {
             Shelf newShelf = new Shelf(layer);
-            if (AddShelf(newShelf))
+            if (ProductFitsHeight(product, newShelf))
             {
-                if (newShelf.AddProduct(product))
+                if (AddShelf(newShelf))
                 {
-                    return true; // Product added
+                    if (newShelf.AddProduct(product, ClosetHeight()))
+                    {
+                        return true; // Product added
+                    }
                 }
             }
+
         }
 
         return false;
+    }
+
+    private bool ProductFitsHeight(Product product, Shelf newShelf)
+    {
+        return ClosetHeight() - (int)product.Height >= newShelf.Height;
     }
 }
