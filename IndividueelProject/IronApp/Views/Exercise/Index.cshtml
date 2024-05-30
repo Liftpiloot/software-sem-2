@@ -24,19 +24,24 @@
 <body style="display: flex">
 
 <div>
-<div class="iron-logo" style="position: initial;">
-    <img src="~/images/iron_logo_new.png" alt="logo" width="100%"/>
+    <div class="iron-logo" style="position: initial;">
+        <img src="~/images/iron_logo_new.png" alt="logo" width="100%"/>
+    </div>
+    
+
+    <div id="workout-info" style="display: none">
+        <button id="close-info" onclick="closeInfo()">X</button>
+        <h3>
+            WORKOUT SUMMARY
+        </h3>
+        <p id="workout-details">
+            Details
+        </p>
+    </div>
 </div>
 
-<div id="workout-info" style="display: none">
-    <button id="close-info" onclick="closeInfo()">X</button>
-    <h3>
-        WORKOUT SUMMARY
-    </h3>
-    <p id="workout-details">
-        Details
-    </p>
-</div>
+<div id="profile-button">
+    <a href="@Url.Action("Index", "Profile")">Profile</a>
 </div>
 
 <div>
@@ -78,6 +83,7 @@
     <div id="add_workout">
         <a asp-action="ExerciseList" asp-controller="Exercise">Add Exercise</a>
     </div>
+    
 </div>
 
 

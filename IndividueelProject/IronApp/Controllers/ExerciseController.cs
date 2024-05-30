@@ -30,12 +30,11 @@ public class ExerciseController : Controller
     
     public IActionResult Index()
     {
-        if (Request.Cookies["userId"] == null)
+        bool isLoggedIn = int.TryParse(Request.Cookies["UserId"], out var userId);
+        if (!isLoggedIn)
         {
             return RedirectToAction("Index", "Login");
         }
-
-        var userId = Convert.ToInt32(Request.Cookies["UserId"]);
         User? user = _userContainer.GetUser(userId);
         if (user == null)
         {
@@ -44,6 +43,12 @@ public class ExerciseController : Controller
         // get selected exercises, and add sets if there is an execution. Create a List of ExerciseModel to pass to the view
 
         var selectedExercises = _exerciseContainer.GetSelectedExercises(user);
+        var exerciseModels = GetRecentExecutionsAndSets(selectedExercises, user);
+        return View(exerciseModels);
+    }
+
+    private List<ExerciseModel> GetRecentExecutionsAndSets(List<SelectedExercise> selectedExercises, User user)
+    {
         var exerciseModels = new List<ExerciseModel>();
         foreach (var selectedExercise in selectedExercises)
         {
@@ -72,15 +77,9 @@ public class ExerciseController : Controller
             exerciseModels.Add(exerciseModel);
         }
 
-        return View(exerciseModels);
+        return exerciseModels;
     }
-
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
-
+    
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
@@ -144,12 +143,23 @@ public class ExerciseController : Controller
                 return RedirectToAction("Index", "Login");
             }
             
-            List<List<SetModel>> allSets = new List<List<SetModel>>();
-            List<ExerciseExecution> exerciseExecutions = _exerciseExecutionContainer.GetExerciseExecutions(user, exercise);
-            foreach (ExerciseExecution exerciseExecution in exerciseExecutions)
+            var allSets = GetAllSets(user, exercise);
+            exerciseModel = GetExerciseGraphData(allSets, exerciseModel);
+            return View(exerciseModel);
+        }
+
+        return null;
+    }
+
+    private List<List<SetModel>> GetAllSets(User user, Exercise exercise)
+    {
+        List<List<SetModel>> allSets = new List<List<SetModel>>();
+        List<ExerciseExecution> exerciseExecutions = _exerciseExecutionContainer.GetExerciseExecutions(user, exercise);
+        foreach (ExerciseExecution exerciseExecution in exerciseExecutions)
+        {
+            List<Set> executionSets = _exerciseExecutionContainer.GetSets(exerciseExecution);
+            if (executionSets.Count != 0)
             {
-                List<Set> executionSets = _exerciseExecutionContainer.GetSets(exerciseExecution);
-                if (executionSets.Count == 0) continue;
                 List<SetModel> executionSetsModel = new List<SetModel>();
                 foreach (Set set in executionSets)
                 {
@@ -163,29 +173,30 @@ public class ExerciseController : Controller
                 }
                 allSets.Add(executionSetsModel);
             }
-            List<DataPointModel> dataPoints = new List<DataPointModel>();
-            List<DataPointModel> dataPoints2 = new List<DataPointModel>();
-            foreach (List<SetModel> sets in allSets)
-            {
-                // Get the highest weight
-                decimal highestWeight = sets.Select(set => set.Weight).Prepend(0).Max();
-                // Get the volume
-                decimal volume = sets.Select(set => set.Reps * set.Weight).Sum();
-                // Get date
-                DateTime date = sets[0].Date;
-                DataPointModel dataPoint = new DataPointModel(date, highestWeight);
-                DataPointModel dataPoint2 = new DataPointModel(date, volume);
-                dataPoints.Add(dataPoint);
-                dataPoints2.Add(dataPoint2);
-            }
-            exerciseModel.DataPoints = dataPoints;
-            exerciseModel.DataPoints2 = dataPoints2;
-            
-            
-            return View(exerciseModel);
         }
+        return allSets;
+    }
 
-        return null;
+    private static ExerciseModel GetExerciseGraphData(List<List<SetModel>> allSets, ExerciseModel exerciseModel)
+    {
+        List<DataPointModel> highestWeightOverTime = new List<DataPointModel>();
+        List<DataPointModel> volumeOverTime = new List<DataPointModel>();
+        foreach (List<SetModel> sets in allSets)
+        {
+            // Get the highest weight
+            decimal highestWeight = sets.Select(set => set.Weight).Prepend(0).Max();
+            // Get the volume
+            decimal volume = sets.Select(set => set.Reps * set.Weight).Sum();
+            // Get date
+            DateTime date = sets[0].Date;
+            DataPointModel dataPoint = new DataPointModel(date, highestWeight);
+            DataPointModel dataPoint2 = new DataPointModel(date, volume);
+            highestWeightOverTime.Add(dataPoint);
+            volumeOverTime.Add(dataPoint2);
+        }
+        exerciseModel.highestWeightOverTime = highestWeightOverTime;
+        exerciseModel.volumeOverTime = volumeOverTime;
+        return exerciseModel;
     }
 
     public IActionResult DeleteExercise(int id)
