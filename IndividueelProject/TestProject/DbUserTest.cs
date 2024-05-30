@@ -15,6 +15,14 @@ public class DbUserTest : IDbUser
     {
         if (user != null)
         {
+            if (user.PasswordHash == string.Empty)
+            {
+                return null;
+            }
+            if (user.UserName == string.Empty && user.Email == string.Empty)
+            {
+                return null;
+            }
             return user with { Id = 1, Weight = 80 };
         }
         return null;
@@ -22,6 +30,24 @@ public class DbUserTest : IDbUser
 
     public bool EditWeight(int userId, decimal result)
     {
-        throw new NotImplementedException();
+        return userId != 0 && result != 0;
+    }
+
+    public bool ChangePassword(int userId, string modelNewPassword)
+    {
+        return userId != 0 && !string.IsNullOrEmpty(modelNewPassword);
+    }
+
+    public UserDto? GetUser(int userId)
+    {
+        if (userId != 0)
+        {
+            return new UserDto
+            {
+                Id = userId,
+                Weight = 80
+            };
+        }
+        return null;
     }
 }

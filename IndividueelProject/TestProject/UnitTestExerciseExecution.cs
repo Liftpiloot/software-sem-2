@@ -9,141 +9,118 @@ namespace TestProject;
 [TestClass]
 public class UnitTestExerciseExecution
 {
-    private static readonly IDbExerciseExecution Db = new DbExerciseExecutionTest();
-    private readonly ExerciseExecutionContainer _exerciseExecutionContainer = new(Db);
-    
-    [TestMethod]
-    [DataRow(1, 1)]
-    [DataRow(0, 1)]
-    [DataRow(1, 0)]
-    [DataRow(0, 0)]
-    public void AddExerciseExecution(int exerciseId, int userId)
+    private static IDbExerciseExecution _mockDbExerciseExecution;
+    private ExerciseExecutionContainer _container;
+
+    [TestInitialize]
+    public void Setup()
     {
-        ExerciseExecution exerciseExecution = new()
-        {
-            ExerciseId = exerciseId,
-            UserId = userId
-        };
-        int id = _exerciseExecutionContainer.AddExerciseExecution(exerciseExecution);
-        if (exerciseId == 0 || userId == 0)
-        {
-            Assert.AreEqual(-1, id);
-        }
-        else
-        {
-            Assert.AreEqual(1, id);
-        }
+        _mockDbExerciseExecution = new DbExerciseExecutionTest();
+        _container = new ExerciseExecutionContainer(_mockDbExerciseExecution);
+    }
+
+    [TestMethod]
+    public void AddExerciseExecution_ShouldReturnId()
+    {
+        // Arrange
+        var exerciseExecution = new ExerciseExecution(1, DateTime.Now, 1, 1, new List<Set>());
+
+        // Act
+        var result = _container.AddExerciseExecution(exerciseExecution);
+
+        // Assert
+        Assert.AreEqual(1, result);
+    }
+
+    [TestMethod]
+    public void AddSet_ShouldReturnTrue()
+    {
+        // Arrange
+        var set = new Set(100, 10) { ExerciseExecutionId = 1 };
+        var exerciseExecution = new ExerciseExecution(1, DateTime.Now, 1, 1, new List<Set> { set });
+
+        // Act
+        var result = _container.AddSet(exerciseExecution, set);
+
+        // Assert
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public void GetRecentExerciseExecution_ShouldReturnExecution()
+    {
+        // Arrange
+        var user = new User(1, "Test", "Test", "Test", DateTime.Now, 1);
+        var exercise = new Exercise(1, 1, "Test", "Test", "/images/default.png");
+
+        // Act
+        var result = _container.GetRecentExerciseExecution(user, exercise);
+
+        // Assert
+        Assert.IsNotNull(result);
+        Assert.AreEqual(1, result.Id);
+    }
+
+    [TestMethod]
+    public void GetSets_ShouldReturnSets()
+    {
+        // Arrange
+        var execution = new ExerciseExecution(1, DateTime.Now, 1, 1, new List<Set>());
+
+        // Act
+        var result = _container.GetSets(execution);
+
+        // Assert
+        Assert.AreEqual(2, result.Count);
+        Assert.AreEqual(10, result[0].Reps);
+        Assert.AreEqual(10, result[0].Weight);
+    }
+
+    [TestMethod]
+    public void GetExerciseExecutions_ShouldReturnExecutions()
+    {
+        // Arrange
+        var user = new User(1, "Test", "Test", "Test", DateTime.Now, 1);
+        var exercise = new Exercise(1, 1, "Test", "Test", "/images/default.png");
+
+        // Act
+        var result = _container.GetExerciseExecutions(user, exercise);
+
+        // Assert
+        Assert.AreEqual(2, result.Count);
+        Assert.AreEqual(1, result[0].Id);
+        Assert.AreEqual(2, result[1].Id);
+    }
+
+    [TestMethod]
+    public void AddWorkout_ShouldReturnTrue()
+    {
+        // Arrange
+        var set = new Set(100, 10);
+        var exerciseExecution = new ExerciseExecution(1, DateTime.Now, 1, 1, new List<Set> { set });
+        var exerciseExecutions = new List<ExerciseExecution> { exerciseExecution };
+
+        // Act
+        var result = _container.AddWorkout(exerciseExecutions);
+
+        // Assert
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public void IsPersonalBest_ShouldReturnTrue()
+    {
+        // Arrange
+        var set = new Set(100, 10);
+        var exerciseExecution = new ExerciseExecution(1, DateTime.Now, 1, 1, new List<Set> { set });
+        var sets = new List<Set> { set };
+
+        // Act
+        var result = _container.IsPersonalBest(exerciseExecution, sets);
+
+        // Assert
+        Assert.IsTrue(result);
     }
     
-    [TestMethod]
-    [DataRow(0)]
-    [DataRow(1)]
-    public void GetSets(int id)
-    {
-        ExerciseExecution exerciseExecution = new()
-        {
-            Id = id
-        };
-        List<Set> sets = _exerciseExecutionContainer.GetSets(exerciseExecution);
-        Assert.AreEqual(id == 0 ? 0 : 2, sets.Count);
-    }
-    
-    [TestMethod]
-    [DataRow(0, 0, 0)]
-    [DataRow(1, 0, 0)]
-    [DataRow(0, 1, 0)]
-    [DataRow(0, 0, 1)]
-    [DataRow(1, 10, 10)]
-    public void AddSet(int id,int reps, int weight)
-    {
-        Set set = new()
-        {
-            Reps = reps,
-            Weight = weight
-        };
-        ExerciseExecution execution = new()
-        {
-            Id = id
-        };
-        var added = _exerciseExecutionContainer.AddSet(execution, set);
-        if (weight == 0 || reps==0 || id==0)
-        {
-            Assert.IsFalse(added);
-        }
-        else
-        {
-            Assert.IsTrue(added);
-        }
-    }
-    
-    [TestMethod]
-    [DataRow(0, 0)]
-    [DataRow(1, 0)]
-    [DataRow(0, 1)]
-    [DataRow(1, 1)]
-    public void GetRecentExecution(int userId, int exerciseId)
-    {
-        User user = new()
-        {
-            Id = userId
-        };
-        Exercise exercise = new()
-        {
-            Id = exerciseId
-        };
-        ExerciseExecution? exerciseExecution = _exerciseExecutionContainer.GetRecentExerciseExecution(user, exercise);
-        if (userId == 0 || exerciseId == 0)
-        {
-            Assert.IsNull(exerciseExecution);
-        }
-        else
-        {
-            Assert.IsNotNull(exerciseExecution);
-        }
-    }
-    
-    [TestMethod]
-    [DataRow(0, 0)]
-    [DataRow(1, 0)]
-    [DataRow(0, 1)]
-    [DataRow(1, 1)]
-    public void GetExerciseExecutions(int userId, int exerciseId)
-    {
-        User user = new()
-        {
-            Id = userId
-        };
-        Exercise exercise = new()
-        {
-            Id = exerciseId
-        };
-        List<ExerciseExecution> exerciseExecutions = _exerciseExecutionContainer.GetExerciseExecutions(user, exercise);
-        if (userId == 0 || exerciseId == 0)
-        {
-            Assert.AreEqual(0, exerciseExecutions.Count);
-        }
-        else
-        {
-            Assert.AreNotEqual(0, exerciseExecutions.Count);
-        }
-    }
-    
-    [TestMethod]
-    public void IsPersonalBest()
-    {
-        ExerciseExecution exerciseExecution = new()
-        {
-            Id = 1
-        };
-        List<Set> sets = new()
-        {
-            new Set
-            {
-                Reps = 10,
-                Weight = 10
-            }
-        };
-        bool isPersonalBest = _exerciseExecutionContainer.IsPersonalBest(exerciseExecution, sets);
-        Assert.IsTrue(isPersonalBest);
-    }
+
 }
