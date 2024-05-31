@@ -8,37 +8,70 @@ namespace IronDomain;
 public class ExerciseContainer
 {
     private readonly IDbExercise _dbExercise;
-    
+
     public ExerciseContainer(IDbExercise db)
     {
         _dbExercise = db;
     }
-    public int AddExercise(Exercise exercise)
+
+    // method to convert exercise dto to exercise
+    private Exercise ConvertToExercise(ExerciseDto exerciseDto)
+    {
+        Exercise exercise = new Exercise(exerciseDto.Id, exerciseDto.UserId, exerciseDto.Name,
+            exerciseDto.Description, exerciseDto.Logo);
+        return exercise;
+    }
+
+    // method to convert exercise to exercise dto
+    private ExerciseDto ConvertToExerciseDto(Exercise exercise)
     {
         ExerciseDto exerciseDto = new()
         {
-            Name = exercise.Name,
+            Id = exercise.Id,
             UserId = exercise.UserId,
+            Name = exercise.Name,
             Description = exercise.Description,
             Logo = exercise.Logo
         };
+        return exerciseDto;
+    }
+    
+    // method to convert selected exercise dto to selected exercise
+    private SelectedExercise ConvertToSelectedExercise(SelectedExerciseDto selectedExerciseDto)
+    {
+        SelectedExercise selectedExercise = new SelectedExercise(selectedExerciseDto.UserId, selectedExerciseDto.ExerciseId);
+        return selectedExercise;
+    }
+    
+    // method to convert selected exercise to selected exercise dto
+    private SelectedExerciseDto ConvertToSelectedExerciseDto(SelectedExercise selectedExercise)
+    {
+        SelectedExerciseDto selectedExerciseDto = new()
+        {
+            UserId = selectedExercise.UserId,
+            ExerciseId = selectedExercise.ExerciseId
+        };
+        return selectedExerciseDto;
+    }
+
+
+    public int AddExercise(Exercise exercise)
+    {
+        ExerciseDto exerciseDto = ConvertToExerciseDto(exercise);
         var returnedExercise = _dbExercise.AddExercise(exerciseDto);
         return returnedExercise;
     }
-    
+
     public bool DeleteExercise(User user, Exercise exercise)
     {
-        ExerciseDto exerciseDto = new()
-        {
-            Id = exercise.Id
-        };
+        ExerciseDto exerciseDto = ConvertToExerciseDto(exercise);
         UserDto userDto = new()
         {
             Id = user.Id
         };
         return _dbExercise.DeleteExercise(userDto, exerciseDto);
     }
-    
+
     public Exercise? GetExerciseFromId(int exerciseId)
     {
         ExerciseDto exerciseDto = new()
@@ -50,63 +83,41 @@ public class ExerciseContainer
         {
             return null;
         }
-
-        Exercise newExercise = new()
-        {
-            Id = returnedExercise.Id,
-            UserId = returnedExercise.UserId,
-            Name = returnedExercise.Name,
-            Description = returnedExercise.Description,
-            Logo = returnedExercise.Logo
-            
-        };
+        
+        Exercise newExercise = ConvertToExercise(returnedExercise);
         return newExercise;
     }
-    
+
     public List<Exercise> GetExercises(User user)
+    {
+        UserDto userDto = new()
         {
-            UserDto userDto = new()
-            {
-                Id = user.Id
-            };
-            List<ExerciseDto> exerciseDtos = _dbExercise.GetExercises(userDto);
-            List<Exercise> exercises = new();
-            foreach (ExerciseDto exerciseDto in exerciseDtos)
-            {
-                Exercise exercise = new()
-                {
-                    Id = exerciseDto.Id,
-                    UserId = exerciseDto.UserId,
-                    Name = exerciseDto.Name,
-                    Description = exerciseDto.Description,
-                    Logo = exerciseDto.Logo
-                };
-                exercises.Add(exercise);
-            }
-            return exercises;
+            Id = user.Id
+        };
+        List<ExerciseDto> exerciseDtos = _dbExercise.GetExercises(userDto);
+        List<Exercise> exercises = new();
+        foreach (ExerciseDto exerciseDto in exerciseDtos)
+        {
+            Exercise exercise = ConvertToExercise(exerciseDto);
+            exercises.Add(exercise);
         }
-    
+
+        return exercises;
+    }
+
     public bool AddSelectedExercise(SelectedExercise selectedExercise)
     {
-        SelectedExerciseDto selectedExerciseDto = new()
-        {
-            UserId = selectedExercise.UserId,
-            ExerciseId = selectedExercise.ExerciseId
-        };
+        SelectedExerciseDto selectedExerciseDto = ConvertToSelectedExerciseDto(selectedExercise);
         return _dbExercise.AddSelectedExercise(selectedExerciseDto);
     }
-    
+
     public bool DeleteSelectedExercise(SelectedExercise selectedExercise)
     {
-        SelectedExerciseDto selectedExerciseDto = new()
-        {
-            UserId = selectedExercise.UserId,
-            ExerciseId = selectedExercise.ExerciseId
-        };
-        
+        SelectedExerciseDto selectedExerciseDto = ConvertToSelectedExerciseDto(selectedExercise);
+
         return _dbExercise.DeleteSelectedExercise(selectedExerciseDto);
     }
-    
+
     public List<SelectedExercise> GetSelectedExercises(User user)
     {
         UserDto userDto = new()
@@ -117,13 +128,10 @@ public class ExerciseContainer
         List<SelectedExercise> selectedExercises = new();
         foreach (SelectedExerciseDto selectedExerciseDto in selectedExerciseDtos)
         {
-            SelectedExercise selectedExercise = new()
-            {
-                UserId = selectedExerciseDto.UserId,
-                ExerciseId = selectedExerciseDto.ExerciseId
-            };
+            SelectedExercise selectedExercise = ConvertToSelectedExercise(selectedExerciseDto);
             selectedExercises.Add(selectedExercise);
         }
+
         return selectedExercises;
     }
 
@@ -137,22 +145,9 @@ public class ExerciseContainer
         List<Exercise> exercises = new();
         foreach (ExerciseDto exerciseDto in exerciseDtos)
         {
-            Exercise exercise = new()
-            {
-                Id = exerciseDto.Id,
-                UserId = exerciseDto.UserId,
-                Name = exerciseDto.Name,
-                Description = exerciseDto.Description,
-                Logo = exerciseDto.Logo
-            };
+            Exercise exercise = ConvertToExercise(exerciseDto);
             exercises.Add(exercise);
         }
         return exercises;
     }
-    
-
-    
-    
-    
-    
 }

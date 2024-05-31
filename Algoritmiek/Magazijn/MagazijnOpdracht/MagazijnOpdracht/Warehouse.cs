@@ -3,55 +3,48 @@
 public class Warehouse
 {
     public List<Rack> Racks { get; set; }
-
-    private readonly int[] _layerNumbers = { 1, 2, 3, 4, 5, 6, 7, 8 };
+    private List<int> _layerNumbers;
     
-    public Warehouse(int numberOfRacks, int numberOfClosets)
+    public Warehouse(int numberOfRacks, int numberOfClosets, int numberOfLayers)
     {
         Racks = new List<Rack>();
         for (int i = 0; i < numberOfRacks; i++)
         {
-            Racks.Add(new Rack(numberOfClosets));
+            Racks.Add(new Rack(numberOfClosets, numberOfLayers));
         }
+        _layerNumbers = GetLayerNumbers();
     }
 
     public bool AddProduct(Product product)
     {
-        foreach (int layer in _layerNumbers)
+        var productAdded = false;
+        var layerIndex = 0;
+        while (!productAdded && layerIndex < _layerNumbers.Count)
         {
-            // return false if product doesn't fit on height
-            if (product.Size == Size.Large && layer != 1 && layer != 5)
+            var rackIndex = 0;
+            while (!productAdded && rackIndex < Racks.Count)
             {
-                continue;
+                productAdded = Racks[rackIndex].AddProduct(product, _layerNumbers[layerIndex]);
+                rackIndex++;
             }
-            if (product.Size == Size.Medium && layer == 8)
+            layerIndex++;
+        }
+        return productAdded;
+    }
+    
+    // get the highest layer of all closets
+    private List<int> GetLayerNumbers()
+    {
+        HashSet<int> layerNumbers = new HashSet<int>();
+        foreach (Rack rack in Racks)
+        {
+            foreach (Closet closet in rack.Closets)
             {
-                continue;
-            }
-            foreach (Rack rack in Racks)
-            {
-                foreach (Closet closet in rack.Closets)
-                {
-                    if (closet.TopShelf().Height < layer)
-                    {
-                        Shelf newShelf = new Shelf(layer);
-                        closet.AddShelf(newShelf);
-                    }
-                    foreach (Shelf shelf in closet.Shelves)
-                    {
-                        if (shelf.Height == layer)
-                        {
-                            if (shelf.AddProduct(product))
-                            {
-                                return true; // Product added
-                            }
-                        }
-
-                    }
-                }
+                layerNumbers.UnionWith(closet.Layers);
             }
         }
-        return false; // No space for product
+        return layerNumbers.ToList();
     }
+    
 
 }

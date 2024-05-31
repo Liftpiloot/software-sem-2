@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using FluentValidation.Results;
 using Iron_DAL;
 using Iron_Domain;
 using Iron_DAL.DTO;
@@ -9,34 +10,88 @@ namespace IronDomain;
 public class ExerciseExecutionContainer
 {
     private readonly IDbExerciseExecution _dbExerciseExecution;
-    
+    private readonly SetValidator _setValidator;
+
     public ExerciseExecutionContainer(IDbExerciseExecution db)
     {
         _dbExerciseExecution = db;
+        _setValidator = new SetValidator();
+    }
+
+    // method to convert exercise execution dto to exercise execution
+    private ExerciseExecution ConvertToExerciseExecution(ExerciseExecutionDto exerciseExecutionDto)
+    {
+        List<Set> sets = new();
+        if (exerciseExecutionDto.Sets != null)
+        {
+            foreach (SetDto setDto in exerciseExecutionDto.Sets)
+            {
+                sets.Add(ConvertToSet(setDto));
+            }
+        }
+        else
+        {
+            sets = new List<Set>();
+        }
+        ExerciseExecution exerciseExecution = new ExerciseExecution(exerciseExecutionDto.Id,
+            exerciseExecutionDto.ExecutionDate, exerciseExecutionDto.UserId, exerciseExecutionDto.ExerciseId, sets);
+        return exerciseExecution;
+    }
+
+    // method to convert exercise execution to exercise execution dto
+    private ExerciseExecutionDto ConvertToExerciseExecutionDto(ExerciseExecution exerciseExecution)
+    {
+        List<SetDto> setDtos = new();
+        foreach (Set set in exerciseExecution.Sets)
+        {
+            setDtos.Add(ConvertToSetDto(set));
+        }
+
+        ExerciseExecutionDto exerciseExecutionDto = new()
+        {
+            Id = exerciseExecution.Id,
+            UserId = exerciseExecution.UserId,
+            ExerciseId = exerciseExecution.ExerciseId,
+            ExecutionDate = exerciseExecution.ExecutionDate,
+            Sets = setDtos
+        };
+        return exerciseExecutionDto;
+    }
+
+    // method to convert set dto to set
+    private Set ConvertToSet(SetDto setDto)
+    {
+        Set set = new Set(setDto.Weight, setDto.Reps);
+        return set;
+    }
+
+    // method to convert set to set dto
+    private SetDto ConvertToSetDto(Set set)
+    {
+        SetDto setDto = new()
+        {
+            Reps = set.Reps,
+            Weight = set.Weight,
+            ExerciseExecutionId = set.ExerciseExecutionId
+        };
+        return setDto;
     }
 
     public int AddExerciseExecution(ExerciseExecution exerciseExecution)
     {
-        ExerciseExecutionDto exerciseExecutionDto = new()
-        {
-            ExerciseId = exerciseExecution.ExerciseId,
-            UserId = exerciseExecution.UserId,
-            ExecutionDate = exerciseExecution.ExecutionDate,
-        };
-        var returnedExerciseExecution = _dbExerciseExecution.AddExerciseExecution(exerciseExecutionDto);
-        return returnedExerciseExecution;
+        ExerciseExecutionDto exerciseExecutionDto = ConvertToExerciseExecutionDto(exerciseExecution);
+        return _dbExerciseExecution.AddExerciseExecution(exerciseExecutionDto);
     }
 
-    public bool AddSet(ExerciseExecution execution, Set set)
+    public (bool, IList<ValidationFailure>) AddSet(ExerciseExecution execution, Set set)
     {
-        SetDto setDto = new()
+        var result = _setValidator.Validate(set);
+        if (!result.IsValid)
         {
-            ExerciseExecutionId = execution.Id,
-            Reps = set.Reps,
-            Weight = set.Weight,
-        };
-
-        return _dbExerciseExecution.AddSet(setDto);
+            return (false, result.Errors);
+        }
+        SetDto setDto = ConvertToSetDto(set);
+        return (_dbExerciseExecution.AddSet(setDto), new List<ValidationFailure>());
     }
 
     public ExerciseExecution? GetRecentExerciseExecution(User user, Exercise exercise)
@@ -55,31 +110,18 @@ public class ExerciseExecutionContainer
             return null;
         }
 
-        ExerciseExecution? exerciseExecution = new()
-        {
-            Id = exerciseExecutionDto.Id,
-            ExecutionDate = exerciseExecutionDto.ExecutionDate,
-            UserId = exerciseExecutionDto.UserId,
-            ExerciseId = exerciseExecutionDto.ExerciseId,
-        };
+        ExerciseExecution? exerciseExecution = ConvertToExerciseExecution(exerciseExecutionDto);
         return exerciseExecution;
     }
 
-    public List<Set> GetSets(ExerciseExecution? execution)
+    public List<Set> GetSets(ExerciseExecution execution)
     {
-        ExerciseExecutionDto exerciseExecutionDto = new()
-        {
-            Id = execution?.Id,
-        };
+        ExerciseExecutionDto exerciseExecutionDto = ConvertToExerciseExecutionDto(execution);
         List<SetDto> setDtos = _dbExerciseExecution.GetSets(exerciseExecutionDto);
         List<Set> sets = new();
         foreach (SetDto setDto in setDtos)
         {
-            sets.Add(new Set()
-            {
-                Reps = setDto.Reps,
-                Weight = setDto.Weight,
-            });
+            sets.Add(ConvertToSet(setDto));
         }
 
         return sets;
@@ -100,13 +142,7 @@ public class ExerciseExecutionContainer
         List<ExerciseExecution> exerciseExecutions = new();
         foreach (ExerciseExecutionDto exerciseExecutionDto in exerciseExecutionDtos)
         {
-            exerciseExecutions.Add(new ExerciseExecution()
-            {
-                Id = exerciseExecutionDto.Id,
-                ExecutionDate = exerciseExecutionDto.ExecutionDate,
-                UserId = exerciseExecutionDto.UserId,
-                ExerciseId = exerciseExecutionDto.ExerciseId,
-            });
+            exerciseExecutions.Add(ConvertToExerciseExecution(exerciseExecutionDto));
         }
 
         return exerciseExecutions;
@@ -116,24 +152,17 @@ public class ExerciseExecutionContainer
     {
         foreach (ExerciseExecution exerciseExecution in exerciseExecutions)
         {
-            ExerciseExecutionDto exerciseExecutionDto = new()
-            {
-                ExerciseId = exerciseExecution.ExerciseId,
-                UserId = exerciseExecution.UserId,
-                ExecutionDate = exerciseExecution.ExecutionDate,
-            };
+            ExerciseExecutionDto exerciseExecutionDto = ConvertToExerciseExecutionDto(exerciseExecution);
             var returnedExerciseExecution = _dbExerciseExecution.AddExerciseExecution(exerciseExecutionDto);
             if (returnedExerciseExecution <= 0)
             {
                 return false;
             }
-            foreach (var setDto in exerciseExecution.Sets.Select(set => new SetDto()
-                     {
-                         ExerciseExecutionId = returnedExerciseExecution,
-                         Reps = set.Reps,
-                         Weight = set.Weight,
-                     }))
+            
+            foreach (var set in exerciseExecution.Sets)
             {
+                set.ExerciseExecutionId = returnedExerciseExecution;
+                SetDto setDto = ConvertToSetDto(set);
                 if (!_dbExerciseExecution.AddSet(setDto))
                 {
                     return false;
@@ -149,20 +178,13 @@ public class ExerciseExecutionContainer
         List<SetDto> setDtos = new();
         foreach (Set set in sets)
         {
-            setDtos.Add(new SetDto()
+            var result = _setValidator.Validate(set);
+            if (result.IsValid)
             {
-                Reps = set.Reps,
-                Weight = set.Weight,
-            });
+                setDtos.Add(ConvertToSetDto(set));
+            }
         }
-        return _dbExerciseExecution.IsPersonalBest(new ExerciseExecutionDto()
-        {
-            Id = execution.Id,
-            UserId = execution.UserId,
-            ExerciseId = execution.ExerciseId,
-            ExecutionDate = execution.ExecutionDate,
-        }, setDtos);
-        
+        return _dbExerciseExecution.IsPersonalBest(ConvertToExerciseExecutionDto(execution), setDtos);
     }
 
     public List<(int, int)> GetWorkoutsPerWeek(int userId)

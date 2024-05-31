@@ -9,21 +9,21 @@ public interface IDbExerciseExecution
     /// </summary>
     /// <param name="exercise"></param>
     /// <returns>Execution id, -1 if adding failed</returns>
-    public int AddExerciseExecution(ExerciseExecutionDto exercise);
+    int AddExerciseExecution(ExerciseExecutionDto exercise);
     
     /// <summary>
     /// Gets the sets of the exercise execution.
     /// </summary>
     /// <param name="exerciseExecution"></param>
     /// <returns>List of set</returns>
-    public List<SetDto> GetSets(ExerciseExecutionDto exerciseExecution);
+    List<SetDto> GetSets(ExerciseExecutionDto exerciseExecution);
     
     /// <summary>
     /// Adds set to exercise execution
     /// </summary>
     /// <param name="set"></param>
     /// <returns>true if successful</returns>
-    public bool AddSet(SetDto set);
+    bool AddSet(SetDto set);
     
     /// <summary>
     /// Gets the most recent exercise execution of a user and exercise
@@ -31,7 +31,7 @@ public interface IDbExerciseExecution
     /// <param name="user"></param>
     /// <param name="exercise"></param>
     /// <returns>Exercise Execution, null if not found</returns>
-    public ExerciseExecutionDto? GetRecentExecution(UserDto user, ExerciseDto exercise);
+    ExerciseExecutionDto? GetRecentExecution(UserDto user, ExerciseDto exercise);
 
     /// <summary>
     /// get all executions of a user of one exercise
@@ -39,8 +39,8 @@ public interface IDbExerciseExecution
     /// <param name="user"></param>
     /// <param name="exercise"></param>
     /// <returns>List of exercise executions</returns>
-    public List<ExerciseExecutionDto> GetExerciseExecutions(UserDto user, ExerciseDto exercise);
+    List<ExerciseExecutionDto> GetExerciseExecutions(UserDto user, ExerciseDto exercise);
 
-    public bool IsPersonalBest(ExerciseExecutionDto exerciseExecutionDto, List<SetDto> setDtos);
+    bool IsPersonalBest(ExerciseExecutionDto exerciseExecutionDto, List<SetDto> setDtos);
     List<ExerciseExecutionDto> GetAllExecutionsForUser(int userId);
 }

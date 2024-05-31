@@ -4,82 +4,120 @@ namespace MagazijnTest;
 
 public class UnitTestShelf
 {
-    private Shelf _shelf;
-    
-    [SetUp]
-    public void Setup()
-    {
-        _shelf = new Shelf(1);
-    }
-    
-    [Test]
-    public void Init_ShouldCreateShelfWithHeightAndEmptyProductsList()
-    {
-        // Arrange
-        var shelf = new Shelf(1);
-        
-        // Act
-        var result = shelf.Height;
-        
-        // Assert
-        Assert.That(result, Is.EqualTo(1));
-        Assert.That(shelf.Products.Count, Is.EqualTo(0));
-    }
-    
-    [Test]
-    public void AddProduct_ShouldAddProductToShelf()
-    {
-        // Arrange
-        var product = new Product { Size = Size.Small, Speed = Speed.Fast };
+[Test]
+        public void AddProduct_SuccessfullyAddsProduct()
+        {
+            // Arrange
+            Shelf shelf = new Shelf(1);
+            Product product = new Product(Width.Small, Height.Small, Speed.Fast);
 
-        // Act
-        var result = _shelf.AddProduct(product);
+            // Act
+            bool added = shelf.AddProduct(product, 3); // Closet height is not relevant for Shelf
 
-        // Assert
-        Assert.IsTrue(result);
-        Assert.AreEqual(1, _shelf.Products.Count);
-    }
+            // Assert
+            Assert.IsTrue(added);
+            Assert.AreEqual(1, shelf.Products.Count);
+        }
 
-    [Test]
-    public void IsEmpty_ShouldReturnTrueWhenShelfIsEmpty()
-    {
-        // Assert
-        Assert.IsTrue(_shelf.IsEmpty());
-    }
+        [Test]
+        public void AddProduct_ShelfIsEmpty_SuccessfullyAddsProduct()
+        {
+            // Arrange
+            Shelf shelf = new Shelf(1);
+            Product product = new Product(Width.Small, Height.Small, Speed.Fast);
 
-    [Test]
-    public void IsFull_ShouldReturnFalseWhenShelfIsNotFull()
-    {
-        // Assert
-        Assert.IsFalse(_shelf.IsFull());
-    }
+            // Act
+            bool added = shelf.AddProduct(product, 3); // Closet height is not relevant for Shelf
 
-    [Test]
-    public void AddProduct_ShouldNotAddLargeProductToNonFirstOrFifthShelf()
-    {
-        // Arrange
-        _shelf = new Shelf(2);
-        var product = new Product { Size = Size.Large, Speed = Speed.Fast };
+            // Assert
+            Assert.IsTrue(added);
+            Assert.AreEqual(1, shelf.Products.Count);
+        }
 
-        // Act
-        var result = _shelf.AddProduct(product);
+        [Test]
+        public void AddProduct_ShelfIsFull_ReturnsFalse()
+        {
+            // Arrange
+            Shelf shelf = new Shelf(1);
+            Product product1 = new Product(Width.Large, Height.Large, Speed.Fast);
+            Product product2 = new Product(Width.Large, Height.Large, Speed.Medium);
+            Product product3 = new Product(Width.Large, Height.Large, Speed.Slow);
+            Product product4 = new Product(Width.Large, Height.Large, Speed.Fast);
+            Product product5 = new Product(Width.Large, Height.Large, Speed.Medium);
+            
+            shelf.AddProduct(product1, 3); // Closet height is not relevant for Shelf
+            shelf.AddProduct(product2, 3); 
+            shelf.AddProduct(product3, 3); 
+            shelf.AddProduct(product4, 3); 
+            
+            
+            shelf.AddProduct(product5, 8);
 
-        // Assert
-        Assert.IsFalse(result);
-    }
+            // Act
+            bool added = shelf.AddProduct(product5, 3); // Closet height is not relevant for Shelf
 
-    [Test]
-    public void AddProduct_ShouldNotAddMediumProductToEighthShelf()
-    {
-        // Arrange
-        _shelf = new Shelf(8);
-        var product = new Product { Size = Size.Medium, Speed = Speed.Fast };
+            // Assert
+            Assert.IsFalse(added);
+            Assert.AreEqual(4, shelf.Products.Count);
+        }
 
-        // Act
-        var result = _shelf.AddProduct(product);
+        [Test]
+        public void IsEmpty_EmptyShelf_ReturnsTrue()
+        {
+            // Arrange
+            Shelf shelf = new Shelf(1);
 
-        // Assert
-        Assert.IsFalse(result);
-    }
+            // Act & Assert
+            Assert.IsTrue(shelf.IsEmpty());
+        }
+
+        [Test]
+        public void IsEmpty_NonEmptyShelf_ReturnsFalse()
+        {
+            // Arrange
+            Shelf shelf = new Shelf(1);
+            shelf.AddProduct(new Product(Width.Small, Height.Small, Speed.Fast), 3); // Closet height is not relevant for Shelf
+
+            // Act & Assert
+            Assert.IsFalse(shelf.IsEmpty());
+        }
+
+        [Test]
+        public void IsFull_FullShelf_ReturnsTrue()
+        {
+            // Arrange
+            Shelf shelf = new Shelf(1);
+            for (int i=0; i<(int)Width.Small; i++)
+            {
+                shelf.AddProduct(new Product(Width.Small, Height.Small, Speed.Fast), 3); // Closet height is not relevant for Shelf
+            }
+            
+            Shelf shelf2 = new Shelf(1);
+            for (int i=0; i<(int)Width.Medium; i++)
+            {
+                shelf2.AddProduct(new Product(Width.Medium, Height.Medium, Speed.Fast), 3); // Closet height is not relevant for Shelf
+            }
+            
+            Shelf shelf3 = new Shelf(1);
+            for (int i=0; i<(int)Width.Large; i++)
+            {
+                shelf3.AddProduct(new Product(Width.Large, Height.Large, Speed.Fast), 3); // Closet height is not relevant for Shelf
+            }
+
+            // Act & Assert
+            Assert.IsTrue(shelf.IsFull());
+            Assert.IsTrue(shelf2.IsFull());
+            Assert.IsTrue(shelf3.IsFull());
+        }
+
+        [Test]
+        public void IsFull_NotFullShelf_ReturnsFalse()
+        {
+            // Arrange
+            Shelf shelf = new Shelf(1);
+
+            // Act & Assert
+            Assert.IsFalse(shelf.IsFull());
+        }
     
 }

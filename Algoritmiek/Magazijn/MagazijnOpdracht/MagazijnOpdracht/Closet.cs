@@ -4,10 +4,16 @@ public class Closet
 {
     public List<Shelf> Shelves { get; set; }
 
-    public Closet()
+    public List<int> Layers { get; set; }
+
+    public Closet(int layers)
     {
         Shelves = new List<Shelf>();
-        Shelves.Add(new Shelf(1));
+        Layers = new List<int>();
+        for (int i = 1; i <= layers; i++)
+        {
+            Layers.Add(i);
+        }
     }
 
     public Shelf TopShelf()
@@ -15,48 +21,72 @@ public class Closet
         return Shelves.OrderByDescending(shelf => shelf.Height).First();
     }
 
+    private int ClosetHeight()
+    {
+        return Layers.Max()+1;
+    }
+
     public bool AddShelf(Shelf newshelf)
     {
+        // if new shelf is higher than the highest layer, return false
+        if (newshelf.Height > Layers.Max())
+        {
+            return false;
+        }
+        
         // if shelf at height already exists, return false
         if (Shelves.Any(shelf => shelf.Height == newshelf.Height))
         {
             return false;
         }
-
-        Shelf topShelf = TopShelf();
-        // if the top shelf has large products, return true if there is space for a new shelf
-        if (topShelf.IsEmpty() || topShelf.Products[0].Size == Size.Large)
+        
+        // if the shelf is the first shelf, add shelf
+        if (Shelves.Count == 0)
         {
-            if (newshelf.Height - TopShelf().Height >= 4)
-            {
-                Shelves.Add(newshelf);
-                return true;
-            }
+            Shelves.Add(newshelf);
+            return true;
         }
-
-        // if the top shelf has medium products, return true if there is space for a new shelf
-        if (topShelf.IsEmpty() || topShelf.Products[0].Size == Size.Medium)
+        
+        // if new shelf is higher than top shelf including product, and lower than the highest layer, add shelf
+        if (newshelf.Height - (int)TopShelf().Products[0].Height >= TopShelf().Height && newshelf.Height <= Layers.Max())
         {
-            if (newshelf.Height - TopShelf().Height >= 2)
-            {
-                Shelves.Add(newshelf);
-                return true;
-            }
-        }
-
-        // if the top shelf has small products, return true if there is space for a new shelf
-        if (topShelf.IsEmpty() || TopShelf().Products[0].Size == Size.Small)
-        {
-            if (Shelves.Count < 6)
-            {
-                if (newshelf.Height - TopShelf().Height >= 1)
-                {
-                    Shelves.Add(newshelf);
-                    return true;
-                }
-            }
+            Shelves.Add(newshelf);
+            return true;
         }
 
         return false;
+    }
+
+    public bool AddProduct(Product product, int layer)
+    {
+        if (Shelves.Count != 0 && TopShelf().Height == layer)
+        {
+            if (TopShelf().AddProduct(product, ClosetHeight()))
+            {
+                return true; // Product added
+            }
+        }
+        if (Shelves.Count == 0 || TopShelf().Height < layer)
+        {
+            Shelf newShelf = new Shelf(layer);
+            if (ProductFitsHeight(product, newShelf))
+            {
+                if (AddShelf(newShelf))
+                {
+                    if (newShelf.AddProduct(product, ClosetHeight()))
+                    {
+                        return true; // Product added
+                    }
+                }
+            }
+
+        }
+
+        return false;
+    }
+
+    private bool ProductFitsHeight(Product product, Shelf newShelf)
+    {
+        return ClosetHeight() - (int)product.Height >= newShelf.Height;
     }
 }

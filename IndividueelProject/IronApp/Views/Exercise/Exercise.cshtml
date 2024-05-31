@@ -23,7 +23,7 @@
 
 <body>
 
-<a href="@Url.Action("Index", "Home")" class="back-arrow">
+<a href="@Url.Action("Index", "Exercise")" class="back-arrow">
     <div>←</div>
 </a>
 <div class="workout-card">
@@ -34,7 +34,7 @@
     <div class="workout-info">
         <h1>@Model.Name</h1>
         <button id="del-button">
-            <a href="@Url.Action("DeleteExercise", "Home", new { ID = Model.Id })">Delete from home</a>
+            <a href="@Url.Action("DeleteExercise", "Exercise", new { ID = Model.Id })">Delete from home</a>
         </button>
     </div>
 </div>
@@ -51,7 +51,7 @@
 
 
 <script>
-    let dataPoints = @Html.Raw(Json.Serialize(Model.DataPoints));
+    let dataPoints = @Html.Raw(Json.Serialize(Model.highestWeightOverTime));
     dataPoints = dataPoints.map(function (x) {
         const date = new Date(x.x);
         const month = date.toLocaleString('default', { month: 'short' });
@@ -97,7 +97,7 @@
        
     });
     
-    let dataPoints2 = @Html.Raw(Json.Serialize(Model.DataPoints2));
+    let dataPoints2 = @Html.Raw(Json.Serialize(Model.volumeOverTime));
     dataPoints2 = dataPoints2.map(function (x) {
         const date = new Date(x.x);
         const month = date.toLocaleString('default', { month: 'short' });

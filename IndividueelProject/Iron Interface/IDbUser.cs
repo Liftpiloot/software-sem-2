@@ -4,8 +4,9 @@ namespace Iron_Interface;
 
 public interface IDbUser
 {
-    public int AddUser(UserDto? user);
-    public UserDto? Login(UserDto? user);
-    bool EditWeight(int userId, decimal result);
-    bool ChangePassword(int userId, string modelNewPassword);
+    int AddUser(UserDto? user);
+    UserDto? Login(UserDto? user);
+    bool EditWeight(int userId, decimal weight);
+    bool ChangePassword(int userId, string password);
+    UserDto? GetUser(int userId);
 }

@@ -4,9 +4,19 @@ namespace Iron_Domain;
 
 public class Exercise
 {
-    public int Id { get; set; }
-    public int? UserId { get; set; }
-    public string? Name { get; set; }
-    public string? Description { get; set; }
-    public string? Logo { get; set; }
+    public int Id { get;}
+    public int? UserId { get; }
+    public string Name { get;}
+    public string Description { get;}
+    public string Logo { get;}
+    
+    public Exercise(int id, int? userId, string name, string description, string logo)
+    {
+        Id = id;
+        UserId = userId;
+        Name = name;
+        Description = description;
+        Logo = logo;
+    }
+    
 }

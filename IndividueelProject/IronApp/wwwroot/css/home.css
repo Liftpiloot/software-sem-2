@@ -37,6 +37,7 @@ body {
     justify-content: center;
     overflow: hidden;
     z-index:-1;
+    margin:auto;
     margin-top:10px;
 }
 
@@ -322,6 +323,34 @@ body {
     background-color: #5ab2c4;
     transform: translateY(1px);
     box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.4);
+}
+
+#profile-button {
+    margin-bottom: 50px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#profile-button a {
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
+    background-color: transparent;
+    border: 2px solid #5ab2c4;
+    border-radius: 24px;
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    transition: 0.4s;
+}
+
+#profile-button a:hover {
+    background-color: #5ab2c4;
+    color: black;
 }
 
 #custom_exercise_input {

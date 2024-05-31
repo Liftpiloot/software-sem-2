@@ -1,30 +1,19 @@
-﻿namespace Iron_Domain;
+﻿using System.Security.Cryptography;
+using System.Text;
+
+namespace Iron_Domain;
 
 public class User
 {
-    private string _db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
-
     public int Id { get; set; }
     public string UserName { get; set; }
     public string Email { get; set; }
     public string PasswordHash { get; set; }
     public DateTime DateOfBirth { get; set; }
     public decimal Weight { get; set; }
+    
 
-    public User()
-    {
-    }
-
-    public User(string? userName, string? email, string? passwordHash, DateTime dateOfBirth, decimal weight)
-    {
-        UserName = userName;
-        Email = email;
-        PasswordHash = passwordHash;
-        DateOfBirth = dateOfBirth;
-        Weight = weight;
-    }
-
-    public User(int id, string? userName, string? email, string? passwordHash, DateTime dateOfBirth, decimal weight)
+    public User(int id, string userName, string email, string passwordHash, DateTime dateOfBirth, decimal weight)
     {
         Id = id;
         UserName = userName;
@@ -34,4 +23,18 @@ public class User
         Weight = weight;
     }
     
+    public void HashPassword()
+    {
+        // Create sha256 hash
+        using (SHA256 sha256Hash = SHA256.Create())
+        {
+            Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes((string)this.PasswordHash));
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                builder.Append(bytes[i].ToString("x2"));
+            }
+            this.PasswordHash = builder.ToString();
+        }
+    }
 }

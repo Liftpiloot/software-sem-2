@@ -16,7 +16,7 @@ public class ProfileController : Controller
     private readonly UserContainer _userContainer;
     private readonly IDbExerciseExecution _dbExerciseExecution;
     private readonly ExerciseExecutionContainer _exerciseExecutionContainer;
-    
+
     public ProfileController()
     {
         _dbUser = new DbUser();
@@ -24,21 +24,34 @@ public class ProfileController : Controller
         _dbExerciseExecution = new DbExerciseExecution();
         _exerciseExecutionContainer = new ExerciseExecutionContainer(_dbExerciseExecution);
     }
-    
+
     public IActionResult Index()
     {
         ProfileModel profileModel = new ProfileModel();
         // Get user data from cookies
         profileModel.UserModel = new UserModel();
-        profileModel.UserModel.Id = int.Parse(Request.Cookies["UserId"] ?? string.Empty);
-        profileModel.UserModel.Username = Request.Cookies["Username"] ?? string.Empty;
-        profileModel.UserModel.Email = Request.Cookies["Email"] ?? string.Empty;
-        profileModel.UserModel.Weight = decimal.Parse(Request.Cookies["Weight"] ?? string.Empty);
-        profileModel.UserModel.DateOfBirth = DateTime.Parse(Request.Cookies["DateOfBirth"] ?? string.Empty);
+        bool loggedIn = int.TryParse(Request.Cookies["UserId"], out int userId);
+        if (!loggedIn)
+        {
+            return RedirectToAction("Index", "Login");
+        }
         
+        profileModel.UserModel.Id = userId;
+        User? user = _userContainer.GetUser(profileModel.UserModel.Id);
+        if (user == null)
+        {
+            return RedirectToAction("Index", "Login");
+        }
+
+        profileModel.UserModel.Username = user.UserName;
+        profileModel.UserModel.Email = user.Email;
+        profileModel.UserModel.DateOfBirth = user.DateOfBirth;
+        profileModel.UserModel.Weight = user.Weight;
+
         // Get graph data
-        profileModel.WorkoutsPerWeek = _exerciseExecutionContainer.GetWorkoutsPerWeek(profileModel.UserModel.Id).Select(w => new Dictionary<string, int> {{"week", w.Item1}, {"workouts", w.Item2}}).ToList();
-        
+        profileModel.WorkoutsPerWeek = _exerciseExecutionContainer.GetWorkoutsPerWeek(profileModel.UserModel.Id)
+            .Select(w => new Dictionary<string, int> { { "week", w.Item1 }, { "workouts", w.Item2 } }).ToList();
+
         // Get other data
         profileModel.AveragePerWeek = Math.Round(profileModel.WorkoutsPerWeek.Average(x => x["workouts"]), 2);
         profileModel.TotalVolume = 20;
@@ -47,24 +60,17 @@ public class ProfileController : Controller
 
     public IActionResult EditWeight(decimal weight)
     {
-            if (weight <= 0)
-            {
-                return RedirectToAction("Index");
-            }
-            int userId = int.Parse(Request.Cookies["UserId"] ?? string.Empty);
-            if (_userContainer.EditWeight(userId, weight))
-            {
-                var cookieOptions = new CookieOptions
-                {
-                    Expires = DateTime.Now.AddDays(365), // Cookie expires after a year
-                    IsEssential = true,
-                    Secure = true,
-                    HttpOnly = true
-                };
-                Response.Cookies.Append("Weight", weight.ToString(), cookieOptions);
-            }
+        if (weight <= 0)
+        {
             return RedirectToAction("Index");
-        
+        }
+
+        bool loggedIn = int.TryParse(Request.Cookies["UserId"], out int userId);
+        if (!loggedIn)
+        {
+            return RedirectToAction("Index", "Login");
+        }
+        _userContainer.EditWeight(userId, weight);
         return RedirectToAction("Index");
     }
 
@@ -73,62 +79,51 @@ public class ProfileController : Controller
     {
         return View();
     }
-    
+
     [HttpPost]
     public IActionResult ChangePassword(ChangePasswordModel model)
     {
-        string oldPassword = model.OldPassword;
-        using (SHA256 sha256Hash = SHA256.Create())
+        // Check if user is logged in
+        bool loggedIn = int.TryParse(Request.Cookies["UserId"], out int userId);
+        if (!loggedIn)
         {
-            Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(oldPassword));
-            StringBuilder builder = new StringBuilder();
-            foreach (var t in bytes)
-            {
-                builder.Append(t.ToString("x2"));
-            }
-            oldPassword = builder.ToString();
+            return RedirectToAction("Index", "Login");
         }
-        var user = new User
+
+        User? user = _userContainer.GetUser(userId);
+        if (user == null)
         {
-            UserName = Request.Cookies["Username"] ?? string.Empty,
-            Email = Request.Cookies["Email"] ?? string.Empty,
-            PasswordHash = oldPassword
-        };
+            return RedirectToAction("Index", "Login");
+        }
+
+        // Check if old password is correct
+        user.PasswordHash = model.OldPassword;
+        user.HashPassword();
         user = _userContainer.Login(user);
+
         if (user == null)
         {
             ModelState.AddModelError("OldPassword", "Old password is incorrect.");
             return View(model);
         }
-        
+
         if (model.NewPassword != model.ConfirmPassword)
         {
             ModelState.AddModelError("ConfirmPassword", "Password and confirmation password do not match.");
             return View(model);
         }
-        
+
         if (model.NewPassword.Length < 10)
         {
             ModelState.AddModelError("NewPassword", "Password must be at least 10 characters long.");
             return View(model);
         }
-        
-        using (SHA256 sha256Hash = SHA256.Create())
-        {
-            Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(model.NewPassword));
-            StringBuilder builder = new StringBuilder();
-            foreach (var t in bytes)
-            {
-                builder.Append(t.ToString("x2"));
-            }
-            model.NewPassword = builder.ToString();
-        }
-        
+
         if (_userContainer.ChangePassword(user.Id, model.NewPassword))
         {
             return RedirectToAction("Index");
         }
-        
+
         ModelState.AddModelError("NewPassword", "An error occurred.");
         return View(model);
     }

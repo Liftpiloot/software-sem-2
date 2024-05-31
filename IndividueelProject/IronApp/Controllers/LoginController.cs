@@ -30,24 +30,9 @@ public class LoginController : Controller
     [HttpPost]
     public IActionResult Index(LoginModel model)
     {
-        var user = new User
-        {
-            UserName = model.Name,
-            Email = model.Name
-        };
+        var user = new User(0, model.Name, model.Name, model.Password, DateTime.Now, 0);
         // Hash password
-        string password;
-        using (SHA256 sha256Hash = SHA256.Create())
-        {
-            Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(model.Password));
-            StringBuilder builder = new StringBuilder();
-            foreach (var t in bytes)
-            {
-                builder.Append(t.ToString("x2"));
-            }
-            password = builder.ToString();
-        }
-        user.PasswordHash = password;
+        user.HashPassword();
         user = _userContainer.Login(user);
         if (user == null)
         {
@@ -64,12 +49,7 @@ public class LoginController : Controller
             HttpOnly = true
         };
         Response.Cookies.Append("UserId", user.Id.ToString(), cookieOptions);
-        Response.Cookies.Append("Username", user.UserName, cookieOptions);
-        Response.Cookies.Append("PasswordHash", user.PasswordHash, cookieOptions);
-        Response.Cookies.Append("Email", user.Email, cookieOptions);
-        Response.Cookies.Append("DateOfBirth", user.DateOfBirth.ToString(), cookieOptions);
-        Response.Cookies.Append("Weight", user.Weight.ToString(), cookieOptions);
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Index", "Exercise");
 
     }
 }
