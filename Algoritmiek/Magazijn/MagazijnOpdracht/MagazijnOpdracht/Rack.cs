@@ -14,14 +14,15 @@ public class Rack
     }
 
     public bool AddProduct(Product product, int layer)
-    {
-        foreach (Closet closet in Closets)
+    { 
+        bool productAdded = false;
+        int closetIndex = 0;
+        while (!productAdded && closetIndex < Closets.Count)
         {
-            if (closet.AddProduct(product, layer))
-            {
-                return true; // Product added
-            }
+            productAdded = Closets[closetIndex].AddProduct(product, layer);
+            closetIndex++;
         }
-        return false; // No space for product
+        return productAdded;
     }
+    
 }
