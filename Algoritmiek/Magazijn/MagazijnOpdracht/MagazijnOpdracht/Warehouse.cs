@@ -17,17 +17,19 @@ public class Warehouse
 
     public bool AddProduct(Product product)
     {
-        foreach (int layer in _layerNumbers)
+        var productAdded = false;
+        var layerIndex = 0;
+        while (!productAdded && layerIndex < _layerNumbers.Count)
         {
-            foreach (Rack rack in Racks)
+            var rackIndex = 0;
+            while (!productAdded && rackIndex < Racks.Count)
             {
-                if (rack.AddProduct(product, layer))
-                {
-                    return true; // Product added
-                }
+                productAdded = Racks[rackIndex].AddProduct(product, _layerNumbers[layerIndex]);
+                rackIndex++;
             }
+            layerIndex++;
         }
-        return false; // No space for product
+        return productAdded;
     }
     
     // get the highest layer of all closets
