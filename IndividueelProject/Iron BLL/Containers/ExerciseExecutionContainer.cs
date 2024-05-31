@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using FluentValidation.Results;
 using Iron_DAL;
 using Iron_Domain;
 using Iron_DAL.DTO;
@@ -9,10 +10,12 @@ namespace IronDomain;
 public class ExerciseExecutionContainer
 {
     private readonly IDbExerciseExecution _dbExerciseExecution;
+    private readonly SetValidator _setValidator;
 
     public ExerciseExecutionContainer(IDbExerciseExecution db)
     {
         _dbExerciseExecution = db;
+        _setValidator = new SetValidator();
     }
 
     // method to convert exercise execution dto to exercise execution
@@ -80,10 +83,15 @@ public class ExerciseExecutionContainer
         return _dbExerciseExecution.AddExerciseExecution(exerciseExecutionDto);
     }
 
-    public bool AddSet(ExerciseExecution execution, Set set)
+    public (bool, IList<ValidationFailure>) AddSet(ExerciseExecution execution, Set set)
     {
+        var result = _setValidator.Validate(set);
+        if (!result.IsValid)
+        {
+            return (false, result.Errors);
+        }
         SetDto setDto = ConvertToSetDto(set);
-        return _dbExerciseExecution.AddSet(setDto);
+        return (_dbExerciseExecution.AddSet(setDto), new List<ValidationFailure>());
     }
 
     public ExerciseExecution? GetRecentExerciseExecution(User user, Exercise exercise)
@@ -170,7 +178,11 @@ public class ExerciseExecutionContainer
         List<SetDto> setDtos = new();
         foreach (Set set in sets)
         {
-            setDtos.Add(ConvertToSetDto(set));
+            var result = _setValidator.Validate(set);
+            if (result.IsValid)
+            {
+                setDtos.Add(ConvertToSetDto(set));
+            }
         }
         return _dbExerciseExecution.IsPersonalBest(ConvertToExerciseExecutionDto(execution), setDtos);
     }

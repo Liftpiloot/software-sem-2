@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using FluentValidation.Results;
 using Iron_DAL;
 using Iron_DAL.DTO;
 using Iron_Domain;
@@ -47,11 +48,18 @@ public class UserContainer
         return ConvertToUser(userDto);
     }
 
-    public int AddUser(User user)
+    public (int, IList<ValidationFailure>) AddUser(User user)
     {
+        var validator = new UserValidator();
+        var result = validator.Validate(user);
+        if (!result.IsValid)
+        {
+            return (-1, result.Errors);
+        }
+        
         UserDto userDto = ConvertToUserDto(user);
         int returnedUser = _dbUser.AddUser(userDto);
-        return returnedUser;
+        return (returnedUser, new List<ValidationFailure>());
     }
     public User? Login(User user)
     {
