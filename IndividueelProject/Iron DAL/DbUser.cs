@@ -102,14 +102,14 @@ public class DbUser : IDbUser
         }
     }
 
-    public bool EditWeight(int userId, decimal result)
+    public bool EditWeight(int userId, decimal weight)
     {
         try
         {
             SqlConnection conn = new SqlConnection(_db);
             conn.Open();
             SqlCommand cmd = new SqlCommand("UPDATE users SET BodyWeight = @weight WHERE UserID = @id", conn);
-            cmd.Parameters.AddWithValue("@weight", result);
+            cmd.Parameters.AddWithValue("@weight", weight);
             cmd.Parameters.AddWithValue("@id", userId);
             int rows = cmd.ExecuteNonQuery();
             conn.Close();
@@ -121,14 +121,14 @@ public class DbUser : IDbUser
         }
     }
 
-    public bool ChangePassword(int userId, string modelNewPassword)
+    public bool ChangePassword(int userId, string password)
     {
         try
         {
             SqlConnection conn = new SqlConnection(_db);
             conn.Open();
             SqlCommand cmd = new SqlCommand("UPDATE users SET PasswordHash = @password WHERE UserID = @id", conn);
-            cmd.Parameters.AddWithValue("@password", modelNewPassword);
+            cmd.Parameters.AddWithValue("@password", password);
             cmd.Parameters.AddWithValue("@id", userId);
             int rows = cmd.ExecuteNonQuery();
             conn.Close();

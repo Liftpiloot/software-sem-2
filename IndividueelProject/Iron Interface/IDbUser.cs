@@ -6,7 +6,7 @@ public interface IDbUser
 {
     int AddUser(UserDto? user);
     UserDto? Login(UserDto? user);
-    bool EditWeight(int userId, decimal result);
-    bool ChangePassword(int userId, string modelNewPassword);
+    bool EditWeight(int userId, decimal weight);
+    bool ChangePassword(int userId, string password);
     UserDto? GetUser(int userId);
 }

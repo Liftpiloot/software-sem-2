@@ -28,14 +28,14 @@ public class DbUserTest : IDbUser
         return null;
     }
 
-    public bool EditWeight(int userId, decimal result)
+    public bool EditWeight(int userId, decimal weight)
     {
-        return userId != 0 && result != 0;
+        return userId != 0 && weight != 0;
     }
 
-    public bool ChangePassword(int userId, string modelNewPassword)
+    public bool ChangePassword(int userId, string password)
     {
-        return userId != 0 && !string.IsNullOrEmpty(modelNewPassword);
+        return userId != 0 && !string.IsNullOrEmpty(password);
     }
 
     public UserDto? GetUser(int userId)
