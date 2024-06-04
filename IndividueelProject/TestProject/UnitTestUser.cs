@@ -25,7 +25,7 @@ public class UnitTestUser
             var user = new User(0, "testUser", "test@example.com", "hashedpassword", new DateTime(1990, 1, 1), 70);
 
             // Act
-            var result = _container.AddUser(user);
+            var (result, errors) = _container.AddUser(user);
 
             // Assert
             Assert.AreEqual(1, result);

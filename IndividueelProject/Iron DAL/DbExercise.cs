@@ -5,7 +5,7 @@ namespace Iron_DAL;
 
 public class DbExercise : IDbExercise
 {
-    private readonly string _db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
+    private readonly string _db = "data source=P-STUDSQL02;initial catalog=dbi538068_iron;user id=dbi538068_iron;password=Dungprotfi8;TrustServerCertificate=True";
     
     public int AddExercise(ExerciseDto exercise)
     {

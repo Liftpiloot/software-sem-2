@@ -6,7 +6,7 @@ namespace Iron_DAL;
 
 public class DbExerciseExecution : IDbExerciseExecution
 {
-    private readonly string _db = "Server=localhost\\SQLEXPRESS;Database=iron;Trusted_Connection=True;Encrypt=False;";
+    private readonly string _db = "data source=P-STUDSQL02;initial catalog=dbi538068_iron;user id=dbi538068_iron;password=Dungprotfi8;TrustServerCertificate=True";
     
     /// <summary>
     ///  Adds a new exercise execution to the database.

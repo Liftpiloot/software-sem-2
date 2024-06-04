@@ -200,4 +200,20 @@ public class ExerciseExecutionContainer
             .ToList();
         return workoutsPerWeek;
     }
+
+    public decimal GetTotalVolume(int userId)
+    {
+           List<ExerciseExecutionDto> exerciseExecutions = _dbExerciseExecution.GetAllExecutionsForUser(userId);
+            decimal totalVolume = 0;
+            foreach (ExerciseExecutionDto exerciseExecution in exerciseExecutions)
+            {
+                // get sets
+                List<SetDto> sets = _dbExerciseExecution.GetSets(exerciseExecution);
+                foreach (SetDto set in sets)
+                {
+                    totalVolume += set.Weight * set.Reps;
+                }
+            }
+            return totalVolume;
+    }
 }

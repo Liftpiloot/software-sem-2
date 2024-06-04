@@ -40,7 +40,7 @@ public class UnitTestExerciseExecution
         var exerciseExecution = new ExerciseExecution(1, DateTime.Now, 1, 1, new List<Set> { set });
 
         // Act
-        var result = _container.AddSet(exerciseExecution, set);
+        var (result, errors) = _container.AddSet(exerciseExecution, set);
 
         // Assert
         Assert.IsTrue(result);

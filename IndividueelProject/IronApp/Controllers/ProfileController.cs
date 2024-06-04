@@ -53,8 +53,15 @@ public class ProfileController : Controller
             .Select(w => new Dictionary<string, int> { { "week", w.Item1 }, { "workouts", w.Item2 } }).ToList();
 
         // Get other data
-        profileModel.AveragePerWeek = Math.Round(profileModel.WorkoutsPerWeek.Average(x => x["workouts"]), 2);
-        profileModel.TotalVolume = 20;
+        if (profileModel.WorkoutsPerWeek.Any())
+        {
+            profileModel.AveragePerWeek = Math.Round(profileModel.WorkoutsPerWeek.Average(x => x["workouts"]), 2);
+        }
+        else
+        {
+            profileModel.AveragePerWeek = 0; // Or any other default value
+        }
+        profileModel.TotalVolume = _exerciseExecutionContainer.GetTotalVolume(profileModel.UserModel.Id);
         return View(profileModel);
     }
 
