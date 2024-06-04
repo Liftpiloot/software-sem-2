@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using Iron_DAL.DTO;
+﻿using Iron_DAL.DTO;
 using Iron_Interface;
 using Microsoft.Data.SqlClient;
 
@@ -39,6 +37,7 @@ public class DbUser : IDbUser
         }
         catch (Exception e)
         {
+            Console.WriteLine(e.Message);
             return -1;
         }
         
@@ -60,6 +59,7 @@ public class DbUser : IDbUser
         }
         catch (Exception e)
         {
+            Console.WriteLine(e.Message);
             return -1;
         }
 
@@ -98,6 +98,7 @@ public class DbUser : IDbUser
         }
         catch (Exception e)
         {
+            Console.WriteLine(e.Message);
             return null;
         }
     }
@@ -117,6 +118,7 @@ public class DbUser : IDbUser
         }
         catch (Exception e)
         {
+            Console.WriteLine(e.Message);
             return false;
         }
     }
@@ -136,6 +138,7 @@ public class DbUser : IDbUser
         }
         catch (Exception e)
         {
+            Console.WriteLine(e.Message);
             return false;
         }
     }
@@ -166,6 +169,7 @@ public class DbUser : IDbUser
         }
         catch (Exception e)
         {
+            Console.WriteLine(e.Message);
             return null;
         }
     }

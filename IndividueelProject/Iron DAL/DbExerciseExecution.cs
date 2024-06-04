@@ -36,6 +36,7 @@ public class DbExerciseExecution : IDbExerciseExecution
         }
         catch (SqlException e)
         {
+            Console.WriteLine(e.Message);
             return -1;
         }
     }
@@ -69,6 +70,7 @@ public class DbExerciseExecution : IDbExerciseExecution
         }
         catch (SqlException e)
         {
+            Console.WriteLine(e.Message);
             return new List<SetDto>();
         }
     }
@@ -92,6 +94,7 @@ public class DbExerciseExecution : IDbExerciseExecution
         }
         catch (SqlException e)
         {
+            Console.WriteLine(e.Message);
             return false;
         }
     }
@@ -124,6 +127,7 @@ public class DbExerciseExecution : IDbExerciseExecution
         }
         catch (SqlException e)
         {
+            Console.WriteLine(e.Message);
             return null;
         }
     }
@@ -160,6 +164,7 @@ public class DbExerciseExecution : IDbExerciseExecution
         }
         catch (SqlException e)
         {
+            Console.WriteLine(e.Message);
             return new List<ExerciseExecutionDto>();
         }
     }
@@ -195,6 +200,7 @@ public class DbExerciseExecution : IDbExerciseExecution
         }
         catch (SqlException e)
         {
+            Console.WriteLine(e.Message);
             return new List<ExerciseExecutionDto>();
         }
     }
@@ -247,6 +253,7 @@ public class DbExerciseExecution : IDbExerciseExecution
         }
         catch (SqlException e)
         {
+            Console.WriteLine(e.Message);
             return false;
         }
     }
@@ -278,6 +285,7 @@ public class DbExerciseExecution : IDbExerciseExecution
         }
         catch (SqlException e)
         {
+            Console.WriteLine(e.Message);
             return new List<ExerciseExecutionDto>();
         }
     }

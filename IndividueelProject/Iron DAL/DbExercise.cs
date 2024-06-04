@@ -42,6 +42,7 @@ public class DbExercise : IDbExercise
         }
         catch (SqlException e)
         {
+            Console.WriteLine(e.Message);
             return -1;
         }
     }
@@ -79,6 +80,7 @@ public class DbExercise : IDbExercise
         }
         catch (SqlException e)
         {
+            Console.WriteLine(e.Message);
             return null;
         }
     }
@@ -101,6 +103,7 @@ public class DbExercise : IDbExercise
         }
         catch (SqlException e)
         {
+            Console.WriteLine(e.Message);
             return false;
         }
     }
@@ -122,6 +125,7 @@ public class DbExercise : IDbExercise
         }
         catch (SqlException e)
         {
+            Console.WriteLine(e.Message);
             return false;
         }
     }
@@ -156,6 +160,7 @@ public class DbExercise : IDbExercise
         }
         catch (SqlException e)
         {
+            Console.WriteLine(e.Message);
         }
         return selectedExercises;
     }
@@ -192,6 +197,7 @@ public class DbExercise : IDbExercise
         }
         catch (SqlException e)
         {
+            Console.WriteLine(e.Message);
         }
         return exercises;
     }
@@ -229,6 +235,7 @@ public class DbExercise : IDbExercise
         }
         catch (SqlException e)
         {
+            Console.WriteLine(e.Message);
         }
         return exercises;
     }
@@ -248,6 +255,7 @@ public class DbExercise : IDbExercise
         }
         catch (SqlException e)
         {
+            Console.WriteLine(e.Message);
             return false;
         }
     }
