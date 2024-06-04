@@ -34,6 +34,8 @@ public class RegisterController : Controller
             return View(model);
         }
         var user = new User(0, model.Username, model.Email, model.Password, model.DateOfBirth, model.Weight);
+        // Hash password
+        user.HashPassword();
         var (userId, errors) = _userContainer.AddUser(user);
         switch (userId)
         {
