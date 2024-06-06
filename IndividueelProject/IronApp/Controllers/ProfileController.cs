@@ -134,4 +134,10 @@ public class ProfileController : Controller
         ModelState.AddModelError("NewPassword", "An error occurred.");
         return View(model);
     }
+    
+    public IActionResult Logout()
+    {
+        Response.Cookies.Delete("UserId");
+        return RedirectToAction("Index", "Login");
+    }
 }
