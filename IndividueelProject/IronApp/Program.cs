@@ -6,7 +6,7 @@ builder.Services.AddControllersWithViews();
 // Databse connection
 builder.Configuration.AddJsonFile("appsettings.json");
 var configuration = builder.Configuration;
-var connectionString = configuration.GetConnectionString("DefaultConnection");
+configuration.GetConnectionString("DefaultConnection");
 
 
 var app = builder.Build();

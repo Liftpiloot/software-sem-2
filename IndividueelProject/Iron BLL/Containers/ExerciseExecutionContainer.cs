@@ -19,7 +19,7 @@ public class ExerciseExecutionContainer
     }
 
     // method to convert exercise execution dto to exercise execution
-    private ExerciseExecution ConvertToExerciseExecution(ExerciseExecutionDto exerciseExecutionDto)
+    private static ExerciseExecution ConvertToExerciseExecution(ExerciseExecutionDto exerciseExecutionDto)
     {
         List<Set> sets = new();
         if (exerciseExecutionDto.Sets != null)
@@ -39,7 +39,7 @@ public class ExerciseExecutionContainer
     }
 
     // method to convert exercise execution to exercise execution dto
-    private ExerciseExecutionDto ConvertToExerciseExecutionDto(ExerciseExecution exerciseExecution)
+    private static ExerciseExecutionDto ConvertToExerciseExecutionDto(ExerciseExecution exerciseExecution)
     {
         List<SetDto> setDtos = new();
         foreach (Set set in exerciseExecution.Sets)

@@ -52,7 +52,7 @@ public class ProfileController : Controller
             .Select(w => new Dictionary<string, int> { { "week", w.Item1 }, { "workouts", w.Item2 } }).ToList();
 
         // Get other data
-        if (profileModel.WorkoutsPerWeek.Any())
+        if (profileModel.WorkoutsPerWeek.Count != 0)
         {
             profileModel.AveragePerWeek = Math.Round(profileModel.WorkoutsPerWeek.Average(x => x["workouts"]), 2);
         }

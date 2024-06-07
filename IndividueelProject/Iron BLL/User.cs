@@ -26,15 +26,12 @@ public class User
     public void HashPassword()
     {
         // Create sha256 hash
-        using (SHA256 sha256Hash = SHA256.Create())
+        Byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(PasswordHash));
+        StringBuilder builder = new StringBuilder();
+        foreach (var t in bytes)
         {
-            Byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes((string)this.PasswordHash));
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                builder.Append(bytes[i].ToString("x2"));
-            }
-            this.PasswordHash = builder.ToString();
+            builder.Append(t.ToString("x2"));
         }
+        PasswordHash = builder.ToString();
     }
 }
