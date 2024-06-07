@@ -1,4 +1,4 @@
-﻿namespace Iron_Domain;
+﻿namespace IronDomain;
 
 public class Set
 {

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Iron_Domain;
+namespace IronDomain.Validators;
 
 public class UserValidator : AbstractValidator<User>
 {

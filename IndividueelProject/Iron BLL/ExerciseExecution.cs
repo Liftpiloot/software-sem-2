@@ -1,5 +1,7 @@
 ﻿
-namespace Iron_Domain
+using Iron_Domain;
+
+namespace IronDomain
 {
     public class ExerciseExecution
     {

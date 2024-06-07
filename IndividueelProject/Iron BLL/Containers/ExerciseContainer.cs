@@ -1,9 +1,8 @@
-﻿using Iron_DAL;
-using Iron_DAL.DTO;
-using Iron_Domain;
+﻿using Iron_Domain;
 using Iron_Interface;
+using Iron_Interface.DTO;
 
-namespace IronDomain;
+namespace IronDomain.Containers;
 
 public class ExerciseContainer
 {
@@ -15,7 +14,7 @@ public class ExerciseContainer
     }
 
     // method to convert exercise dto to exercise
-    private Exercise ConvertToExercise(ExerciseDto exerciseDto)
+    private static Exercise ConvertToExercise(ExerciseDto exerciseDto)
     {
         Exercise exercise = new Exercise(exerciseDto.Id, exerciseDto.UserId, exerciseDto.Name,
             exerciseDto.Description, exerciseDto.Logo);
@@ -23,7 +22,7 @@ public class ExerciseContainer
     }
 
     // method to convert exercise to exercise dto
-    private ExerciseDto ConvertToExerciseDto(Exercise exercise)
+    private static ExerciseDto ConvertToExerciseDto(Exercise exercise)
     {
         ExerciseDto exerciseDto = new()
         {
@@ -37,14 +36,14 @@ public class ExerciseContainer
     }
     
     // method to convert selected exercise dto to selected exercise
-    private SelectedExercise ConvertToSelectedExercise(SelectedExerciseDto selectedExerciseDto)
+    private static SelectedExercise ConvertToSelectedExercise(SelectedExerciseDto selectedExerciseDto)
     {
         SelectedExercise selectedExercise = new SelectedExercise(selectedExerciseDto.UserId, selectedExerciseDto.ExerciseId);
         return selectedExercise;
     }
     
     // method to convert selected exercise to selected exercise dto
-    private SelectedExerciseDto ConvertToSelectedExerciseDto(SelectedExercise selectedExercise)
+    private static SelectedExerciseDto ConvertToSelectedExerciseDto(SelectedExercise selectedExercise)
     {
         SelectedExerciseDto selectedExerciseDto = new()
         {

@@ -1,11 +1,11 @@
 ﻿using System.Globalization;
 using FluentValidation.Results;
-using Iron_DAL;
 using Iron_Domain;
-using Iron_DAL.DTO;
 using Iron_Interface;
+using Iron_Interface.DTO;
+using IronDomain.Validators;
 
-namespace IronDomain;
+namespace IronDomain.Containers;
 
 public class ExerciseExecutionContainer
 {
@@ -59,14 +59,14 @@ public class ExerciseExecutionContainer
     }
 
     // method to convert set dto to set
-    private Set ConvertToSet(SetDto setDto)
+    private static Set ConvertToSet(SetDto setDto)
     {
         Set set = new Set(setDto.Weight, setDto.Reps);
         return set;
     }
 
     // method to convert set to set dto
-    private SetDto ConvertToSetDto(Set set)
+    private static SetDto ConvertToSetDto(Set set)
     {
         SetDto setDto = new()
         {
@@ -110,7 +110,7 @@ public class ExerciseExecutionContainer
             return null;
         }
 
-        ExerciseExecution? exerciseExecution = ConvertToExerciseExecution(exerciseExecutionDto);
+        ExerciseExecution exerciseExecution = ConvertToExerciseExecution(exerciseExecutionDto);
         return exerciseExecution;
     }
 

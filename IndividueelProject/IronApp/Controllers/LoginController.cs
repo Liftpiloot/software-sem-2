@@ -5,6 +5,7 @@ using Iron_Domain;
 using Iron_Interface;
 using IronApp.Models;
 using IronDomain;
+using IronDomain.Containers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
@@ -13,11 +14,11 @@ namespace IronApp.Controllers;
 public class LoginController : Controller
 {
     private readonly UserContainer _userContainer;
-    private readonly IDbUser _dbUser;
+
     public LoginController()
-    { 
-        _dbUser = new DbUser();
-        _userContainer = new UserContainer(_dbUser);
+    {
+        IDbUser dbUser = new DbUser();
+        _userContainer = new UserContainer(dbUser);
     }
     
     // GET

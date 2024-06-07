@@ -5,6 +5,7 @@ using IronApp.Models;
 using Iron_Domain;
 using Iron_Interface;
 using IronDomain;
+using IronDomain.Containers;
 using Microsoft.AspNetCore.SignalR;
 
 namespace IronApp.Controllers;
@@ -13,19 +14,16 @@ public class ExerciseController : Controller
 {
     private readonly ExerciseContainer _exerciseContainer;
     private readonly ExerciseExecutionContainer _exerciseExecutionContainer;
-    private readonly IDbExercise _dbExercise;
-    private readonly IDbExerciseExecution _dbExerciseExecution;
     private readonly UserContainer _userContainer;
-    private readonly IDbUser _dbUser;
-    
+
     public ExerciseController()
     {
-        _dbExercise = new DbExercise();
-        _dbExerciseExecution = new DbExerciseExecution();
-        _exerciseContainer = new ExerciseContainer(_dbExercise);
-        _exerciseExecutionContainer = new ExerciseExecutionContainer(_dbExerciseExecution);
-        _dbUser = new DbUser();
-        _userContainer = new UserContainer(_dbUser);
+        IDbExercise dbExercise = new DbExercise();
+        IDbExerciseExecution dbExerciseExecution = new DbExerciseExecution();
+        _exerciseContainer = new ExerciseContainer(dbExercise);
+        _exerciseExecutionContainer = new ExerciseExecutionContainer(dbExerciseExecution);
+        IDbUser dbUser = new DbUser();
+        _userContainer = new UserContainer(dbUser);
     }
     
     public IActionResult Index()

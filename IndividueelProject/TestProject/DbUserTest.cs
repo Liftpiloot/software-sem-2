@@ -1,5 +1,5 @@
-﻿using Iron_DAL.DTO;
-using Iron_Interface;
+﻿using Iron_Interface;
+using Iron_Interface.DTO;
 
 namespace TestProject;
 

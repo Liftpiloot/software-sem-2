@@ -1,4 +1,4 @@
-﻿namespace Iron_DAL.DTO;
+﻿namespace Iron_Interface.DTO;
 
 public record UserDto
 {

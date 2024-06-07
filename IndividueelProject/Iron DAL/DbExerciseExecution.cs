@@ -1,5 +1,5 @@
-﻿using Iron_DAL.DTO;
-using Iron_Interface;
+﻿using Iron_Interface;
+using Iron_Interface.DTO;
 using Microsoft.Data.SqlClient;
 
 namespace Iron_DAL;

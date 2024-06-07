@@ -6,23 +6,22 @@ using Iron_Domain;
 using Iron_Interface;
 using IronApp.Models;
 using IronDomain;
+using IronDomain.Containers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IronApp.Controllers;
 
 public class ProfileController : Controller
 {
-    private readonly IDbUser _dbUser;
     private readonly UserContainer _userContainer;
-    private readonly IDbExerciseExecution _dbExerciseExecution;
     private readonly ExerciseExecutionContainer _exerciseExecutionContainer;
 
     public ProfileController()
     {
-        _dbUser = new DbUser();
-        _userContainer = new UserContainer(_dbUser);
-        _dbExerciseExecution = new DbExerciseExecution();
-        _exerciseExecutionContainer = new ExerciseExecutionContainer(_dbExerciseExecution);
+        IDbUser dbUser = new DbUser();
+        _userContainer = new UserContainer(dbUser);
+        IDbExerciseExecution dbExerciseExecution = new DbExerciseExecution();
+        _exerciseExecutionContainer = new ExerciseExecutionContainer(dbExerciseExecution);
     }
 
     public IActionResult Index()

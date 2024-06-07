@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Iron_Domain;
+namespace IronDomain;
 
 public class User
 {

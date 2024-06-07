@@ -1,11 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using FluentValidation.Results;
-using Iron_DAL;
-using Iron_DAL.DTO;
+﻿using FluentValidation.Results;
 using Iron_Domain;
 using Iron_Interface;
+using Iron_Interface.DTO;
+using IronDomain.Validators;
 
-namespace IronDomain;
+namespace IronDomain.Containers;
 
 public class UserContainer
 {
@@ -17,14 +16,14 @@ public class UserContainer
     }
     
     // method to convert user dto to user
-    private User ConvertToUser(UserDto userDto)
+    private static User ConvertToUser(UserDto userDto)
     {
         User user = new User(userDto.Id, userDto.UserName, userDto.Email, userDto.PasswordHash, userDto.DateOfBirth, userDto.Weight);
         return user;
     }
     
     // method to convert user to user dto
-    private UserDto ConvertToUserDto(User user)
+    private static UserDto ConvertToUserDto(User user)
     {
         UserDto userDto = new()
         {
